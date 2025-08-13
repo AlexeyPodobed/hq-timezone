@@ -1,0 +1,11 @@
+.hero-section {
+    @apply relative w-full pt-[18.688rem] pb-[2.875rem] bg-white rounded-[1.25rem] overflow-hidden;
+
+    &__selector {
+        @apply flex items-center gap-5;
+    }
+
+    &__title {
+        @apply text-[2.813rem] font-semibold text-primary-1;
+    }
+}
