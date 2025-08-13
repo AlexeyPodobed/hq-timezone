@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Header />
-        <main className="relative flex flex-col">{children}</main> {/* тут хиро секция */}
+        <main className="relative flex flex-col">{children}</main>
         <Footer />
       </body>
     </html>

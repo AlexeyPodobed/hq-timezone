@@ -4,9 +4,10 @@ import { memo } from "react";
 
 import "./HeroSection.scss";
 import { Container } from "@/common/Container";
-import { Time } from "@/components/base/Time";
 
+import { HeroCityList } from "./HeroCityList";
 import { HeroCitySelect } from "./HeroCitySelect";
+import { HeroMainTime } from "./HeroMainTime";
 
 export interface HeroSectionProps {
   cities: string[];
@@ -30,15 +31,23 @@ export const HeroSection = memo<HeroSectionProps>(({ cities, bgImage, className 
         />
       )}
       <Container>
-        <div className="relative z-10 py-24">
+        <div className="hero-section__inner">
           <div className="hero-section__selector">
             <h1 className="hero-section__title">What`s the Time in</h1>
             <HeroCitySelect cities={cities} />
           </div>
 
-          <h1>
-            <Time className="min-w-24 flex gap-0.5 justify-center" />
-          </h1>
+          <div className="hero-section__main-content">
+            <HeroMainTime
+              city="New York, USA"
+              time="16:07:45"
+              date="Thursday, June 5, 2025"
+              sunRise="05:24"
+              sunSet="20:25"
+            />
+          </div>
+
+          <HeroCityList cities={cities} />
         </div>
       </Container>
     </section>

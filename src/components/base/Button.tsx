@@ -5,16 +5,16 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "relative inline-flex items-center justify-center whitespace-nowrap cursor-pointer ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "relative inline-flex items-center justify-center gap-[0.313rem] whitespace-nowrap cursor-pointer ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "bg-transparent text-text-primary border-2 border-transparent",
-        outline: "",
+        default: "bg-transparent text-primary-1 border border-primary-1 rounded-lg",
+        black: "bg-black text-yellow rounded-lg",
       },
       size: {
-        default: "text-sm xs:text-md hd+:text-lg font-medium rounded-full hd+:min-h-[3.25rem] px-6 hd+:px-8 py-3 hd+:pt-2.5 hd+:pb-2 leading-none",
-        lg: "text-md xs:text-lg hd+:text-2xl font-medium rounded-full hd+:min-h-[4.688rem] px-7 hd+:px-12 py-4 hd+:py-[1.125rem] leading-none",
+        default: "px-4 py-4.5 text-3xl leading-[2.875rem]",
+        lg: "px-8 py-4.5 text-3xl leading-[2.875rem]",
       },
     },
     defaultVariants: {
@@ -37,7 +37,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, va
       ref={ref}
       {...props}
     >
-      <span className="z-10">{children}</span>
+      <span className="z-10 ">{children}</span>
     </Comp>
   );
 });

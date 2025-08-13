@@ -2,7 +2,7 @@
 
 import { cva, type VariantProps } from "class-variance-authority";
 import clsx from "clsx";
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, memo } from "react";
 
 import { Icon } from "../base/Icon";
 
@@ -25,12 +25,12 @@ interface CustomSelectProps extends VariantProps<typeof customSelectVariants> {
   placeholder?: string;
 }
 
-export function CustomSelect({ options, value, onChange, placeholder = "Select...", variant }: CustomSelectProps) {
+export const CustomSelect = memo<CustomSelectProps>(({ options, value, onChange, placeholder = "Select...", variant }) => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const ref = useRef<HTMLDivElement>(null);
 
-  const filtered = useMemo(() => options.filter((opt) => opt.toLowerCase().includes(search.toLowerCase())), [search, options]);
+  const filtered = useMemo(() => options.filter((opt) => opt.toLowerCase().includes(search.toLowerCase())), [options, search]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -70,8 +70,8 @@ export function CustomSelect({ options, value, onChange, placeholder = "Select..
           <input
             type="text"
             className={clsx(
-              "w-full mb-3 p-2.5 border  rounded-lg",
-              variant === "yellow" ? "text-text-secondary border-yellow " : "text-primary-1 border-primary-1"
+              "w-full mb-3 p-2.5 border rounded-lg",
+              variant === "yellow" ? "text-text-secondary border-yellow" : "text-primary-1 border-primary-1"
             )}
             placeholder="Search..."
             value={search}
@@ -98,4 +98,6 @@ export function CustomSelect({ options, value, onChange, placeholder = "Select..
       )}
     </div>
   );
-}
+});
+
+CustomSelect.displayName = "CustomSelect";

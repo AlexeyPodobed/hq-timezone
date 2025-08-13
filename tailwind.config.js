@@ -11,6 +11,10 @@ const config = {
         "text-secondary": "#E6E6DD",
         "border-primary": "#e6e6dd",
         yellow: "#F0FF6E",
+        "light-blue": "#9cbee2",
+
+        // Opacity colors
+        "gray-opacity-02": "rgba(43,43,43,.2)",
       },
       fontSize: {
         "inherit-size": "inherit",

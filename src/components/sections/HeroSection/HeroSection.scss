@@ -1,11 +1,47 @@
 .hero-section {
     @apply relative w-full pt-[18.688rem] pb-[2.875rem] bg-white rounded-[1.25rem] overflow-hidden;
 
+    &__inner {
+        @apply relative flex flex-col z-10;
+    }
+
+    &__main-content {
+        @apply mb-[9.188rem] flex;
+    }
+
     &__selector {
         @apply flex items-center gap-5;
     }
 
     &__title {
         @apply text-[2.813rem] font-semibold text-primary-1;
+    }
+
+    &__main-time {
+        @apply flex items-center gap-[4.188rem];
+    }
+
+    &__main-time-block {
+        @apply flex flex-col;
+    }
+
+    &__main-city {
+        @apply text-3xl font-bold text-gray-opacity-02 leading-[2.875rem];
+    }
+
+    &__main-time-value {
+        @apply min-w-[41.25rem] text-[12.5rem] leading-none;
+    }
+
+    &__main-date {
+        @apply text-3xl leading-none;
+    }
+
+    &__main-sun {
+        @apply flex flex-col gap-[0.313rem];
+    }
+
+    &__main-day-time {
+        @apply mt-[0.188rem] text-right text-3xl text-light-blue font-bold leading-[2.875rem];
     }
 }
