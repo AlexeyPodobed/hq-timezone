@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 
 import "@/assets/styles/globals.css";
 import Footer from "@/components/main/Footer/Footer";
-// import Header from "@/components/main/Header/Header";
+import Header from "@/components/main/Header/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {/* <Header /> */}
+        <Header />
         <main className="relative flex flex-col">{children}</main> {/* тут хиро секция */}
         <Footer />
       </body>

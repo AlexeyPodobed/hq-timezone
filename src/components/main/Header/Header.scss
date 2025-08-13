@@ -1,0 +1,28 @@
+.header {
+    @apply absolute top-[3.125rem] left-1/2 -translate-x-1/2 py-3.5 px-4 flex items-center justify-between bg-white rounded-lg shadow-default z-50;
+    width: calc(100% - 100px);
+
+    &__switcher {
+        @apply h-max p-1.5 flex items-center gap-1.5 bg-primary-1 rounded-[0.313rem];
+    }
+
+    &__switcher-btn {
+        @apply relative p-3 flex items-center justify-center text-md font-bold leading-normal text-white border border-transparent rounded-[0.188rem] transition-all;
+
+        &.active {
+            @apply text-yellow;
+        }
+    }
+
+    &__switcher-border {
+        @apply absolute right-0 top-0 w-[3.438rem] h-full flex border border-yellow rounded-[0.188rem] transition-all;
+
+        &.active {
+            @apply -translate-x-full;
+        }
+    }
+
+    &__time-wrap {
+        @apply h-max p-3 flex flex-col items-center justify-center gap-[0.063rem] text-lg leading-none text-yellow  bg-primary-1 rounded-[0.313rem];
+    }
+}

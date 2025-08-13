@@ -4,6 +4,7 @@ import { memo } from "react";
 
 import "./HeroSection.scss";
 import { Container } from "@/common/Container";
+import { Time } from "@/components/base/Time";
 
 import { HeroCitySelect } from "./HeroCitySelect";
 
@@ -34,6 +35,10 @@ export const HeroSection = memo<HeroSectionProps>(({ cities, bgImage, className 
             <h1 className="hero-section__title">What`s the Time in</h1>
             <HeroCitySelect cities={cities} />
           </div>
+
+          <h1>
+            <Time className="min-w-24 flex gap-0.5 justify-center" />
+          </h1>
         </div>
       </Container>
     </section>

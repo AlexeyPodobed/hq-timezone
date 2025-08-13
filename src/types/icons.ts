@@ -1,5 +1,5 @@
 export enum ICON_NAMES {
-  "arrow-down-converted",
+  "arrow-down",
 }
 
 export type ICON_SIZE =

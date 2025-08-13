@@ -10,7 +10,7 @@ const config = {
         "text-primary": "#2b2b2b",
         "text-secondary": "#E6E6DD",
         "border-primary": "#e6e6dd",
-        "border-secondary": "#F0FF6E",
+        yellow: "#F0FF6E",
       },
       fontSize: {
         "inherit-size": "inherit",
@@ -29,8 +29,7 @@ const config = {
         xl: "12px",
       },
       boxShadow: {
-        "btn-default":
-          "0px 0px 0px 1px rgba(16, 24, 40, 0.18) inset, 0px -2px 0px 0px rgba(16, 24, 40, 0.05) inset, 0px 1px 2px 0px rgba(16, 24, 40, 0.05)",
+        default: "0 0 20px 0 rgba(0, 0, 0, 0.05)",
       },
       backgroundImage: {
         "gradient-main": "linear-gradient(90deg, #963488 0%, #FC6F32 50%, #FF4A59 100%)",
