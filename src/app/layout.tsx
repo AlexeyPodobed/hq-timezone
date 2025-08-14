@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 
 import "@/assets/styles/globals.css";
 import Footer from "@/components/main/Footer/Footer";
 import Header from "@/components/main/Header/Header";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Next App",
@@ -20,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <Header />
         <main className="relative flex flex-col">{children}</main>
         <Footer />

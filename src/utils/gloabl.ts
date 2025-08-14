@@ -13,16 +13,24 @@ export function formatMonthDate(date: Date, showYear: boolean = true): string {
 export const calcDayLength = (sunRise?: string, sunSet?: string): string | null => {
   if (!sunRise || !sunSet) return null;
 
-  const toMinutes = (time: string) => {
-    const [h, m] = time.split(":").map(Number);
-    return h * 60 + m;
-  };
+  const rise = new Date(sunRise);
+  const set = new Date(sunSet);
 
-  let minutes = toMinutes(sunSet) - toMinutes(sunRise);
-  if (minutes < 0) minutes += 1440;
+  let diffMinutes = (set.getTime() - rise.getTime()) / 1000 / 60;
+  if (diffMinutes < 0) diffMinutes += 1440;
 
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
+  const h = Math.floor(diffMinutes / 60);
+  const m = Math.round(diffMinutes % 60);
 
   return `${h}h ${m}m`;
 };
+
+export function getTimeDifference(cityTimeStr: string): string {
+  const now = new Date();
+  const cityTime = new Date(cityTimeStr.replace(" ", "T"));
+
+  const diffHours = Math.round((cityTime.getTime() - now.getTime()) / (1000 * 60 * 60));
+  const sign = diffHours >= 0 ? "+" : "-";
+
+  return `${sign}${Math.abs(diffHours)}`;
+}

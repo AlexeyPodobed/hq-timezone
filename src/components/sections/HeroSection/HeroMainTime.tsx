@@ -3,56 +3,81 @@ import { memo, useMemo } from "react";
 
 import "./HeroSection.scss";
 import { Button } from "@/components/base/Button";
+import { Icon } from "@/components/base/Icon";
 import { Time } from "@/components/base/Time";
-import { calcDayLength } from "@/utils/gloabl";
+import { CityFull } from "@/types/cities";
+import { calcDayLength, getTimeDifference } from "@/utils/gloabl";
 
 export interface HeroMainTimeProps {
-  city: string;
-  time: string;
-  date: string;
-  sunRise?: string;
-  sunSet?: string;
+  city: CityFull;
   className?: string;
 }
 
-export const HeroMainTime = memo<HeroMainTimeProps>(({ city, time, date, sunRise, sunSet, className }) => {
-  const dayLength = useMemo(() => calcDayLength(sunRise, sunSet), [sunRise, sunSet]);
+export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
+  const { time, sunrise, sunset, timezoneId } = city.timeData;
+  const dayLength = useMemo(() => calcDayLength(sunrise, sunset), [sunrise, sunset]);
+  const timeDiff = useMemo(() => getTimeDifference(time), [time]);
+  const date = new Date().toDateString();
 
   return (
     <div className={clsx("hero-section__main-time", className)}>
       <div className="hero-section__main-time-block">
-        {!!city && <h3 className="hero-section__main-city">{city}</h3>}
-        {!!time && (
-          <h1 className="hero-section__main-time-value">
-            <Time time={time} />
-          </h1>
-        )}
-        {date && <div className="hero-section__main-date">{date}</div>}
+        <h3 className="hero-section__main-city">{city.name}</h3>
+        <h1 className="hero-section__main-time-value">
+          <Time time={time} />
+        </h1>
+        <div className="hero-section__main-date">{date}</div>
       </div>
-      <div className="hero-section__main-sun">
-        {sunRise && (
+
+      <div className="hero-section__main-col-left">
+        <div className="hero-section__main-sun">
           <Button
             asChild
-            className="w-[12.063rem]"
+            className="w-[12.063rem] h-[5.375rem]"
           >
+            <Icon
+              size="3.07rem"
+              name="sun"
+              className="text-light-blue"
+            />
             <Time
-              time={sunRise}
-              disableCounter
+              time={sunrise}
+              showSeconds={false}
             />
           </Button>
-        )}
-        {sunSet && (
           <Button
             asChild
-            className="w-[12.063rem]"
+            className="w-[12.063rem] h-[5.375rem]"
           >
+            <Icon
+              size="3.07rem"
+              name="moon"
+              className="text-light-blue"
+            />
             <Time
-              time={sunSet}
-              disableCounter
+              time={sunset}
+              showSeconds={false}
             />
           </Button>
-        )}
-        {dayLength && <span className="hero-section__main-day-time">{dayLength}</span>}
+          <span className="hero-section__main-day-time">{dayLength}</span>
+        </div>
+
+        <div className={clsx("hero-section__main-info", className)}>
+          <Button
+            variant="black"
+            size="lg"
+            className="w-full h-[5.375rem]"
+          >
+            {timezoneId}
+          </Button>
+          <Button
+            variant="black"
+            size="lg"
+            className="w-full h-[5.375rem]"
+          >
+            {timeDiff} Hours from your time
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -33,6 +33,10 @@ export const CustomSelect = memo<CustomSelectProps>(({ options, value, onChange,
   const filtered = useMemo(() => options.filter((opt) => opt.toLowerCase().includes(search.toLowerCase())), [options, search]);
 
   useEffect(() => {
+    setSearch("");
+  }, [value]);
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (ref.current && !ref.current.contains(event.target as Node)) {
         setOpen(false);

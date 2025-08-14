@@ -1,4 +1,4 @@
-export const BASE_API = process.env.NEXT_PUBLIC_ENET_PULSE_API ?? "";
+export const BASE_API = process.env.NEXT_PUBLIC_GEO_NAMES_API ?? "";
 
 export const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_API ?? "";
 export const WP_API_VERSION = "v1";

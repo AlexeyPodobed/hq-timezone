@@ -1,7 +1,7 @@
 import { BASE_API } from "@/consts/api";
 
-const USERNAME = process.env.NEXT_PUBLIC_ENET_PULSE_USERNAME ?? "";
-const TOKEN = process.env.NEXT_PUBLIC_ENET_PULSE_TOKEN ?? "";
+const USERNAME = process.env.NEXT_PUBLIC_GEO_NAMES_USERNAME ?? "";
+const TOKEN = process.env.NEXT_PUBLIC_GEO_NAMES_TOKEN ?? "";
 
 class APIWrapper {
   private appendQueryParams(url: string, params?: Record<string, any>): string {

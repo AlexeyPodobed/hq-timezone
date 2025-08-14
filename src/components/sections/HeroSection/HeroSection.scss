@@ -6,7 +6,7 @@
     }
 
     &__main-content {
-        @apply mb-[9.188rem] flex;
+        @apply w-full mb-[9.188rem] flex;
     }
 
     &__selector {
@@ -18,7 +18,7 @@
     }
 
     &__main-time {
-        @apply flex items-center gap-[4.188rem];
+        @apply w-full flex items-center gap-[4.188rem];
     }
 
     &__main-time-block {
@@ -30,18 +30,37 @@
     }
 
     &__main-time-value {
-        @apply min-w-[41.25rem] text-[12.5rem] leading-none;
+        @apply text-[12.5rem] leading-none font-anton whitespace-nowrap;
+
+        .time {
+            @apply min-w-[43.5rem] inline-block;
+            &.time-ampm {
+                @apply min-w-[49.688rem];
+            }
+
+            .ampm {
+                @apply text-[4.375rem];
+            }
+        }
     }
 
     &__main-date {
         @apply text-3xl leading-none;
     }
 
+    &__main-col-left {
+        @apply w-full flex items-start;
+    }
+
     &__main-sun {
-        @apply flex flex-col gap-[0.313rem];
+        @apply relative flex flex-col gap-[0.313rem];
     }
 
     &__main-day-time {
-        @apply mt-[0.188rem] text-right text-3xl text-light-blue font-bold leading-[2.875rem];
+        @apply absolute -bottom-14 right-0 mt-[0.188rem] text-right text-3xl text-light-blue font-bold leading-[2.875rem];
+    }
+
+    &__main-info {
+        @apply ml-auto flex flex-col gap-[0.313rem];
     }
 }

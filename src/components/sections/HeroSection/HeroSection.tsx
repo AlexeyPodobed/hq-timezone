@@ -4,13 +4,12 @@ import { memo } from "react";
 
 import "./HeroSection.scss";
 import { Container } from "@/common/Container";
+import { CityFull } from "@/types/cities";
 
-import { HeroCityList } from "./HeroCityList";
-import { HeroCitySelect } from "./HeroCitySelect";
-import { HeroMainTime } from "./HeroMainTime";
+import { HeroCitySelector } from "./HeroCitySelector";
 
 export interface HeroSectionProps {
-  cities: string[];
+  cities: CityFull[];
   bgImage?: string;
   className?: string;
 }
@@ -32,22 +31,10 @@ export const HeroSection = memo<HeroSectionProps>(({ cities, bgImage, className 
       )}
       <Container>
         <div className="hero-section__inner">
-          <div className="hero-section__selector">
-            <h1 className="hero-section__title">What`s the Time in</h1>
-            <HeroCitySelect cities={cities} />
-          </div>
-
-          <div className="hero-section__main-content">
-            <HeroMainTime
-              city="New York, USA"
-              time="16:07:45"
-              date="Thursday, June 5, 2025"
-              sunRise="05:24"
-              sunSet="20:25"
-            />
-          </div>
-
-          <HeroCityList cities={cities} />
+          <HeroCitySelector
+            cities={cities}
+            title="What`s the Time in"
+          />
         </div>
       </Container>
     </section>
