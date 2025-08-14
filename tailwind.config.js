@@ -3,7 +3,7 @@ const config = {
   theme: {
     extend: {
       fontFamily: {
-        clash: ['"ClashGrotesk"', "sans-serif"],
+        anton: ['"Anton"', "sans-serif"],
       },
       colors: {
         "primary-1": "#2b2b2b",

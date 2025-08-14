@@ -1,5 +1,7 @@
 export enum ICON_NAMES {
   "arrow-down",
+  "sun",
+  "moon",
 }
 
 export type ICON_SIZE =
