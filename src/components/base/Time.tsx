@@ -4,15 +4,15 @@ import clsx from "clsx";
 import { memo, useEffect, useMemo, useState, useCallback } from "react";
 
 import { useTimeStore } from "@/store/timeStore";
-import { formatHours } from "@/utils/gloabl";
 
 interface TimeProps {
   className?: string;
   time?: string; // "HH:MM:SS" | "HH:MM"
   disableCounter?: boolean;
+  showSeconds?: boolean;
 }
 
-export const Time = memo<TimeProps>(({ className, time, disableCounter }) => {
+export const Time = memo<TimeProps>(({ className, time, disableCounter, showSeconds }) => {
   const { is24h } = useTimeStore();
 
   const getInitialDate = useCallback(() => {
@@ -40,18 +40,32 @@ export const Time = memo<TimeProps>(({ className, time, disableCounter }) => {
     return () => clearInterval(interval);
   }, [disableCounter]);
 
-  const { h: hours, ampm } = useMemo(() => formatHours(currentTime.getHours(), is24h), [currentTime, is24h]);
+  const { hours, minutes, seconds, ampm } = useMemo(() => {
+    let h = currentTime.getHours();
+    const m = currentTime.getMinutes();
+    const s = currentTime.getSeconds();
+    let a = "";
 
-  const minutes = useMemo(() => currentTime.getMinutes(), [currentTime]);
-  const seconds = useMemo(() => currentTime.getSeconds(), [currentTime]);
+    if (!is24h) {
+      a = h >= 12 ? "PM" : "AM";
+      h = h % 12 || 12;
+    }
+
+    return { hours: h, minutes: m, seconds: s, ampm: a };
+  }, [currentTime, is24h]);
 
   const pad = useCallback((n: number) => n.toString().padStart(2, "0"), []);
-  const showSeconds = useMemo(() => time?.split(":").length === 3, [time]);
+
+  const shouldShowSeconds = useMemo(() => {
+    if (typeof showSeconds === "boolean") return showSeconds;
+    if (!time) return true;
+    return time.split(":").length === 3;
+  }, [time, showSeconds]);
 
   return (
     <span className={clsx("time", className)}>
       <span>{pad(hours)}</span>:<span>{pad(minutes)}</span>
-      {showSeconds && (
+      {shouldShowSeconds && (
         <>
           :<span>{pad(seconds)}</span>
         </>

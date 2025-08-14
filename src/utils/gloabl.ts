@@ -26,10 +26,3 @@ export const calcDayLength = (sunRise?: string, sunSet?: string): string | null 
 
   return `${h}h ${m}m`;
 };
-
-export function formatHours(hours: number, is24h: boolean): { h: number; ampm: string } {
-  if (is24h) return { h: hours, ampm: "" };
-  const ampm = hours >= 12 ? "PM" : "AM";
-  const h = hours % 12 || 12;
-  return { h, ampm };
-}
