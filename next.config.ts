@@ -1,7 +1,12 @@
-import type { NextConfig } from "next";
+/** @type {import('next').NextConfig} */
 
-const nextConfig: NextConfig = {
-  /* config options here */
+const nextConfig = {
+  // output: "standalone", // Needed on dev stage
+  images: {
+    loader: "custom",
+    loaderFile: "./ImageLoader.js",
+  },
+  swcMinify: true,
 };
 
 export default nextConfig;

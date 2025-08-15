@@ -10,27 +10,40 @@ export function formatMonthDate(date: Date, showYear: boolean = true): string {
   return `${month} ${day}${showYear ? `, ${year}` : ""}`;
 }
 
+export const normalizeDateTime = (s: string) => s.replace(" ", "T");
+
+export const extractTime = (s: string) => normalizeDateTime(s).split("T")[1] ?? s;
+
+export const toLocalDate = (s: string) => new Date(normalizeDateTime(s));
+
+export const diffMinutesSameTZ = (a: string, b: string) => {
+  const A = toLocalDate(a).getTime();
+  const B = toLocalDate(b).getTime();
+  let mins = (B - A) / 60000;
+  if (mins < 0) mins += 1440;
+  return mins;
+};
+
 export const calcDayLength = (sunRise?: string, sunSet?: string): string | null => {
   if (!sunRise || !sunSet) return null;
-
-  const rise = new Date(sunRise);
-  const set = new Date(sunSet);
-
-  let diffMinutes = (set.getTime() - rise.getTime()) / 1000 / 60;
-  if (diffMinutes < 0) diffMinutes += 1440;
-
-  const h = Math.floor(diffMinutes / 60);
-  const m = Math.round(diffMinutes % 60);
-
+  const diffMin = Math.round(diffMinutesSameTZ(sunRise, sunSet));
+  const h = Math.floor(diffMin / 60);
+  const m = diffMin % 60;
   return `${h}h ${m}m`;
 };
 
-export function getTimeDifference(cityTimeStr: string): string {
+export function getTimeDifferenceByTZ(timezoneId: string): string {
   const now = new Date();
-  const cityTime = new Date(cityTimeStr.replace(" ", "T"));
-
-  const diffHours = Math.round((cityTime.getTime() - now.getTime()) / (1000 * 60 * 60));
+  const cityNowLocal = new Date(now.toLocaleString("en-US", { timeZone: timezoneId }));
+  const diffHours = Math.round((cityNowLocal.getTime() - now.getTime()) / 3600000);
   const sign = diffHours >= 0 ? "+" : "-";
+  return `${sign}${Math.abs(diffHours)}`;
+}
 
+export function getTimeDifferenceFromString(cityTimeStr: string): string {
+  const now = new Date();
+  const cityTime = toLocalDate(cityTimeStr);
+  const diffHours = Math.round((cityTime.getTime() - now.getTime()) / 3600000);
+  const sign = diffHours >= 0 ? "+" : "-";
   return `${sign}${Math.abs(diffHours)}`;
 }

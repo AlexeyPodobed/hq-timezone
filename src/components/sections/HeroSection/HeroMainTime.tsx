@@ -6,7 +6,7 @@ import { Button } from "@/components/base/Button";
 import { Icon } from "@/components/base/Icon";
 import { Time } from "@/components/base/Time";
 import { CityFull } from "@/types/cities";
-import { calcDayLength, getTimeDifference } from "@/utils/gloabl";
+import { calcDayLength, getTimeDifferenceByTZ } from "@/utils/gloabl";
 
 export interface HeroMainTimeProps {
   city: CityFull;
@@ -15,8 +15,11 @@ export interface HeroMainTimeProps {
 
 export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
   const { time, sunrise, sunset, timezoneId } = city.timeData;
+
+  console.log("time:", time, "sunrise:", sunrise, "sunset:", sunset);
+
   const dayLength = useMemo(() => calcDayLength(sunrise, sunset), [sunrise, sunset]);
-  const timeDiff = useMemo(() => getTimeDifference(time), [time]);
+  const timeDiff = useMemo(() => getTimeDifferenceByTZ(timezoneId), [timezoneId]);
   const date = new Date().toDateString();
 
   return (
@@ -33,7 +36,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
         <div className="hero-section__main-sun">
           <Button
             asChild
-            className="w-[12.063rem] h-[5.375rem]"
+            className="w-[12.063rem] h-[5.375rem] cursor-default"
           >
             <Icon
               size="3.07rem"
@@ -47,7 +50,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
           </Button>
           <Button
             asChild
-            className="w-[12.063rem] h-[5.375rem]"
+            className="w-[12.063rem] h-[5.375rem] cursor-default"
           >
             <Icon
               size="3.07rem"
@@ -64,16 +67,18 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
 
         <div className={clsx("hero-section__main-info", className)}>
           <Button
+            asChild
             variant="black"
             size="lg"
-            className="w-full h-[5.375rem]"
+            className="w-full h-[5.375rem] cursor-default"
           >
             {timezoneId}
           </Button>
           <Button
+            asChild
             variant="black"
             size="lg"
-            className="w-full h-[5.375rem]"
+            className="w-full h-[5.375rem] cursor-default"
           >
             {timeDiff} Hours from your time
           </Button>

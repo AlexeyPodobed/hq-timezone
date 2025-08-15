@@ -1,20 +1,13 @@
 "use client";
 
-import { memo, useEffect, useState } from "react";
+import { memo } from "react";
+
+import { useSecondsTimer } from "@/hooks/useSecondsTimer";
+
+const pad = (n: number) => n.toString().padStart(2, "0");
 
 export const Seconds = memo(() => {
-  const [seconds, setSeconds] = useState(new Date().getSeconds());
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSeconds(new Date().getSeconds());
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const pad = (n: number) => n.toString().padStart(2, "0");
-
+  const seconds = useSecondsTimer();
   return <span className="seconds">:{pad(seconds)}</span>;
 });
-
 Seconds.displayName = "Seconds";

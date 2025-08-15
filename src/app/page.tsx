@@ -1,9 +1,18 @@
+// TODO: only for dev
+if (process.env.NODE_ENV === "development") {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+}
+
+import { getHomePage } from "@/api/homepage";
 import { HeroSection } from "@/components/sections/HeroSection/HeroSection";
 import { CityFull } from "@/types/cities";
 import { fetchCitiesFull } from "@/utils/cities";
 
 export default async function Home() {
-  const cityNames = ["New York", "London", "Paris", "Tokyo"];
+  const { data: homepage } = await getHomePage();
+
+  const heroSection = homepage.homepage_flexible_content.find((section) => section.acf_fc_layout === "hero");
+  const cityNames: string[] = heroSection?.cities_list?.map((c) => c.city_name) ?? [];
 
   const citiesFull: CityFull[] = await fetchCitiesFull(cityNames);
 
@@ -11,7 +20,7 @@ export default async function Home() {
     <div className="page-wrapper">
       <HeroSection
         cities={citiesFull}
-        bgImage="/images/hero-bg.png"
+        bgImage={heroSection?.background_image?.url}
       />
     </div>
   );

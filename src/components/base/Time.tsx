@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { memo, useEffect, useState } from "react";
 
 import { useTimeStore } from "@/store/timeStore";
+import { normalizeDateTime } from "@/utils/gloabl";
 
 import { Seconds } from "./Seconds";
 
@@ -18,7 +19,7 @@ export const Time = memo<TimeProps>(({ time, showSeconds = true, className }) =>
 
   const parseTime = (str?: string) => {
     if (!str) return new Date();
-    return new Date(str.replace(" ", "T"));
+    return new Date(normalizeDateTime(str));
   };
 
   const [currentTime, setCurrentTime] = useState(parseTime(time));

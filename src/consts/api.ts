@@ -2,4 +2,4 @@ export const BASE_API = process.env.NEXT_PUBLIC_GEO_NAMES_API ?? "";
 
 export const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_API ?? "";
 export const WP_API_VERSION = "v1";
-export const WP_API = `${WP_URL}/wp-json/example/${WP_API_VERSION}`;
+export const WP_API = `${WP_URL}/wp-json/hqtimezone/${WP_API_VERSION}`;
