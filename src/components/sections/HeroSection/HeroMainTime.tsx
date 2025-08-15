@@ -16,8 +16,6 @@ export interface HeroMainTimeProps {
 export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
   const { time, sunrise, sunset, timezoneId } = city.timeData;
 
-  console.log("time:", time, "sunrise:", sunrise, "sunset:", sunset);
-
   const dayLength = useMemo(() => calcDayLength(sunrise, sunset), [sunrise, sunset]);
   const timeDiff = useMemo(() => getTimeDifferenceByTZ(timezoneId), [timezoneId]);
   const date = new Date().toDateString();
