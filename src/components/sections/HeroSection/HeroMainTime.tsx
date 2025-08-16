@@ -18,7 +18,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
 
   const dayLength = useMemo(() => calcDayLength(sunrise, sunset), [sunrise, sunset]);
   const timeDiff = useMemo(() => getTimeDifferenceByTZ(timezoneId), [timezoneId]);
-  const date = new Date().toDateString();
+  const date = new Date().toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
   return (
     <div className={clsx("hero-section__main-time", className)}>
