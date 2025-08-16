@@ -19,7 +19,6 @@ export default function HeaderTimeSwitcher() {
         onClick={() => set24h(true)}
       >
         <span>24h</span>
-        <span className={clsx("header__switcher-border", !is24h && "active")}></span>
       </div>
     </div>
   );
