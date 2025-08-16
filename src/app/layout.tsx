@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="text-primary-1">
         <Header />
         <main className="relative flex flex-col">{children}</main>
         <Footer />

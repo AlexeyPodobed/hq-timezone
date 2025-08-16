@@ -35,12 +35,11 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
         <div className="hero-section__main-sun">
           <Button
             asChild
-            className="w-[12.063rem] h-[5.375rem] cursor-default"
+            className="hero-section__main-sun__btn"
           >
             <Icon
-              size="3.07rem"
               name="sun"
-              className="text-light-blue"
+              className="text-light-blue text-[1.5625rem] lg:text-[30px]"
             />
             <Time
               time={sunrise}
@@ -49,12 +48,11 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
           </Button>
           <Button
             asChild
-            className="w-[12.063rem] h-[5.375rem] cursor-default"
+            className="hero-section__main-sun__btn"
           >
             <Icon
-              size="3.07rem"
               name="moon"
-              className="text-light-blue"
+              className="text-light-blue text-[1.5625rem] lg:text-[30px]"
             />
             <Time
               time={sunset}
@@ -69,7 +67,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
             asChild
             variant="black"
             size="lg"
-            className="w-full h-[5.375rem] cursor-default"
+            className="w-full cursor-default"
           >
             <span className="line-clamp-1 whitespace-break-spaces">{formattedTimezone}</span>
           </Button>
@@ -77,7 +75,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
             asChild
             variant="black"
             size="lg"
-            className="w-full h-[5.375rem] cursor-default"
+            className="w-full cursor-default"
           >
             <span className="line-clamp-1 whitespace-break-spaces">{timeDiff} Hours from your time</span>
           </Button>

@@ -66,7 +66,7 @@ export const CustomSelect = memo<CustomSelectProps>(
       >
         <div
           className={clsx(
-            "min-w-[12.5625rem] w-[11.438rem] flex justify-between items-center gap-2.5 p-2.5 border rounded-lg cursor-pointer lg:p-5 lg:min-w-0",
+            "max-w-full flex justify-between items-center gap-2.5 p-2.5 border rounded-lg cursor-pointer lg:p-5",
             customSelectVariants({ variant })
           )}
           onClick={() => setOpen((o) => !o)}
