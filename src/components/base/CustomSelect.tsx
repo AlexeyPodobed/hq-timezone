@@ -65,9 +65,10 @@ export const CustomSelect = memo<CustomSelectProps>(
         className="custom-select relative"
       >
         <div
-          className={clsx('min-w-[12.5625rem] w-[11.438rem] flex justify-between items-center gap-2.5 p-2.5 border rounded-lg cursor-pointer lg:p-5 lg:min-w-0', 
-						customSelectVariants({ variant })
-					)}
+          className={clsx(
+            "min-w-[12.5625rem] w-[11.438rem] flex justify-between items-center gap-2.5 p-2.5 border rounded-lg cursor-pointer lg:p-5 lg:min-w-0",
+            customSelectVariants({ variant })
+          )}
           onClick={() => setOpen((o) => !o)}
         >
           <span className="text-3xl leading-[3.25rem] line-clamp-1"> {normalizedOptions.find((o) => o.value === value)?.label || placeholder}</span>
