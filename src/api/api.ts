@@ -1,18 +1,12 @@
-// api.ts
 import { BASE_PROXY } from "@/consts/api";
 
-// ✅ Added: read public debug flag for optional logging
-const API_DEBUG = process.env.NEXT_PUBLIC_API_DEBUG === "1";
-
-// ✅ Changed: keep username/token here to avoid import cycles; read once
 const USERNAME = process.env.NEXT_PUBLIC_GEO_NAMES_USERNAME ?? "";
 const TOKEN = process.env.NEXT_PUBLIC_GEO_NAMES_TOKEN ?? "";
 
-// ✅ Added: helper to safely parse boolean-like env if needed later
 const isNonEmpty = (v?: string | null) => !!v && v.trim().length > 0;
 
 class APIWrapper {
-  // ✅ Added: resolveBase() builds an absolute base for relative URLs
+  //   resolveBase() builds an absolute base for relative URLs
   // - CSR: use window.location.origin
   // - SSR: prefer Vercel URL (https), then NEXT_PUBLIC_DOMAIN, then localhost
   private resolveBase(url: string): string | undefined {
@@ -34,7 +28,7 @@ class APIWrapper {
     return "http://localhost:3000";
   }
 
-  // ✅ Added: detect if final target is GeoNames (origin or proxy)
+  // detect if final target is GeoNames (origin or proxy)
   // We need this to append username/token automatically.
   private isGeoNamesTarget(u: URL): boolean {
     // Direct origin cases (http/https api.geonames.org or secure.geonames.org)
@@ -49,8 +43,6 @@ class APIWrapper {
     return false;
   }
 
-  // ✅ Changed: now supports relative URLs by using resolveBase()
-  // ✅ Changed: appends username/token only for GeoNames endpoints
   private appendQueryParams(url: string, params?: Record<string, any>): string {
     // Build absolute URL if needed
     const base = this.resolveBase(url);
@@ -78,53 +70,26 @@ class APIWrapper {
     return u.toString();
   }
 
-  // ✅ Kept: thin fetch wrapper; can extend with common headers if needed
   private async fetchWrapper(url: string, options: RequestInit = {}): Promise<Response> {
     return await fetch(url, options);
   }
 
-  // ✅ Changed: log full URL when API_DEBUG=1
-  // ✅ Changed: do NOT set Content-Type for GET (not needed and sometimes harmful)
-  public async get<T = any>(url: string, params?: Record<string, any>, options?: RequestInit): Promise<{ data: T; status: number }> {
+  public async get(url: string, params?: Record<string, any>, options?: RequestInit): Promise<any> {
     const fullUrl = this.appendQueryParams(url, params);
-
-    if (API_DEBUG) {
-      const where = typeof window === "undefined" ? "SSR" : "CSR";
-      // console.log in English per your rule
-      console.log(`[API ${where} GET]`, fullUrl);
-    }
 
     const response = await this.fetchWrapper(fullUrl, {
       method: "GET",
-      // No 'Content-Type' for GET
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
       ...options,
     });
 
-    let data: T;
-    try {
-      data = (await response.json()) as T;
-    } catch {
-      // ✅ Added: guard for non-JSON responses
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      data = null as any;
-    }
-
-    if (API_DEBUG) {
-      console.log("[API STATUS]", response.status, response.statusText);
-    }
-
-    return { data, status: response.status };
+    return { data: await response.json(), status: response.status };
   }
 
-  // ✅ Unchanged logic; small safety JSON parse guard added
-  public async post<T = any>(url: string, body: any, headers: HeadersInit = {}): Promise<{ data: T; status: number }> {
-    const fullUrl = this.appendQueryParams(url);
-    if (API_DEBUG) {
-      const where = typeof window === "undefined" ? "SSR" : "CSR";
-      console.log(`[API ${where} POST]`, fullUrl);
-    }
-
-    const response = await this.fetchWrapper(fullUrl, {
+  public async post(url: string, body: any, headers: HeadersInit = {}): Promise<any> {
+    const response = await this.fetchWrapper(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -133,30 +98,11 @@ class APIWrapper {
       body: JSON.stringify(body),
     });
 
-    let data: T;
-    try {
-      data = (await response.json()) as T;
-    } catch {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      data = null as any;
-    }
-
-    if (API_DEBUG) {
-      console.log("[API STATUS]", response.status, response.statusText);
-    }
-
-    return { data, status: response.status };
+    return { data: await response.json(), status: response.status };
   }
 
-  // ✅ Unchanged logic; small safety JSON parse guard added
-  public async put<T = any>(url: string, body: any, headers: HeadersInit = {}): Promise<{ data: T; status: number }> {
-    const fullUrl = this.appendQueryParams(url);
-    if (API_DEBUG) {
-      const where = typeof window === "undefined" ? "SSR" : "CSR";
-      console.log(`[API ${where} PUT]`, fullUrl);
-    }
-
-    const response = await this.fetchWrapper(fullUrl, {
+  public async put(url: string, body: any, headers: HeadersInit = {}): Promise<any> {
+    const response = await this.fetchWrapper(url, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -165,30 +111,11 @@ class APIWrapper {
       body: JSON.stringify(body),
     });
 
-    let data: T;
-    try {
-      data = (await response.json()) as T;
-    } catch {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      data = null as any;
-    }
-
-    if (API_DEBUG) {
-      console.log("[API STATUS]", response.status, response.statusText);
-    }
-
-    return { data, status: response.status };
+    return { data: await response.json(), status: response.status };
   }
 
-  // ✅ Unchanged logic; small safety JSON parse guard added
-  public async delete<T = any>(url: string, headers: HeadersInit = {}): Promise<{ data: T; status: number }> {
-    const fullUrl = this.appendQueryParams(url);
-    if (API_DEBUG) {
-      const where = typeof window === "undefined" ? "SSR" : "CSR";
-      console.log(`[API ${where} DELETE]`, fullUrl);
-    }
-
-    const response = await this.fetchWrapper(fullUrl, {
+  public async delete(url: string, headers: HeadersInit = {}): Promise<any> {
+    const response = await this.fetchWrapper(url, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -196,21 +123,10 @@ class APIWrapper {
       },
     });
 
-    let data: T;
-    try {
-      data = (await response.json()) as T;
-    } catch {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      data = null as any;
-    }
-
-    if (API_DEBUG) {
-      console.log("[API STATUS]", response.status, response.statusText);
-    }
-
-    return { data, status: response.status };
+    return { data: await response.json(), status: response.status };
   }
 }
 
 const api = new APIWrapper();
+
 export default api;

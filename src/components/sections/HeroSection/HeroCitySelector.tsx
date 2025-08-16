@@ -91,14 +91,6 @@ export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) =>
     [selectCity]
   );
 
-  console.log("ENV CHECK", {
-    BASE_PROXY,
-    BASE_API,
-    BASE_USERNAME,
-    origin: window.location.origin,
-    vercelUrl: process.env.NEXT_PUBLIC_VERCEL_URL,
-  });
-
   return (
     <>
       <div className="hero-section__selector">
