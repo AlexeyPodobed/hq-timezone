@@ -14,9 +14,9 @@ export const Icon = ({ name, size = DEFAULT_SIZE, className = "", style, ...prop
     <div
       {...props}
       className={`relative flex items-start justify-center ${className}`}
-      style={{ fontSize: size, ...style }}
+      style={style}
     >
-      <span className={`text-[inherit] text-inherit-size flex items-start justify-center icon-${name}`}></span>
+      <span className={`text-[inherit] flex items-start justify-center icon-${name}`}></span>
     </div>
   );
 };
