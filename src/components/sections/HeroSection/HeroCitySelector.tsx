@@ -39,7 +39,6 @@ export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) =>
     const ac = new AbortController();
     if (!term) {
       setExtraCities([]);
-      ac.abort();
       return;
     }
 

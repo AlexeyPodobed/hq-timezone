@@ -3,12 +3,7 @@ import { CitiesResponse, CityTime } from "@/types/cities";
 
 import api from "./api";
 
-let cityAC: AbortController | null = null;
-
 export const getCity = async (params: Record<string, any>, signal?: AbortSignal): Promise<{ data: CitiesResponse; status: number }> => {
-  cityAC?.abort();
-  cityAC = new AbortController();
-
   try {
     const { data, status } = await api.get(`${BASE_API}/searchJSON`, params, { signal });
     return { data, status };
@@ -17,8 +12,6 @@ export const getCity = async (params: Record<string, any>, signal?: AbortSignal)
       console.log("GeoNames city fetch error:", error);
     }
     throw error;
-  } finally {
-    cityAC = null;
   }
 };
 
