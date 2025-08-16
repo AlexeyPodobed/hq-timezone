@@ -40,17 +40,6 @@ const config = {
         "gradient-dark": "linear-gradient(90deg, #000000 -200%, #191E2A 100%)",
       },
     },
-    screens: {
-      xxs: "640px",
-      xs: "768px",
-      sm: "1024px",
-      hd: "1280px",
-      mac: "1440px",
-      "hd+": "1600px",
-      fhd: "1920px",
-      "2k": "2560px",
-      "4k": "3840px",
-    },
   },
   plugins: [require("tailwind-hamburgers")],
 };
