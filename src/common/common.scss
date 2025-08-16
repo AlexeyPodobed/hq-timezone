@@ -1,24 +1,17 @@
 .container-common {
   margin: 0 auto;
   width: calc(100% - 2rem);
+	padding: 0 1rem;
 
-  @screen xs {
+  @screen md {
     width: calc(100% - 2.5rem);
   }
 
-  @screen sm {
+  @screen lg {
     width: min(90%, 84.5vw);
   }
 
-  @screen fhd {
+  @screen 2xl {
     width: 1533px;
-  }
-
-  @screen 2k {
-    width: 1533px;
-  }
-
-  @screen 4k {
-    width: 1920px;
   }
 }
