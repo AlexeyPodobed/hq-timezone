@@ -16,13 +16,12 @@ export interface HeroCitySelectProps {
 }
 
 const uniqueByName = (list: CityFull[]) => {
-  const seen = new Set<string>();
-  return list.filter((c) => {
+  const map = new Map<string, CityFull>();
+  for (const c of list) {
     const key = c.name.trim().toLowerCase();
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
+    if (!map.has(key)) map.set(key, c);
+  }
+  return Array.from(map.values());
 };
 
 export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) => {
@@ -33,22 +32,46 @@ export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) =>
 
   const allCities = useMemo(() => uniqueByName([...cities, ...extraCities]), [cities, extraCities]);
 
+  const selectCity = useCallback(
+    (selected: CityFull) => {
+      setCity(selected);
+      setSearch("");
+      sessionStorage.setItem("selectedHeroCity", JSON.stringify(selected));
+
+      setExtraCities((prev) => {
+        const exists = [...cities, ...prev].some((c) => c.name.toLowerCase() === selected.name.toLowerCase());
+        return exists ? prev : [...prev, selected];
+      });
+    },
+    [cities]
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const saved = sessionStorage.getItem("selectedHeroCity");
+    if (!saved) return;
+
+    try {
+      const parsed: CityFull = JSON.parse(saved);
+      selectCity(parsed);
+    } catch {
+      console.log("Invalid session city");
+    }
+  }, [selectCity]);
+
   useEffect(() => {
     const term = debounced.trim();
-
     const ac = new AbortController();
-    if (!term) {
-      setExtraCities([]);
-      return;
-    }
+
+    if (!term) return;
 
     (async () => {
       try {
         const { data } = await getCity({ q: term, maxRows: 5 }, ac.signal);
         const enriched = await Promise.all(
-          (data.geonames ?? []).map(async (city) => {
-            const { data: timeData } = await getCityTime({ lat: city.lat, lng: city.lng }, ac.signal);
-            return { ...city, timeData };
+          (data.geonames ?? []).map(async (c) => {
+            const { data: timeData } = await getCityTime({ lat: c.lat, lng: c.lng }, ac.signal);
+            return { ...c, timeData };
           })
         );
         setExtraCities(enriched);
@@ -60,9 +83,12 @@ export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) =>
     return () => ac.abort();
   }, [debounced]);
 
-  const handleCityChange = useCallback((selectedCity: CityFull) => {
-    setCity(selectedCity);
-  }, []);
+  const handleCityChange = useCallback(
+    (selected: CityFull) => {
+      selectCity(selected);
+    },
+    [selectCity]
+  );
 
   return (
     <>
@@ -73,11 +99,7 @@ export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) =>
           value={city?.name ?? ""}
           onChange={(name) => {
             const selected = allCities.find((c) => c.name.toLowerCase() === name.toLowerCase());
-            if (selected) {
-              setCity(selected);
-              setSearch("");
-              setExtraCities([]);
-            }
+            if (selected) selectCity(selected);
           }}
           onSearchChange={setSearch}
           placeholder="Select city"
