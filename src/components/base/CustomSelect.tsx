@@ -18,8 +18,10 @@ export const customSelectVariants = cva("custom-select relative", {
   },
 });
 
-interface CustomSelectProps extends VariantProps<typeof customSelectVariants> {
-  options: string[];
+type OptionType = string | { label: string; value: string };
+
+export interface CustomSelectProps extends VariantProps<typeof customSelectVariants> {
+  options: OptionType[];
   value?: string;
   onChange?: (value: string) => void;
   onSearchChange?: (value: string) => void;
@@ -33,9 +35,13 @@ export const CustomSelect = memo<CustomSelectProps>(
     const [search, setSearch] = useState("");
     const ref = useRef<HTMLDivElement>(null);
 
+    const normalizedOptions = useMemo(() => {
+      return options.map((opt) => (typeof opt === "string" ? { label: opt, value: opt } : opt));
+    }, [options]);
+
     const filtered = useMemo(() => {
-      return searchable ? options.filter((opt) => opt.toLowerCase().includes(search.toLowerCase())) : options;
-    }, [options, search, searchable]);
+      return searchable ? normalizedOptions.filter((opt) => opt.label.toLowerCase().includes(search.toLowerCase())) : normalizedOptions;
+    }, [normalizedOptions, search, searchable]);
 
     useEffect(() => {
       setSearch("");
@@ -59,12 +65,13 @@ export const CustomSelect = memo<CustomSelectProps>(
         className="custom-select relative"
       >
         <div
-          className={clsx('min-w-[12.5625rem] w-[11.438rem] flex justify-between items-center gap-2.5 p-2.5 border rounded-lg cursor-pointer lg:p-5 lg:min-w-0', 
-						customSelectVariants({ variant })
-					)}
+          className={clsx(
+            "min-w-[12.5625rem] w-[11.438rem] flex justify-between items-center gap-2.5 p-2.5 border rounded-lg cursor-pointer lg:p-5 lg:min-w-0",
+            customSelectVariants({ variant })
+          )}
           onClick={() => setOpen((o) => !o)}
         >
-          <span className="text-3xl leading-[3.25rem] line-clamp-1">{value || placeholder}</span>
+          <span className="text-3xl leading-[3.25rem] line-clamp-1"> {normalizedOptions.find((o) => o.value === value)?.label || placeholder}</span>
           <Icon
             size="0.515rem"
             name="arrow-down"
@@ -95,19 +102,19 @@ export const CustomSelect = memo<CustomSelectProps>(
             )}
             {filtered.map((opt) => (
               <div
-                key={opt}
+                key={opt.value}
                 className={clsx(
                   "p-2.5 border-b border-border-primary cursor-pointer",
-                  value === opt && "",
+                  value === opt.value && "",
                   variant === "yellow" ? "text-text-secondary" : "text-primary-1"
                 )}
                 onClick={() => {
-                  onChange?.(opt);
+                  onChange?.(opt.value);
                   setOpen(false);
                   setSearch("");
                 }}
               >
-                {opt}
+                {opt.label}
               </div>
             ))}
           </div>

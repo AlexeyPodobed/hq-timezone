@@ -1,8 +1,3 @@
-// TODO: only for dev
-if (process.env.NODE_ENV === "development") {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-}
-
 import { getHomePage } from "@/api/homepage";
 import { HeroSection } from "@/components/sections/HeroSection/HeroSection";
 import { CityFull } from "@/types/cities";

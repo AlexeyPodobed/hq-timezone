@@ -1,6 +1,8 @@
 export const rem = (rem: number) =>
   rem * (typeof window === "undefined" ? 16 : +getComputedStyle(document.documentElement).fontSize.replace("px", ""));
 
+export const getCurrentDate = () => new Date();
+
 export function formatMonthDate(date: Date, showYear: boolean = true): string {
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const month = monthNames[date.getMonth()];
@@ -9,6 +11,24 @@ export function formatMonthDate(date: Date, showYear: boolean = true): string {
 
   return `${month} ${day}${showYear ? `, ${year}` : ""}`;
 }
+
+export const formatDateFromDateTime = (dateStr: string): string => {
+  const date = new Date(dateStr);
+
+  if (isNaN(date.getTime())) return "";
+
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  }).format(date);
+};
+
+export const pad2 = (n: number) => String(n).padStart(2, "0");
+
+export const to12h = (h24: number) => ({ hours: h24 % 12 || 12, ampm: h24 >= 12 ? "PM" : "AM" });
 
 export const normalizeDateTime = (s: string) => s.replace(" ", "T");
 
@@ -46,4 +66,33 @@ export function getTimeDifferenceFromString(cityTimeStr: string): string {
   const diffHours = Math.round((cityTime.getTime() - now.getTime()) / 3600000);
   const sign = diffHours >= 0 ? "+" : "-";
   return `${sign}${Math.abs(diffHours)}`;
+}
+
+export function formatTimeZoneVerbose(timezoneId: string, date = new Date()): string {
+  const options: Intl.DateTimeFormatOptions = {
+    timeZone: timezoneId,
+    timeZoneName: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+
+  const parts = new Intl.DateTimeFormat("en-US", options).formatToParts(date);
+
+  const tzPart = parts.find((p) => p.type === "timeZoneName");
+  const fullName = tzPart?.value;
+
+  const short = new Intl.DateTimeFormat("en-US", {
+    timeZone: timezoneId,
+    timeZoneName: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+    .formatToParts(date)
+    .find((p) => p.type === "timeZoneName")?.value;
+
+  if (!short || !fullName) return timezoneId;
+
+  const abbr = short.replace(/^[^(]*\(([^)]+)\)/, "$1") || short;
+
+  return `(${abbr}) ${fullName}`;
 }

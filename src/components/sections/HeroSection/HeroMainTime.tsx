@@ -6,7 +6,7 @@ import { Button } from "@/components/base/Button";
 import { Icon } from "@/components/base/Icon";
 import { Time } from "@/components/base/Time";
 import { CityFull } from "@/types/cities";
-import { calcDayLength, getTimeDifferenceByTZ } from "@/utils/gloabl";
+import { calcDayLength, formatDateFromDateTime, formatTimeZoneVerbose, getTimeDifferenceByTZ } from "@/utils/global";
 
 export interface HeroMainTimeProps {
   city: CityFull;
@@ -18,7 +18,8 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
 
   const dayLength = useMemo(() => calcDayLength(sunrise, sunset), [sunrise, sunset]);
   const timeDiff = useMemo(() => getTimeDifferenceByTZ(timezoneId), [timezoneId]);
-  const date = new Date().toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  const date = useMemo(() => formatDateFromDateTime(time), [time]);
+  const formattedTimezone = formatTimeZoneVerbose(timezoneId);
 
   return (
     <div className={clsx("hero-section__main-time", className)}>
@@ -70,7 +71,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
             size="lg"
             className="w-full h-[5.375rem] cursor-default"
           >
-            {timezoneId}
+            <span className="line-clamp-1 whitespace-break-spaces">{formattedTimezone}</span>
           </Button>
           <Button
             asChild
@@ -78,7 +79,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
             size="lg"
             className="w-full h-[5.375rem] cursor-default"
           >
-            {timeDiff} Hours from your time
+            <span className="line-clamp-1 whitespace-break-spaces">{timeDiff} Hours from your time</span>
           </Button>
         </div>
       </div>

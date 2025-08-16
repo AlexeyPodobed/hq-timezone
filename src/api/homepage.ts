@@ -1,6 +1,6 @@
 import api from "@/api/api";
 import { WP_API } from "@/consts/api";
-import { EXPIRE_5_MINUTES } from "@/consts/time";
+// import { EXPIRE_5_MINUTES } from "@/consts/time";
 import { HomePageAPI } from "@/types/home";
 
 export const getHomePage = async (): Promise<{
@@ -8,8 +8,8 @@ export const getHomePage = async (): Promise<{
   data: HomePageAPI;
 }> => {
   try {
-    const { data, status } = await api.get(`${WP_API}/homepage_flexible`, {}, { next: { revalidate: EXPIRE_5_MINUTES } });
-    // const { data, status } = await api.get(`${WP_API}/homepage_flexible`, {}, { cache: "no-store" });
+    // const { data, status } = await api.get(`${WP_API}/homepage_flexible`, {}, { next: { revalidate: EXPIRE_5_MINUTES } });
+    const { data, status } = await api.get(`${WP_API}/homepage_flexible`, {}, { cache: "no-store" });
 
     return { data, status };
   } catch (error) {

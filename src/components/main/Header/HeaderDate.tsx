@@ -1,18 +1,22 @@
-import { FC } from "react";
+import { memo } from "react";
 
 import { Time } from "@/components/base/Time";
-import { formatMonthDate } from "@/utils/gloabl";
+import { formatMonthDate } from "@/utils/global";
 
 interface HeaderDateProps {
-  date?: Date;
+  date: Date;
   showYear?: boolean;
 }
 
-export const HeaderDate: FC<HeaderDateProps> = ({ date = new Date(), showYear = true }) => {
+export const HeaderDate = memo<HeaderDateProps>(({ date, showYear = true }) => {
   return (
     <div className="header__time-wrap">
       <span>{formatMonthDate(date, showYear)}</span>
       <Time className="min-w-24 flex gap-0.5 justify-center" />
     </div>
   );
-};
+});
+
+HeaderDate.displayName = "HeaderDate";
+
+export default HeaderDate;

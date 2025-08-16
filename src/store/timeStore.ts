@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface TimeState {
   is24h: boolean;
@@ -6,8 +7,15 @@ interface TimeState {
   toggle: () => void;
 }
 
-export const useTimeStore = create<TimeState>((set) => ({
-  is24h: true,
-  set24h: (val) => set({ is24h: val }),
-  toggle: () => set((state) => ({ is24h: !state.is24h })),
-}));
+export const useTimeStore = create<TimeState>()(
+  persist(
+    (set, get) => ({
+      is24h: true,
+      set24h: (val) => set({ is24h: val }),
+      toggle: () => set({ is24h: !get().is24h }),
+    }),
+    {
+      name: "time-format-24h",
+    }
+  )
+);
