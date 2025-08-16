@@ -8,13 +8,13 @@
     }
 
     &__main-content {
-        @apply w-full mb-[9.188rem] flex;
+        @apply w-full md:mb-6 lg:mb-[9.188rem] flex;
     }
 
     &__selector {
         @apply flex items-center gap-4 flex-col mb-8;
 
-        @apply lg:gap-5;
+        @apply lg:gap-5 lg:flex-row;
     }
 
     &__title {
@@ -26,11 +26,17 @@
     &__main-time {
         @apply w-full flex flex-col gap-7 text-center;
 
-				@apply lg:items-center lg:gap-[4.188rem];
+				@apply md:flex-row md:items-center;
+
+				@apply lg:items-center lg:gap-[4.188rem] lg:text-left;
     }
 
     &__main-time-block {
         @apply flex flex-col;
+
+				@apply md:w-1/2;
+
+				@apply xl:w-auto;
     }
 
     &__main-city {
@@ -42,7 +48,9 @@
     &__main-time-value {
         @apply text-[4rem] leading-none font-anton whitespace-nowrap;
 
-				@apply lg:text-[12.5rem];
+				@apply lg:text-[6rem];
+
+				@apply xl:text-[12.5rem];
 
         .time {
             @apply my-4 inline-block text-primary-1;
@@ -66,20 +74,34 @@
     }
 
     &__main-col-left {
-        @apply w-full flex items-start;
+        @apply flex flex-col gap-10;
+
+				@apply md:w-1/2;
+
+				@apply xl:w-auto;
+
+				@apply 2xl:flex-row 2xl:gap-48 justify-between;
     }
 
     &__main-sun {
-        @apply relative flex flex-col gap-[0.313rem];
+        @apply flex gap-[0.313rem] flex-wrap justify-center;
+
+				@apply lg:justify-start;
+
+				@apply 2xl:flex-col;
+
+				&__btn {
+						@apply min-w-[7.625rem] ;
+				}
     }
 
     &__main-day-time {
-        @apply text-3xl text-light-blue font-bold leading-none;
+        @apply text-2xl text-light-blue font-bold leading-6 block w-full mt-2;
 
-				@apply lg:leading-[2.875rem];
+				@apply lg:leading-[2.875rem] lg:text-3xl lg:text-right;
     }
 
     &__main-info {
-        @apply min-w-[25.9375rem] max-w-[25.9375rem] ml-auto flex flex-col gap-[0.313rem];
+        @apply flex flex-col gap-[0.313rem];
     }
 }
