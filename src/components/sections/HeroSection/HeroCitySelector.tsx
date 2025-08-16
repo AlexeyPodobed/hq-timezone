@@ -3,7 +3,6 @@
 import { memo, useState, useCallback, useEffect, useMemo } from "react";
 
 import { CustomSelect } from "@/components/base/CustomSelect";
-import { BASE_API, BASE_PROXY, BASE_USERNAME } from "@/consts/api";
 import { useDebounce } from "@/hooks/useDebounce";
 import { CityFull } from "@/types/cities";
 import { getCityTimeViaProxy, getCityViaProxy } from "@/utils/cities";
