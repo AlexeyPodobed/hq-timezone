@@ -1,9 +1,10 @@
 "use client";
 
-import { memo, useState, useCallback, useEffect } from "react";
+import { memo, useState, useCallback, useEffect, useMemo } from "react";
 
 import { getCity, getCityTime } from "@/api/cities";
 import { CustomSelect } from "@/components/base/CustomSelect";
+import { useDebounce } from "@/hooks/useDebounce";
 import { CityFull } from "@/types/cities";
 
 import { HeroCityList } from "./HeroCityList";
@@ -14,39 +15,51 @@ export interface HeroCitySelectProps {
   cities: CityFull[];
 }
 
+const uniqueByName = (list: CityFull[]) => {
+  const seen = new Set<string>();
+  return list.filter((c) => {
+    const key = c.name.trim().toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
+
 export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) => {
   const [city, setCity] = useState<CityFull>(cities[0]);
   const [search, setSearch] = useState("");
   const [extraCities, setExtraCities] = useState<CityFull[]>([]);
+  const debounced = useDebounce(search, 300);
 
-  const allCities = [...cities, ...extraCities.filter((e) => !cities.some((c) => c.name === e.name))];
+  const allCities = useMemo(() => uniqueByName([...cities, ...extraCities]), [cities, extraCities]);
 
   useEffect(() => {
-    if (!search) {
+    const term = debounced.trim();
+
+    const ac = new AbortController();
+    if (!term) {
       setExtraCities([]);
+      ac.abort();
       return;
     }
 
-    const delay = setTimeout(async () => {
+    (async () => {
       try {
-        const { data } = await getCity({ q: search, maxRows: 5 });
-        const cityNames = data.geonames;
-
-        const enriched: CityFull[] = await Promise.all(
-          cityNames.map(async (city) => {
-            const { data: timeData } = await getCityTime({ lat: city.lat, lng: city.lng });
+        const { data } = await getCity({ q: term, maxRows: 5 }, ac.signal);
+        const enriched = await Promise.all(
+          (data.geonames ?? []).map(async (city) => {
+            const { data: timeData } = await getCityTime({ lat: city.lat, lng: city.lng }, ac.signal);
             return { ...city, timeData };
           })
         );
-
         setExtraCities(enriched);
-      } catch (err) {
-        console.log("City search failed:", err);
+      } catch (err: any) {
+        if (err?.name !== "AbortError") console.log("City search failed:", err);
       }
-    }, 300);
+    })();
 
-    return () => clearTimeout(delay);
-  }, [search]);
+    return () => ac.abort();
+  }, [debounced]);
 
   const handleCityChange = useCallback((selectedCity: CityFull) => {
     setCity(selectedCity);
@@ -57,10 +70,10 @@ export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) =>
       <div className="hero-section__selector">
         <h1 className="hero-section__title">{title}</h1>
         <CustomSelect
-          options={allCities.map((c) => c.name)}
+          options={allCities.map((c) => ({ label: c.name, value: c.name }))}
           value={city?.name ?? ""}
           onChange={(name) => {
-            const selected = allCities.find((c) => c.name === name);
+            const selected = allCities.find((c) => c.name.toLowerCase() === name.toLowerCase());
             if (selected) {
               setCity(selected);
               setSearch("");
