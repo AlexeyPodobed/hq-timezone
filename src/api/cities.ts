@@ -1,4 +1,4 @@
-import { BASE_API, BASE_USERNAME } from "@/consts/api";
+import { BASE_API } from "@/consts/api";
 import { CitiesResponse, CityTime } from "@/types/cities";
 
 import api from "./api";
@@ -11,7 +11,7 @@ export const getCity = async (
   baseUrl: BaseUrl = BASE_API
 ): Promise<{ data: CitiesResponse; status: number }> => {
   try {
-    const { data, status } = await api.get(`${baseUrl}/searchJSON`, { ...params, username: BASE_USERNAME }, { signal });
+    const { data, status } = await api.get(`${baseUrl}/searchJSON`, params, { signal });
     return { data, status };
   } catch (error: any) {
     if (error?.name !== "AbortError") {
@@ -27,7 +27,7 @@ export const getCityTime = async (
   baseUrl: BaseUrl = BASE_API
 ): Promise<{ data: CityTime; status: number }> => {
   try {
-    const { data, status } = await api.get(`${baseUrl}/timezoneJSON`, { ...params, username: BASE_USERNAME }, { signal });
+    const { data, status } = await api.get(`${baseUrl}/timezoneJSON`, params, { signal });
     return { data, status };
   } catch (error: any) {
     if (error?.name !== "AbortError") {
