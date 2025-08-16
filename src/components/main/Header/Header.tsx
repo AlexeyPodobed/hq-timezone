@@ -22,7 +22,7 @@ export default function Header({ className }: HeaderProps) {
         <ImageWrapper
           src="/images/logo.svg"
           alt="Logo"
-          className="w-[15.938rem]"
+          className="max-w-[7.1875rem] lg:max-w-[15.938rem]"
         />
 
         <div className="flex items-center gap-2.5">
