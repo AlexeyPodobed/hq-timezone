@@ -9,8 +9,8 @@ import { Icon } from "../base/Icon";
 export const customSelectVariants = cva("custom-select relative", {
   variants: {
     variant: {
-      default: "w-[11.438rem] flex justify-between items-center gap-2.5 py-[0.938rem] px-5 border border-primary-1 rounded-lg cursor-pointer",
-      yellow: "w-[11.438rem] flex justify-between items-center gap-2.5 py-[0.938rem] px-5 border border-yellow rounded-lg cursor-pointer",
+      default: "border-primary-1",
+      yellow: "border-yellow",
     },
   },
   defaultVariants: {
@@ -59,7 +59,9 @@ export const CustomSelect = memo<CustomSelectProps>(
         className="custom-select relative"
       >
         <div
-          className={customSelectVariants({ variant })}
+          className={clsx('min-w-[12.5625rem] w-[11.438rem] flex justify-between items-center gap-2.5 p-2.5 border rounded-lg cursor-pointer lg:p-5 lg:min-w-0', 
+						customSelectVariants({ variant })
+					)}
           onClick={() => setOpen((o) => !o)}
         >
           <span className="text-3xl leading-[3.25rem] line-clamp-1">{value || placeholder}</span>
