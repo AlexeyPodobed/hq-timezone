@@ -18,16 +18,18 @@ export default function Header({ className }: HeaderProps) {
 
   return (
     <header className={clsx("header", className)}>
-      <ImageWrapper
-        src="/images/logo.svg"
-        alt="Logo"
-        className="w-[15.938rem]"
-      />
+			<div className="header-inner">
+				<ImageWrapper
+					src="/images/logo.svg"
+					alt="Logo"
+					className="w-[15.938rem]"
+				/>
 
-      <div className="flex items-center gap-2.5">
-        <HeaderTimeSwitcher />
-        <HeaderDate date={currentDate} />
-      </div>
+				<div className="flex items-center gap-2.5">
+					<HeaderTimeSwitcher />
+					<HeaderDate date={currentDate} />
+				</div>
+			</div>
     </header>
   );
 }
