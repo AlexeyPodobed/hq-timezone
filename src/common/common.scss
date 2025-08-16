@@ -1,17 +1,19 @@
 .container-common {
   margin: 0 auto;
-  width: calc(100% - 2rem);
-	padding: 0 1rem;
+	max-width: 100%;
+	padding: 0 0.625rem;
+
+	@apply lg:px-4;
 
   @screen md {
-    width: calc(100% - 2.5rem);
+    width: 48rem;
   }
 
   @screen lg {
-    width: min(90%, 84.5vw);
+    width: 75rem;
   }
 
   @screen 2xl {
-    width: 1533px;
+    width: 95.8125rem;
   }
 }

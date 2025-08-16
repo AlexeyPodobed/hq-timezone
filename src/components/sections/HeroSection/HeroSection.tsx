@@ -33,7 +33,7 @@ export const HeroSection = memo<HeroSectionProps>(({ cities, bgImage, className 
         <div className="hero-section__inner">
           <HeroCitySelector
             cities={cities}
-            title="What`s the Time in"
+            title="What's the Time in"
           />
         </div>
       </Container>
