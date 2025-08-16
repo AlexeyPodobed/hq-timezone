@@ -2,14 +2,6 @@
     @apply relative min-h-[100vh] p-[1.625rem] bg-primary-1 overflow-hidden;
 }
 
-.link {
-    @apply px-4 xs:px-6 text-sm xs:text-lg text-text-primary font-medium transition-all;
-}
-
 .image {
     @apply w-full h-full;
-}
-
-.soc-link {
-    @apply relative inline-block w-10 h-10 xs:w-16 xs:h-16;
 }
