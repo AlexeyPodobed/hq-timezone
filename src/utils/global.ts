@@ -67,3 +67,32 @@ export function getTimeDifferenceFromString(cityTimeStr: string): string {
   const sign = diffHours >= 0 ? "+" : "-";
   return `${sign}${Math.abs(diffHours)}`;
 }
+
+export function formatTimeZoneVerbose(timezoneId: string, date = new Date()): string {
+  const options: Intl.DateTimeFormatOptions = {
+    timeZone: timezoneId,
+    timeZoneName: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+
+  const parts = new Intl.DateTimeFormat("en-US", options).formatToParts(date);
+
+  const tzPart = parts.find((p) => p.type === "timeZoneName");
+  const fullName = tzPart?.value;
+
+  const short = new Intl.DateTimeFormat("en-US", {
+    timeZone: timezoneId,
+    timeZoneName: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+    .formatToParts(date)
+    .find((p) => p.type === "timeZoneName")?.value;
+
+  if (!short || !fullName) return timezoneId;
+
+  const abbr = short.replace(/^[^(]*\(([^)]+)\)/, "$1") || short;
+
+  return `(${abbr}) ${fullName}`;
+}

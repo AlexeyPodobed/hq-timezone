@@ -12,6 +12,7 @@ export const getCity = async (
 ): Promise<{ data: CitiesResponse; status: number }> => {
   try {
     const { data, status } = await api.get(`${baseUrl}/searchJSON`, params, { signal });
+    // console.log("getCity:", data);
     return { data, status };
   } catch (error: any) {
     if (error?.name !== "AbortError") {
@@ -28,6 +29,7 @@ export const getCityTime = async (
 ): Promise<{ data: CityTime; status: number }> => {
   try {
     const { data, status } = await api.get(`${baseUrl}/timezoneJSON`, params, { signal });
+    // console.log("getCityTime:", data);
     return { data, status };
   } catch (error: any) {
     if (error?.name !== "AbortError") {

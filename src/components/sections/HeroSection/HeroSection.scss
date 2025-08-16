@@ -61,6 +61,6 @@
     }
 
     &__main-info {
-        @apply ml-auto flex flex-col gap-[0.313rem];
+        @apply min-w-[25.9375rem] max-w-[25.9375rem] ml-auto flex flex-col gap-[0.313rem];
     }
 }
