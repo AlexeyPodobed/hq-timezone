@@ -2,19 +2,20 @@ import clsx from "clsx";
 
 // import Link from "next/link";
 import { ImageWrapper } from "@/common/ImageWrapper";
-import { LinkType } from "@/types/global";
 import "@/components/components.scss";
-
 import "./Header.scss";
+import { getCurrentDate } from "@/utils/global";
+
 import { HeaderDate } from "./HeaderDate";
 import HeaderTimeSwitcher from "./HeaderTimeSwitcher";
 
 interface HeaderProps {
-  navLinks?: LinkType[];
   className?: string;
 }
 
 export default function Header({ className }: HeaderProps) {
+  const currentDate = getCurrentDate();
+
   return (
     <header className={clsx("header", className)}>
       <ImageWrapper
@@ -25,7 +26,7 @@ export default function Header({ className }: HeaderProps) {
 
       <div className="flex items-center gap-2.5">
         <HeaderTimeSwitcher />
-        <HeaderDate />
+        <HeaderDate date={currentDate} />
       </div>
     </header>
   );

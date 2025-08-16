@@ -65,8 +65,9 @@ const renderView = ({
 };
 
 export const Time = memo<TimeProps>(({ time, showSeconds = true, className }) => {
-  const { is24h } = useTimeStore();
   const mounted = useMounted();
+  const is24hStore = useTimeStore((s) => s.is24h);
+  const is24h = mounted ? is24hStore : true;
 
   let h24: number | undefined;
   let m: number | undefined;
