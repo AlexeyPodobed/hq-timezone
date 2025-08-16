@@ -3,6 +3,7 @@
 import { memo, useState, useCallback, useEffect, useMemo } from "react";
 
 import { CustomSelect } from "@/components/base/CustomSelect";
+import { BASE_API, BASE_PROXY, BASE_USERNAME } from "@/consts/api";
 import { useDebounce } from "@/hooks/useDebounce";
 import { CityFull } from "@/types/cities";
 import { getCityTimeViaProxy, getCityViaProxy } from "@/utils/cities";
@@ -89,6 +90,14 @@ export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) =>
     },
     [selectCity]
   );
+
+  console.log("ENV CHECK", {
+    BASE_PROXY,
+    BASE_API,
+    BASE_USERNAME,
+    origin: window.location.origin,
+    vercelUrl: process.env.NEXT_PUBLIC_VERCEL_URL,
+  });
 
   return (
     <>
