@@ -1,11 +1,17 @@
-import { BASE_API } from "@/consts/api";
+import { BASE_API, BASE_USERNAME } from "@/consts/api";
 import { CitiesResponse, CityTime } from "@/types/cities";
 
 import api from "./api";
 
-export const getCity = async (params: Record<string, any>, signal?: AbortSignal): Promise<{ data: CitiesResponse; status: number }> => {
+type BaseUrl = string;
+
+export const getCity = async (
+  params: Record<string, any>,
+  signal?: AbortSignal,
+  baseUrl: BaseUrl = BASE_API
+): Promise<{ data: CitiesResponse; status: number }> => {
   try {
-    const { data, status } = await api.get(`${BASE_API}/searchJSON`, params, { signal });
+    const { data, status } = await api.get(`${baseUrl}/searchJSON`, { ...params, username: BASE_USERNAME }, { signal });
     return { data, status };
   } catch (error: any) {
     if (error?.name !== "AbortError") {
@@ -15,9 +21,13 @@ export const getCity = async (params: Record<string, any>, signal?: AbortSignal)
   }
 };
 
-export const getCityTime = async (params: { lat: string; lng: string }, signal?: AbortSignal): Promise<{ data: CityTime; status: number }> => {
+export const getCityTime = async (
+  params: { lat: string; lng: string },
+  signal?: AbortSignal,
+  baseUrl: BaseUrl = BASE_API
+): Promise<{ data: CityTime; status: number }> => {
   try {
-    const { data, status } = await api.get(`${BASE_API}/timezoneJSON`, { ...params }, { signal });
+    const { data, status } = await api.get(`${baseUrl}/timezoneJSON`, { ...params, username: BASE_USERNAME }, { signal });
     return { data, status };
   } catch (error: any) {
     if (error?.name !== "AbortError") {

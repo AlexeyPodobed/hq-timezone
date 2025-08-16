@@ -2,10 +2,10 @@
 
 import { memo, useState, useCallback, useEffect, useMemo } from "react";
 
-import { getCity, getCityTime } from "@/api/cities";
 import { CustomSelect } from "@/components/base/CustomSelect";
 import { useDebounce } from "@/hooks/useDebounce";
 import { CityFull } from "@/types/cities";
+import { getCityTimeViaProxy, getCityViaProxy } from "@/utils/cities";
 
 import { HeroCityList } from "./HeroCityList";
 import { HeroMainTime } from "./HeroMainTime";
@@ -67,10 +67,10 @@ export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) =>
 
     (async () => {
       try {
-        const { data } = await getCity({ q: term, maxRows: 5 }, ac.signal);
+        const { data } = await getCityViaProxy({ q: term, maxRows: 5 }, ac.signal);
         const enriched = await Promise.all(
           (data.geonames ?? []).map(async (c) => {
-            const { data: timeData } = await getCityTime({ lat: c.lat, lng: c.lng }, ac.signal);
+            const { data: timeData } = await getCityTimeViaProxy({ lat: c.lat, lng: c.lng }, ac.signal);
             return { ...c, timeData };
           })
         );

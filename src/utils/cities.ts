@@ -1,4 +1,5 @@
 import { getCity, getCityTime } from "@/api/cities";
+import { BASE_PROXY } from "@/consts/api";
 import { CityFull, CityName } from "@/types/cities";
 
 export const fetchCitiesFull = async (cityNames: string[]): Promise<CityFull[]> => {
@@ -17,3 +18,7 @@ export const fetchCitiesFull = async (cityNames: string[]): Promise<CityFull[]> 
 
   return citiesFull;
 };
+
+export const getCityViaProxy = (params: Record<string, any>, signal?: AbortSignal) => getCity(params, signal, BASE_PROXY);
+
+export const getCityTimeViaProxy = (params: { lat: string; lng: string }, signal?: AbortSignal) => getCityTime(params, signal, BASE_PROXY);
