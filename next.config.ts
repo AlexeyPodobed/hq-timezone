@@ -6,7 +6,6 @@ const nextConfig = {
     loader: "custom",
     loaderFile: "./ImageLoader.js",
   },
-  swcMinify: true,
 };
 
 export default nextConfig;

@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 import { Time } from "@/components/base/Time";
-import { formatMonthDate } from "@/utils/gloabl";
+import { formatMonthDate } from "@/utils/global";
 
 interface HeaderDateProps {
   date?: Date;

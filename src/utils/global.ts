@@ -10,6 +10,10 @@ export function formatMonthDate(date: Date, showYear: boolean = true): string {
   return `${month} ${day}${showYear ? `, ${year}` : ""}`;
 }
 
+export const pad2 = (n: number) => String(n).padStart(2, "0");
+
+export const to12h = (h24: number) => ({ hours: h24 % 12 || 12, ampm: h24 >= 12 ? "PM" : "AM" });
+
 export const normalizeDateTime = (s: string) => s.replace(" ", "T");
 
 export const extractTime = (s: string) => normalizeDateTime(s).split("T")[1] ?? s;
