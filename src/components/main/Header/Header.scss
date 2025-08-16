@@ -6,7 +6,7 @@
 		&-inner {
 				@apply flex items-center justify-between bg-white rounded-lg shadow-default pt-[0.3125rem] pb-[0.3125rem] pr-[0.4375rem] pl-[0.75rem];
 	
-    		@apply lg:top-[3.125rem] lg:left-[3.125rem] lg:right-[3.125rem] lg:py-3.5 lg:px-4 lg:z-50 lg:absolute;
+    		@apply lg:py-[0.875rem] lg:px-4 lg:z-50 lg:absolute lg:top-[3.125rem] lg:left-[3.125rem] lg:right-[3.125rem];
 		}
 
     &__switcher {
@@ -18,7 +18,7 @@
     &__switcher-btn {
         @apply p-2 relative flex items-center justify-center text-[1.125rem] font-bold leading-normal text-white border border-transparent rounded-[0.25rem] transition-all;
 
-				@apply lg:p-3;
+				@apply lg:p-[0.625rem];
 
         &.active {
             @apply text-yellow border-yellow ;
