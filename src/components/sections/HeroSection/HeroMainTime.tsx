@@ -26,7 +26,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
       <div className="hero-section__main-time-block">
         <h3 className="hero-section__main-city">{city.name}</h3>
         <h1 className="hero-section__main-time-value">
-          <Time time={time} />
+          <Time time={time} timezoneId={timezoneId} />
         </h1>
         <div className="hero-section__main-date">{date}</div>
       </div>
@@ -44,6 +44,8 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
             <Time
               time={sunrise}
               showSeconds={false}
+              timezoneId={timezoneId}
+              live={false}
             />
           </Button>
           <Button
@@ -57,6 +59,8 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
             <Time
               time={sunset}
               showSeconds={false}
+              timezoneId={timezoneId}
+              live={false}
             />
           </Button>
           <span className="hero-section__main-day-time">{dayLength}</span>
