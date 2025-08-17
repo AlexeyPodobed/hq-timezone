@@ -19,14 +19,17 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
   const dayLength = useMemo(() => calcDayLength(sunrise, sunset), [sunrise, sunset]);
   const timeDiff = useMemo(() => getTimeDifferenceByTZ(timezoneId), [timezoneId]);
   const date = useMemo(() => formatDateFromDateTime(time), [time]);
-  const formattedTimezone = formatTimeZoneVerbose(timezoneId);
+  const formattedTimezone = useMemo(() => formatTimeZoneVerbose(timezoneId), [timezoneId]);
 
   return (
     <div className={clsx("hero-section__main-time", className)}>
       <div className="hero-section__main-time-block">
         <h3 className="hero-section__main-city">{city.name}</h3>
         <h1 className="hero-section__main-time-value">
-          <Time time={time} timezoneId={timezoneId} />
+          <Time
+            time={time}
+            timezoneId={timezoneId}
+          />
         </h1>
         <div className="hero-section__main-date">{date}</div>
       </div>

@@ -13,6 +13,7 @@ export interface MeetSectionProps {
 }
 
 export const MeetSection = memo<MeetSectionProps>(({ cities, className }) => {
+  console.log(cities);
   return (
     <section className={clsx("meet-section", className)}>
       <ImageWrapper
@@ -22,7 +23,7 @@ export const MeetSection = memo<MeetSectionProps>(({ cities, className }) => {
       />
       <Container>
         <div className="meet-section__inner">
-          <h2 className="meet-section__title">When's the Best Time to Meet?</h2>
+          <h2 className="meet-section__title">When`s the Best Time to Meet?</h2>
         </div>
       </Container>
     </section>
