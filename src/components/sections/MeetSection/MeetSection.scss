@@ -3,6 +3,10 @@
 
     @apply lg:mt-5 lg:pt-[15.5rem] lg:pb-[7.875rem] lg:rounded-[1.25rem];
 
+    &__decor {
+        @apply absolute top-14 -right-[10.75rem] w-[52.875rem] h-[27.4375rem] z-0;
+    }
+
     &__inner {
         @apply relative flex flex-col z-10;
     }
@@ -11,5 +15,21 @@
         @apply text-[2.1875rem] leading-normal font-anton font-normal text-white;
 
         @apply lg:text-[4.375rem] lg:leading-[5.5rem];
+    }
+
+    &__selector {
+        @apply max-w-[76.4375rem] mt-[5.3125rem];
+    }
+
+    &__selects {
+        @apply flex items-center gap-[3.125rem];
+    }
+
+    &__select {
+        @apply flex items-center gap-5;
+    }
+
+    &__select-title {
+        @apply text-[2.8125rem] leading-none text-white font-semibold;
     }
 }

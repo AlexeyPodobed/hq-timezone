@@ -9,8 +9,8 @@ import { Icon } from "../base/Icon";
 export const customSelectVariants = cva("custom-select relative", {
   variants: {
     variant: {
-      default: "border-primary-1",
-      yellow: "border-yellow",
+      default: "border-primary-1 text--primary-1",
+      yellow: "border-yellow text-white",
     },
   },
   defaultVariants: {

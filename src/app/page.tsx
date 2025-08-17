@@ -1,6 +1,6 @@
 import { getHomePage } from "@/api/homepage";
 import { HeroSection } from "@/components/sections/HeroSection/HeroSection";
-// import { MeetSection } from "@/components/sections/MeetSection/MeetSection";
+import { MeetSection } from "@/components/sections/MeetSection/MeetSection";
 import { CityFull } from "@/types/cities";
 import { fetchCitiesFull } from "@/utils/cities";
 
@@ -19,7 +19,7 @@ export default async function Home() {
         bgImage={heroSection?.background_image?.url}
       />
 
-      {/* <MeetSection cities={citiesFull} /> */}
+      <MeetSection cities={citiesFull} />
     </div>
   );
 }
