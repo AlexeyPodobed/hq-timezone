@@ -31,7 +31,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, size, asChild = false, children, ...props }, ref) => {
   const Comp = asChild ? Slot : "button";
-	const cursorPoiner = asChild ? "cursor-default" : "cursor-pointer"; // cursor pointer for button, default for slot
+
   return (
     <Comp
       className={cn(buttonVariants({ variant, size, className }))}
