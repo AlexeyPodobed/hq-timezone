@@ -1,0 +1,15 @@
+.meet-section {
+    @apply relative mt-2.5 pt-[3.125rem] pb-[2.5625rem] border border-white rounded-[0.625rem] overflow-hidden;
+
+    @apply lg:mt-5 lg:pt-[15.5rem] lg:pb-[7.875rem] lg:rounded-[1.25rem];
+
+    &__inner {
+        @apply relative flex flex-col z-10;
+    }
+
+    &__title {
+        @apply text-[2.1875rem] leading-normal font-anton font-normal text-white;
+
+        @apply lg:text-[4.375rem] lg:leading-[5.5rem];
+    }
+}
