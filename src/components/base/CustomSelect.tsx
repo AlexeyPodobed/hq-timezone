@@ -27,10 +27,11 @@ export interface CustomSelectProps extends VariantProps<typeof customSelectVaria
   onSearchChange?: (value: string) => void;
   placeholder?: string;
   searchable?: boolean;
+  preload?: boolean;
 }
 
 export const CustomSelect = memo<CustomSelectProps>(
-  ({ options, value, onChange, onSearchChange, placeholder = "Select...", variant, searchable = true }) => {
+  ({ options, value, onChange, onSearchChange, placeholder = "Select...", variant, searchable = true, preload }) => {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
     const ref = useRef<HTMLDivElement>(null);
@@ -100,23 +101,27 @@ export const CustomSelect = memo<CustomSelectProps>(
                 }}
               />
             )}
-            {filtered.map((opt) => (
-              <div
-                key={opt.value}
-                className={clsx(
-                  "p-2.5 border-b border-border-primary cursor-pointer",
-                  value === opt.value && "",
-                  variant === "yellow" ? "text-text-secondary" : "text-primary-1"
-                )}
-                onClick={() => {
-                  onChange?.(opt.value);
-                  setOpen(false);
-                  setSearch("");
-                }}
-              >
-                {opt.label}
-              </div>
-            ))}
+            {preload ? (
+              <div className="text-center py-4 text-xl text-primary-1">Loading...</div>
+            ) : (
+              filtered.map((opt) => (
+                <div
+                  key={opt.value}
+                  className={clsx(
+                    "p-2.5 border-b border-border-primary cursor-pointer",
+                    value === opt.value && "",
+                    variant === "yellow" ? "text-text-secondary" : "text-primary-1"
+                  )}
+                  onClick={() => {
+                    onChange?.(opt.value);
+                    setOpen(false);
+                    setSearch("");
+                  }}
+                >
+                  {opt.label}
+                </div>
+              ))
+            )}
           </div>
         )}
       </div>

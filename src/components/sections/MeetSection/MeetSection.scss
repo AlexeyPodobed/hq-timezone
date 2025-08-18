@@ -32,4 +32,46 @@
     &__select-title {
         @apply text-[2.8125rem] leading-none text-white font-semibold;
     }
+
+    &__select-results {
+        @apply mt-[6.25rem] flex gap-[8.75rem];
+    }
+
+    &__results-cities {
+        @apply flex flex-col gap-10;
+    }
+
+    &__results-city {
+        @apply flex flex-col whitespace-nowrap;
+        h4 {
+            @apply text-[1.875rem] leading-none text-yellow font-bold;
+        }
+        p {
+            @apply text-xl leading-[1.875rem] text-yellow opacity-60;
+        }
+    }
+
+    &__results-time {
+        @apply w-full flex gap-[6.25rem];
+    }
+
+    &__time-item {
+        @apply min-h-[6.625rem] flex flex-col gap-[2.5625rem];
+    }
+
+    &__item-time {
+        @apply text-3xl leading-none whitespace-nowrap text-center;
+
+        .ampm {
+            @apply text-lg leading-normal;
+        }
+
+        &.meet-section__item-time-aCity {
+            @apply text-yellow font-bold;
+        }
+
+        &.meet-section__item-time-bCity {
+            @apply text-white;
+        }
+    }
 }

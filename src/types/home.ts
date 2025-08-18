@@ -1,3 +1,6 @@
+import { HeroSectionProps } from "@/components/sections/HeroSection/HeroSection";
+import { MeetSectionProps } from "@/components/sections/MeetSection/MeetSection";
+
 export interface HomePageAPI {
   homepage_flexible_content: (
 		| {
@@ -27,3 +30,5 @@ export interface HomePageAPI {
 		}
 	)[];
 }
+
+export type HomePage = HeroSectionProps | MeetSectionProps;
