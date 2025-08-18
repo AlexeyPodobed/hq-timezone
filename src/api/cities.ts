@@ -1,4 +1,5 @@
 import { BASE_API, WP_API } from "@/consts/api";
+import { EXPIRE_1_DAY } from "@/consts/time";
 import { CityNameWP, SunInfoResult } from "@/types/cities";
 
 import api from "./api";
@@ -19,11 +20,11 @@ export const getCityWp = async (city: string, signal?: AbortSignal): Promise<{ d
 };
 
 export const getCitySunInfo = async (
-  params: { lat: number; lng: number },
+  { lat, lng }: { lat: number; lng: number },
   signal?: AbortSignal
 ): Promise<{ data: SunInfoResult; status: number }> => {
   try {
-    const { data, status } = await api.get(`${BASE_API}/json`, params, { signal });
+    const { data, status } = await api.get(`${BASE_API}/json`, { lat, lng }, { signal, next: { revalidate: EXPIRE_1_DAY } });
 
     return { data: data.results, status };
   } catch (error) {
