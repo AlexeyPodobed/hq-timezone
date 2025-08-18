@@ -36,6 +36,26 @@ export const extractTime = (s: string) => normalizeDateTime(s).split("T")[1] ?? 
 
 export const toLocalDate = (s: string) => new Date(normalizeDateTime(s));
 
+export const normDayMinutes = (mins: number) => ((mins % 1440) + 1440) % 1440;
+
+export const floorTo30 = (mins: number) => Math.floor(mins / 30) * 30;
+
+export const toMinutes = (s?: string): number => {
+  if (!s) return 0;
+  const t = extractTime(s);
+  const [hh, mm] = t.split(":");
+  const h = Number(hh) || 0;
+  const m = Number(mm) || 0;
+  return h * 60 + m;
+};
+
+export const minutesToHHMM = (mins: number) => {
+  const m = normDayMinutes(mins);
+  const h = Math.floor(m / 60);
+  const r = m % 60;
+  return `${pad2(h)}:${pad2(r)}`;
+};
+
 export const diffMinutesSameTZ = (a: string, b: string) => {
   const A = toLocalDate(a).getTime();
   const B = toLocalDate(b).getTime();
@@ -96,3 +116,28 @@ export function formatTimeZoneVerbose(timezoneId: string, date = new Date()): st
 
   return `(${abbr}) ${fullName}`;
 }
+
+export function getTimeZoneAbbr(timezoneId: string, date = new Date()): string {
+  const raw =
+    new Intl.DateTimeFormat("en-US", {
+      timeZone: timezoneId,
+      timeZoneName: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+      .formatToParts(date)
+      .find((p) => p.type === "timeZoneName")?.value || timezoneId;
+
+  const m = raw.match(/\(([^)]+)\)/);
+  return m ? m[1] : raw;
+}
+
+export function formatDayMonthInTZ(timezoneId: string, date = new Date()): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: timezoneId,
+    day: "numeric",
+    month: "short",
+  }).format(date);
+}
+
+export const buildTzDayLabel = (tzId?: string) => (tzId ? `${getTimeZoneAbbr(tzId)} ${formatDayMonthInTZ(tzId)}` : "");
