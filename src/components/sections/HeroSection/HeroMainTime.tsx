@@ -6,7 +6,7 @@ import { Button } from "@/components/base/Button";
 import { Icon } from "@/components/base/Icon";
 import { Time } from "@/components/base/Time";
 import { CityFull } from "@/types/cities";
-import { calcDayLength, formatDateFromDateTime, formatTimeZoneVerbose, getTimeDifferenceByTZ } from "@/utils/global";
+import { getFormattedDateInTZ, formatTimeZoneVerbose, getTimeDifferenceByTZ } from "@/utils/global";
 
 export interface HeroMainTimeProps {
   city: CityFull;
@@ -14,11 +14,11 @@ export interface HeroMainTimeProps {
 }
 
 export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
-  const { time, sunrise, sunset, timezoneId } = city.timeData;
+  const timezoneId = city.timezone;
+  const { sunrise, sunset, day_length } = city.sunData;
 
-  const dayLength = useMemo(() => calcDayLength(sunrise, sunset), [sunrise, sunset]);
   const timeDiff = useMemo(() => getTimeDifferenceByTZ(timezoneId), [timezoneId]);
-  const date = useMemo(() => formatDateFromDateTime(time), [time]);
+  const date = useMemo(() => getFormattedDateInTZ(timezoneId), [timezoneId]);
   const formattedTimezone = useMemo(() => formatTimeZoneVerbose(timezoneId), [timezoneId]);
 
   return (
@@ -26,10 +26,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
       <div className="hero-section__main-time-block">
         <h3 className="hero-section__main-city">{city.name}</h3>
         <h1 className="hero-section__main-time-value">
-          <Time
-            time={time}
-            timezoneId={timezoneId}
-          />
+          <Time timezoneId={timezoneId} />
         </h1>
         <div className="hero-section__main-date">{date}</div>
       </div>
@@ -66,7 +63,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
               live={false}
             />
           </Button>
-          <span className="hero-section__main-day-time">{dayLength}</span>
+          <span className="hero-section__main-day-time">{day_length}</span>
         </div>
 
         <div className={clsx("hero-section__main-info", className)}>
