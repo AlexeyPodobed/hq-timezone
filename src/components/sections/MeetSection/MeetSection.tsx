@@ -26,8 +26,7 @@ export const MeetSection = memo<MeetSectionProps>(({ title, cities, className })
       <Container>
         <div className="meet-section__inner">
           <h2 className="meet-section__title">{title}</h2>
-          <div className="meet-section__title"></div>
-          <MeetSectionSelector cities={cities} />
+          {cities?.length > 0 && <MeetSectionSelector cities={cities} />}
         </div>
       </Container>
     </section>
