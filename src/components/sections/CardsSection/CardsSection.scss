@@ -1,0 +1,35 @@
+.cards-section {
+	@apply bg-text-secondary text-center rounded-[0.625rem] mt-2.5;
+
+	&-inner {
+		@apply p-[2.1875rem];
+	}
+
+	&__row {
+		@apply flex flex-col gap-2.5;
+	}
+
+	.card-item {
+		@apply relative rounded-lg overflow-hidden;
+
+		&-inner {
+			@apply relative z-10 py-10 px-12 min-h-[25rem];
+
+			&::before {
+				@apply content-[''] absolute top-0 right-0 bottom-0 left-0 bg-primary-1 opacity-60 -z-10;
+			}
+		}
+
+		&__text {
+			@apply hidden;
+		}
+
+		&__tag {
+			@apply text-yellow mb-[1.875rem] font-bold;
+		}
+
+		&__title{
+			@apply text-[2.1875rem] leading-[1.25] font-anton text-text-secondary;
+		}
+	}
+}

@@ -1,6 +1,7 @@
 import { getHomePage } from "@/api/homepage";
 import { HeroSection } from "@/components/sections/HeroSection/HeroSection";
 import { MeetSection } from "@/components/sections/MeetSection/MeetSection";
+import { CardsSection } from "@/components/sections/CardsSection/CardsSection";
 import { CityFull } from "@/types/cities";
 import { fetchCitiesFull } from "@/utils/cities";
 
@@ -10,6 +11,8 @@ export default async function Home() {
   const sections = homepage?.homepage_flexible_content ?? [];
 
   const heroSection = homepage.homepage_flexible_content.find((section) => section.acf_fc_layout === "hero");
+	const cardsSectionData = homepage.homepage_flexible_content.find((section) => section.acf_fc_layout === "posts");
+
   const cityNames: string[] = heroSection?.cities_list?.map((c) => c.city_name) ?? [];
 
   const citiesFull: CityFull[] = await fetchCitiesFull(cityNames);
@@ -35,6 +38,10 @@ export default async function Home() {
                 title={block?.title ?? ""}
                 cities={filteredCities}
               />
+            );
+          case "posts":
+            return (
+             	<CardsSection posts={cardsSectionData?.posts} key={`posts-${idx}`} />
             );
         }
       })}
