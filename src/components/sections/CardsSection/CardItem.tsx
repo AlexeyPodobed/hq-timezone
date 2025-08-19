@@ -18,7 +18,7 @@ export const CardItem = memo<CardItemProps>(({bgSrc, bgAlt, tag, title}) => {
 
 			<div className="card-item-inner">
 				<div className="card-item__text">
-					There are 24 main time zones based on Earth's rotation, but in practice, there are over 40 official time zones due to countries using half-hour or quarter-hour offsets.
+					<span className="card-item__text-inner">There are 24 main time zones based on Earth's rotation, but in practice, there are over 40 official time zones due to countries using half-hour or quarter-hour offsets.</span>
 				</div>
 				{/* <div className="card-item__icon">
 					

@@ -3,17 +3,31 @@
 
 	&-inner {
 		@apply p-[2.1875rem];
+
+		@apply 2xl:pt-[12.375rem] 2xl:pb-[4.4375rem] 2xl:px-0;
+	}
+
+	.container-common {
+		@apply 2xl:w-[106rem];
 	}
 
 	&__row {
 		@apply flex flex-col gap-2.5;
+
+		@apply md:flex-row flex-wrap;
 	}
 
 	.card-item {
 		@apply relative rounded-lg overflow-hidden;
 
+		@apply md:w-[calc(33.33%-0.4375rem)];
+
+		@apply lg:min-h-[41.625rem];
+
 		&-inner {
-			@apply relative z-10 py-10 px-12 min-h-[25rem];
+			@apply relative z-10 py-10 px-12 min-h-[25rem] h-full;
+
+			@apply md:px-4;
 
 			&::before {
 				@apply content-[''] absolute top-0 right-0 bottom-0 left-0 bg-primary-1 opacity-60 -z-10;
@@ -21,7 +35,7 @@
 		}
 
 		&__text {
-			@apply hidden;
+			@apply absolute top-0 right-0 bottom-0 left-0 p-4 bg-primary-1 text-text-secondary px-14 py-5 overflow-auto flex items-center transition-opacity opacity-0 hover:opacity-100;
 		}
 
 		&__tag {
