@@ -138,7 +138,6 @@ export function isoToHM(iso: string | undefined): string {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
-    timeZone: "UTC", // важно: ISO от open-meteo — это UTC
   });
 }
 
