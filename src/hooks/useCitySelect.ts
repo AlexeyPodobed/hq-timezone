@@ -72,14 +72,30 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     if (restoredRef.current) return;
     if (typeof window === "undefined") return;
     restoredRef.current = true;
-    try {
-      const raw = sessionStorage.getItem(storageKey);
-      if (!raw) return;
-      const parsed: CityFull = JSON.parse(raw);
-      if (parsed?.name) selectCity(parsed);
-    } catch {
-      console.log("sessionStorage parse failed");
-    }
+
+    (async () => {
+      try {
+        const raw = sessionStorage.getItem(storageKey);
+        if (!raw) return;
+        const parsed: CityFull = JSON.parse(raw);
+
+        if (!parsed?.name) return;
+
+        if (!parsed.timeData) {
+          try {
+            const { data: timeData } = await getCityTimeViaProxy({ lat: parsed.lat, lng: parsed.lng });
+            selectCity({ ...parsed, timeData });
+          } catch (err) {
+            console.warn("Failed to restore timeData:", err);
+            selectCity(parsed);
+          }
+        } else {
+          selectCity(parsed);
+        }
+      } catch {
+        console.log("sessionStorage parse failed");
+      }
+    })();
   }, [selectCity, storageKey]);
 
   useEffect(() => {
