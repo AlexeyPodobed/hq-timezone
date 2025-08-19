@@ -9,10 +9,18 @@ export interface CardsSectionProps {
   posts?: {
     tag: string;
     title: string;
-    image: {
-      url: string;
-      alt?: string;
-    };
+		image: {
+				url: string;
+				alt?: string;
+				width: number;
+				height: number;
+			};
+		icon: {
+			url: string;
+			alt?: string;
+			width: number;
+			height: number;
+		};
   }[];
 }
 
@@ -29,6 +37,8 @@ export const CardsSection = memo<CardsSectionProps>(({ posts }) => {
                 bgAlt={post.image.alt || ""}
                 tag={post.tag}
                 title={post.title}
+								iconSrc={post.icon?.url || ""}
+								iconAlt={post.icon?.alt || ""}
               />
             ))}
           </div>

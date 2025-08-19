@@ -33,9 +33,11 @@
 		@apply 2xl:min-h-[41.625rem] 2xl:w-[calc(33.33%-1.6875rem)];
 
 		&-inner {
-			@apply relative z-10 py-10 px-12 min-h-[25rem] h-full flex flex-col justify-center;
+			@apply relative z-10 py-10 px-12 min-h-[25rem] h-full;
 
 			@apply md:px-4;
+
+			@apply lg:pt-[7rem];
 
 			@apply 2xl:px-16 2xl:py-28;
 
@@ -46,6 +48,12 @@
 
 		&__text {
 			@apply absolute top-0 right-0 bottom-0 left-0 p-4 bg-primary-1 text-text-secondary px-14 py-5 overflow-auto flex items-center transition-opacity opacity-0 hover:opacity-100;
+		}
+
+		&__icon {
+			@apply mb-[2.625rem] max-w-10 max-h-40 mx-auto;
+
+			@apply lg:mx-0 lg:mb-0 lg:absolute top-6 right-6 max-w-16 max-h-16;
 		}
 
 		&__tag {
