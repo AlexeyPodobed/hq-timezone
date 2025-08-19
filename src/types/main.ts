@@ -1,43 +1,27 @@
-interface HeaderLogo {
-  id: number;
+interface Image {
   url: string;
   alt: string;
   width: number;
   height: number;
 }
 
-export interface Header {
-  header_logo: HeaderLogo;
-}
-
-interface FooterLogo {
+interface Link {
 	url: string;
-	alt: string;
-	width: number;
-	height: number;
-}
-
-interface FooterMenu {
 	title: string;
-	url: string;
-	target: string;
+	target?: string;
 }
 
-interface FooterButtons {
-	link: {
-		url: string;
-		title: string;
-		target: string;
-	};
-}[]
+interface LinkObj {
+	link: Link
+}
 
-interface FooterText {
-	text: string;
+export interface Header {
+  header_logo: Image;
 }
 
 export interface Footer {
-	footer_logo: FooterLogo;
-	footer_menu: FooterMenu[];
-	footer_buttons: FooterButtons[];
-	footer_text: FooterText;
+	footer_logo: Image;
+	footer_menu: Link[];
+	footer_buttons: LinkObj[];
+	footer_text: string;
 }

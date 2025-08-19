@@ -1,12 +1,9 @@
 import clsx from "clsx";
-// import Link from "next/link";
-
+import Link from "next/link";
 import { Container } from "@/common/Container";
-// import SocLink from "@/components/base/SocLink";
 import "@/components/components.scss";
 import { getFooter } from "@/api/main";
 import { ImageWrapper } from "@/common/ImageWrapper";
-import Link from "next/link";
 
 interface FooterProps {
   className?: string;
@@ -18,7 +15,7 @@ export default async function Footer({ className }: FooterProps) {
 		const menu = data.footer_menu;
 		const buttons = data.footer_buttons;
 		const text = data.footer_text;
-	
+
   return (
     <footer className={clsx("footer", className)}>
       <Container>
