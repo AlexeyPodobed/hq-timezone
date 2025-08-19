@@ -1,15 +1,12 @@
-import clsx from "clsx";
 import Link from "next/link";
 import { Container } from "@/common/Container";
 import "@/components/components.scss";
 import { getFooter } from "@/api/main";
-import { ImageWrapper } from "@/common/ImageWrapper";
+import './Footer.scss';
+import { FooterLogo } from "./FooterLogo";
+import { FooterMenu } from "./FooterMenu";
 
-interface FooterProps {
-  className?: string;
-}
-
-export default async function Footer({ className }: FooterProps) {
+export default async function Footer() {
 		const { data } = await getFooter();
 		const logo = data.footer_logo;
 		const menu = data.footer_menu;
@@ -17,22 +14,33 @@ export default async function Footer({ className }: FooterProps) {
 		const text = data.footer_text;
 
   return (
-    <footer className={clsx("footer", className)}>
+    <footer className="footer">
       <Container>
-				<ImageWrapper src={logo.url} alt={logo.alt} />
-				<div>
-				{menu.map((item, index) => (
-					<Link key={index} href={item.url} target={item.target}>{item.title}</Link>
-				))}
+				<div className="footer__inner">
+					<div className="footer-left">
+						<div>
+							<div className="footer__copyright">{text}</div>
+							<div className="footer__by">Designed by <Link href="#">Guyman Studio</Link></div>
+							<div className="lg:hidden">
+								<FooterMenu items={menu} />
+							</div>
+						</div>
+						<div className="hidden lg:block">
+							<FooterLogo src={logo.url} alt={logo.alt} />
+						</div>
+					</div>
+					<div className="footer-right">
+						<div className="lg:hidden mb-5">
+							<FooterLogo src={logo.url} alt={logo.alt} />
+						</div>
+						{buttons.map((button, index) => (
+							<Link  key={index} href={button.link.url} target={button.link.target} className="footer__link">{button.link.title}</Link>
+						))}
+						<div className="hidden lg:block">
+							<FooterMenu items={menu} />
+						</div>
+					</div>
 				</div>
-				<div>
-				{buttons.map((button, index) => (
-					<Link key={index} href={button.link.url} target={button.link.target}>
-						{button.link.title}
-					</Link>
-				))}
-				</div>
-				<div>{text}</div>
 			</Container>
     </footer>
   );

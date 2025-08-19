@@ -1,0 +1,67 @@
+.footer {
+	@apply bg-primary-1 text-white py-10;
+
+	@apply lg:py-24;
+
+	&__inner {
+		@apply flex flex-col;
+
+		@apply lg:justify-between lg:flex-row;
+	}
+
+	&__logo {
+		@apply max-w-[19.0625rem];
+	}
+
+	&__copyright {
+		@apply mb-1 font-bold;
+	}
+
+	&__by {
+		@apply text-[0.75rem] leading-[0.875rem] mb-5;
+
+		@apply lg:mb-20;
+
+		a {
+			@apply text-[0.75rem] font-bold no-underline;
+
+			&:hover {
+				@apply underline;
+			}
+		}
+	}
+
+	&-left {
+		@apply text-center;
+
+		@apply lg:text-left;
+	}
+
+	&-right {
+		@apply flex flex-col -order-1 max-w-[16.1875rem] mx-auto mb-1;
+
+		@apply lg:max-w-full lg:mb-0 lg:order-1 lg:mr-0;
+	}
+
+	&__menu {
+		@apply list-none text-[0.75rem] leading-[1.375rem] m-0 p-0 flex flex-wrap gap-5 justify-center;
+
+		@apply lg:justify-end;
+
+		a {
+			@apply underline;
+
+			&:hover {
+				@apply no-underline;
+			}
+		}
+	}
+
+	&__link {
+		@apply min-w-[16.1875rem] border-2 border-yellow text-yellow font-anton text-[1.25rem] leading-[2.1875rem] text-center p-4 rounded mb-4 no-underline transition-colors;
+
+		&:hover {
+			@apply text-primary-1 bg-yellow;
+		}
+	}
+}
