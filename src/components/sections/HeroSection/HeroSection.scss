@@ -74,21 +74,19 @@
     }
 
     &__main-col-left {
-        @apply flex flex-col gap-10;
+        @apply flex flex-col gap-10 justify-between;
 
 				@apply md:w-1/2;
 
 				@apply xl:w-auto;
 
-				@apply 2xl:flex-row 2xl:gap-48 justify-between;
+				@apply 2xl:flex-row 2xl:flex-1;
     }
 
     &__main-sun {
         @apply flex gap-[0.313rem] flex-wrap justify-center;
 
-				@apply lg:justify-start;
-
-				@apply 2xl:flex-col;
+				@apply 2xl:flex-col 2xl:justify-start;
 
 				&__btn {
 						@apply min-w-[7.625rem] ;
@@ -98,7 +96,9 @@
     &__main-day-time {
         @apply text-2xl text-light-blue font-bold leading-6 block w-full mt-2;
 
-				@apply lg:leading-[2.875rem] lg:text-3xl lg:text-right;
+				@apply lg:leading-[2.875rem] lg:text-3xl lg:text-center;
+
+				@apply 2xl:text-right;
     }
 
     &__main-info {
