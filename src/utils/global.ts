@@ -129,23 +129,3 @@ export function formatDayMonthInTZ(timezoneId: string, date = new Date()): strin
 }
 
 export const buildTzDayLabel = (tzId?: string) => (tzId ? `${getTimeZoneAbbr(tzId)} ${formatDayMonthInTZ(tzId)}` : "");
-
-/** Converts ISO datetime string like "2025-08-19T07:38" to "07:38" */
-export function isoToHM(iso: string | undefined): string {
-  if (!iso) return "";
-  const date = new Date(iso);
-  return date.toLocaleTimeString("en-GB", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "UTC", // важно: ISO от open-meteo — это UTC
-  });
-}
-
-/** Converts seconds like 48332 → "13h 25m" */
-export function secsToHumanHM(seconds: number | undefined): string {
-  if (!seconds || isNaN(seconds)) return "";
-  const hrs = Math.floor(seconds / 3600);
-  const mins = Math.floor((seconds % 3600) / 60);
-  return `${hrs}h ${mins}m`;
-}

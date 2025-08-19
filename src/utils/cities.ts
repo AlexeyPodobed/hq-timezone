@@ -1,32 +1,37 @@
 import { getCitySunInfo, getCityWp } from "@/api/cities";
 import { CityFull } from "@/types/cities";
 
-import { isoToHM, secsToHumanHM } from "./global";
-
 export const fetchCitiesFullInfo = async (cityNames: string[]): Promise<CityFull[]> => {
+  const notFoundCities: string[] = [];
+
   const cityResults = await Promise.all(cityNames.map((city) => getCityWp(city).catch(() => ({ data: [], status: 500 }))));
 
   const flatCities = cityResults.flatMap((res, i) => {
     const cityKey = cityNames[i].toLowerCase();
-    return res.data.filter((city) => typeof city.name === "string" && city.name.toLowerCase().includes(cityKey));
+
+    if (!Array.isArray(res.data)) {
+      notFoundCities.push(cityNames[i]);
+      return [];
+    }
+
+    const matched = res.data.filter((city) => typeof city.name === "string" && city.name.toLowerCase().includes(cityKey));
+
+    if (matched.length === 0) {
+      notFoundCities.push(cityNames[i]);
+    }
+
+    return matched;
   });
+
+  console.log(`Not found (${notFoundCities.length}):`, notFoundCities);
 
   const fullResults = await Promise.all(
     flatCities.map(async (city) => {
       try {
-        const { data } = await getCitySunInfo({
-          latitude: Number(city.latitude),
-          longitude: Number(city.longitude),
-          daily: "sunrise,sunset,daylight_duration",
-          timezone: city.timezone || "auto",
+        const { data: sunData } = await getCitySunInfo({
+          lat: Number(city.latitude),
+          lng: Number(city.longitude),
         });
-
-        const sunData = {
-          sunrise: isoToHM(data.daily.sunrise?.[0]),
-          sunset: isoToHM(data.daily.sunset?.[0]),
-          daylight_duration: secsToHumanHM(data.daily.daylight_duration?.[0]),
-        };
-
         return { ...city, sunData };
       } catch {
         return null;

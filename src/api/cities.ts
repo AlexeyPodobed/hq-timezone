@@ -8,7 +8,6 @@ export const getCityWp = async (city: string, signal?: AbortSignal): Promise<{ d
   try {
     const { data, status } = await api.get(`${WP_API}/cities/${encodeURIComponent(city)}`, {
       signal,
-      next: { revalidate: EXPIRE_1_DAY },
     });
 
     return { data, status };
@@ -21,16 +20,13 @@ export const getCityWp = async (city: string, signal?: AbortSignal): Promise<{ d
 };
 
 export const getCitySunInfo = async (
-  params: Record<string, string | number>,
+  { lat, lng }: { lat: number; lng: number },
   signal?: AbortSignal
 ): Promise<{ data: SunInfoResult; status: number }> => {
   try {
-    const { data, status } = await api.get(`${BASE_API}/forecast`, params, {
-      signal,
-      next: { revalidate: EXPIRE_1_DAY },
-    });
+    const { data, status } = await api.get(`${BASE_API}/json`, { lat, lng }, { signal, next: { revalidate: EXPIRE_1_DAY } });
 
-    return { data, status };
+    return { data: data.results, status };
   } catch (error) {
     console.log("Sun API error:", error);
     throw error;
