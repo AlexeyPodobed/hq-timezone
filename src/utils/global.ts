@@ -12,14 +12,18 @@ export function formatMonthDate(date: Date, showYear: boolean = true): string {
   return `${month} ${day}${showYear ? `, ${year}` : ""}`;
 }
 
-export const getFormattedDateInTZ = (tz: string): string => {
+export const formatDateFromDateTime = (dateStr: string): string => {
+  const date = new Date(dateStr);
+
+  if (isNaN(date.getTime())) return "";
+
   return new Intl.DateTimeFormat("en-US", {
-    timeZone: tz,
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
-  }).format(new Date());
+    timeZone: "UTC",
+  }).format(date);
 };
 
 export const pad2 = (n: number) => String(n).padStart(2, "0");
@@ -58,6 +62,14 @@ export const diffMinutesSameTZ = (a: string, b: string) => {
   let mins = (B - A) / 60000;
   if (mins < 0) mins += 1440;
   return mins;
+};
+
+export const calcDayLength = (sunRise?: string, sunSet?: string): string | null => {
+  if (!sunRise || !sunSet) return null;
+  const diffMin = Math.round(diffMinutesSameTZ(sunRise, sunSet));
+  const h = Math.floor(diffMin / 60);
+  const m = diffMin % 60;
+  return `${h}h ${m}m`;
 };
 
 export function getTimeDifferenceByTZ(timezoneId: string): string {

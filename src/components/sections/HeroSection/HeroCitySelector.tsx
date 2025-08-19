@@ -15,7 +15,7 @@ export interface HeroCitySelectProps {
 }
 
 export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) => {
-  const { selected, options, isFetching, setSearch, selectCity, selectByName } = useCitySelect(cities, {
+  const { selected, options, setSearch, selectCity, selectByName } = useCitySelect(cities, {
     storageKey: "selectedHeroCity",
     debounceMs: 300,
     maxRows: 5,
@@ -32,13 +32,9 @@ export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) =>
           onSearchChange={setSearch}
           placeholder={"Select city"}
           searchable
-          preload={isFetching}
         />
       </div>
 
-      <div>
-        {selected.name}-{selected.timezone}
-      </div>
       <div className="hero-section__main-content">
         <HeroMainTime city={selected} />
       </div>

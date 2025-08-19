@@ -9,13 +9,12 @@ import { CityFull } from "@/types/cities";
 import { MeetSectionSelector } from "./MeetSectionSelector";
 
 export interface MeetSectionProps {
-  title: string;
   cities: CityFull[];
   bgImage?: string;
   className?: string;
 }
 
-export const MeetSection = memo<MeetSectionProps>(({ title, cities, className }) => {
+export const MeetSection = memo<MeetSectionProps>(({ cities, className }) => {
   return (
     <section className={clsx("meet-section", className)}>
       <ImageWrapper
@@ -25,7 +24,7 @@ export const MeetSection = memo<MeetSectionProps>(({ title, cities, className })
       />
       <Container>
         <div className="meet-section__inner">
-          <h2 className="meet-section__title">{title}</h2>
+          <h2 className="meet-section__title">When`s the Best Time to Meet?</h2>
           <div className="meet-section__title"></div>
           <MeetSectionSelector cities={cities} />
         </div>

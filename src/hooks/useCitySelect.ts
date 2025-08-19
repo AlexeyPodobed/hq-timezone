@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { getCityWp, getCitySunInfo } from "@/api/cities";
 import { useDebounce } from "@/hooks/useDebounce";
 import { CityFull } from "@/types/cities";
+import { getCityViaProxy, getCityTimeViaProxy } from "@/utils/cities";
 
 export interface UseCitySelectOptions {
   storageKey?: string;
@@ -25,6 +25,7 @@ const uniqueByName = (list: CityFull[]) => {
 export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOptions = {}) {
   const storageKey = opts.storageKey ?? "selectedCity";
   const debounceMs = opts.debounceMs ?? 300;
+  const maxRows = opts.maxRows ?? 5;
   const defaultCity = opts.defaultCity ?? 0;
 
   const [selected, setSelected] = useState<CityFull>(initialCities[defaultCity]);
@@ -98,31 +99,15 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
 
     (async () => {
       try {
-        const { data } = await getCityWp(term, ac.signal);
-        if (!Array.isArray(data)) {
-          setExtraCities([]);
-          return;
-        }
-
+        const { data } = await getCityViaProxy({ q: term, maxRows }, ac.signal);
+        const base = data.geonames ?? [];
         const enriched = await Promise.all(
-          data.map(async (city) => {
-            try {
-              const { data: sunData } = await getCitySunInfo(
-                {
-                  lat: Number(city.latitude),
-                  lng: Number(city.longitude),
-                },
-                ac.signal
-              );
-
-              return { ...city, sunData } as CityFull;
-            } catch {
-              return null;
-            }
+          base.map(async (c) => {
+            const { data: timeData } = await getCityTimeViaProxy({ lat: c.lat, lng: c.lng }, ac.signal);
+            return { ...c, timeData } as CityFull;
           })
         );
-
-        setExtraCities(enriched.filter((c): c is CityFull => c !== null));
+        setExtraCities(enriched);
       } catch (err: any) {
         if (err?.name !== "AbortError") console.log("City search failed:", err);
       } finally {
@@ -131,7 +116,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     })();
 
     return () => ac.abort();
-  }, [debounced]);
+  }, [debounced, maxRows]);
 
   return {
     selected,

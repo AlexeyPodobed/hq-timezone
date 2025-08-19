@@ -1,24 +1,32 @@
-export interface CityNameWP {
-  id: string;
+export interface CityName {
   name: string;
-  latitude: string;
-  longitude: string;
-  timezone: string;
+  toponymName: string;
+  lat: string;
+  lng: string;
+  geonameId: number;
+  countryCode: string;
+  countryName: string;
+  fcl: string;
+  fcode: string;
 }
 
-export interface SunInfoResult {
+export interface CityTime {
+  time: string;
   sunrise: string;
   sunset: string;
-  solar_noon: string;
-  day_length: string;
-  civil_twilight_begin: string;
-  civil_twilight_end: string;
-  nautical_twilight_begin: string;
-  nautical_twilight_end: string;
-  astronomical_twilight_begin: string;
-  astronomical_twilight_end: string;
+  timezoneId: string;
+  gmtOffset: number;
+  dstOffset: number;
+  rawOffset: number;
+  countryCode: string;
+  countryName: string;
 }
 
-export interface CityFull extends CityNameWP {
-  sunData: SunInfoResult;
+export interface CityFull extends CityName {
+  timeData: CityTime;
+}
+
+export interface CitiesResponse {
+  totalResultsCount: number;
+  geonames: CityName[];
 }

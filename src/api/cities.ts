@@ -1,33 +1,40 @@
-import { BASE_API, WP_API } from "@/consts/api";
-import { CityNameWP, SunInfoResult } from "@/types/cities";
+import { BASE_API } from "@/consts/api";
+import { CitiesResponse, CityTime } from "@/types/cities";
 
 import api from "./api";
 
-export const getCityWp = async (city: string, signal?: AbortSignal): Promise<{ data: CityNameWP[]; status: number }> => {
-  try {
-    const { data, status } = await api.get(`${WP_API}/cities/${encodeURIComponent(city)}`, {
-      signal,
-    });
+type BaseUrl = string;
 
+export const getCity = async (
+  params: Record<string, any>,
+  signal?: AbortSignal,
+  baseUrl: BaseUrl = BASE_API
+): Promise<{ data: CitiesResponse; status: number }> => {
+  try {
+    const { data, status } = await api.get(`${baseUrl}/searchJSON`, params, { signal });
+    // console.log("getCity:", data);
     return { data, status };
   } catch (error: any) {
     if (error?.name !== "AbortError") {
-      console.log("City fetch error:", error);
+      console.log("GeoNames city fetch error:", error);
     }
     throw error;
   }
 };
 
-export const getCitySunInfo = async (
-  params: { lat: number; lng: number },
-  signal?: AbortSignal
-): Promise<{ data: SunInfoResult; status: number }> => {
+export const getCityTime = async (
+  params: { lat: string; lng: string },
+  signal?: AbortSignal,
+  baseUrl: BaseUrl = BASE_API
+): Promise<{ data: CityTime; status: number }> => {
   try {
-    const { data, status } = await api.get(`${BASE_API}/json`, params, { signal });
-
-    return { data: data.results, status };
-  } catch (error) {
-    console.log("Sun API error:", error);
+    const { data, status } = await api.get(`${baseUrl}/timezoneJSON`, params, { signal });
+    // console.log("getCityTime:", data);
+    return { data, status };
+  } catch (error: any) {
+    if (error?.name !== "AbortError") {
+      console.log("GeoNames timezone fetch error:", error);
+    }
     throw error;
   }
 };

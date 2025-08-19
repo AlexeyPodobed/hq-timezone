@@ -1,40 +1,44 @@
 "use client";
 
 import clsx from "clsx";
-import { memo, useEffect, useState } from "react";
+import { memo, useMemo, useState, useEffect } from "react";
 
 import { useMounted } from "@/hooks/useMounted";
 import { useSecondsTimer } from "@/hooks/useSecondsTimer";
 import { useTimeStore } from "@/store/timeStore";
-import { pad2, to12h } from "@/utils/global";
+import { extractTime, pad2, to12h } from "@/utils/global";
 
 import { Seconds } from "./Seconds";
 import TimeFallback from "./TimeFallback";
 
 interface TimeProps {
-  time?: string; // "HH:MM[:SS]"
+  time?: string; // "YYYY-MM-DD HH:MM[:SS]" or "HH:MM[:SS]"
   timezoneId?: string;
   live?: boolean;
   showSeconds?: boolean;
   className?: string;
 }
 
-const parseHM = (s: string): [number, number] | undefined => {
-  const parts = s.trim().split(":");
-  if (parts.length < 2) return;
-  const h = Number(parts[0]);
-  const m = Number(parts[1]);
-  return Number.isFinite(h) && Number.isFinite(m) ? [h, m] : undefined;
+const parseHM = (s: string): [number, number] | null => {
+  const t = extractTime(s);
+  if (!t) return null;
+  const [hh, mm] = t.split(":");
+  const h = Number(hh),
+    m = Number(mm);
+  return Number.isFinite(h) && Number.isFinite(m) ? [h, m] : null;
 };
 
 const nowHM = (tz?: string): [number, number] => {
+  if (!tz) {
+    const d = new Date();
+    return [d.getHours(), d.getMinutes()];
+  }
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: tz,
     hour12: false,
     hour: "2-digit",
     minute: "2-digit",
   }).formatToParts(new Date());
-
   const hh = Number(parts.find((p) => p.type === "hour")?.value ?? "0");
   const mm = Number(parts.find((p) => p.type === "minute")?.value ?? "0");
   return [hh, mm];
@@ -94,37 +98,36 @@ export const Time = memo<TimeProps>(({ time, timezoneId, live = true, showSecond
   const is24hStore = useTimeStore((s) => s.is24h);
   const is24h = mounted ? is24hStore : true;
 
-  const [h24, setH24] = useState<number | undefined>(undefined);
-  const [m, setM] = useState<number | undefined>(undefined);
+  const initialHM = useMemo<[number | undefined, number | undefined]>(() => {
+    if (time) {
+      const hm = parseHM(time);
+      if (hm) return hm;
+      return [undefined, undefined];
+    }
+    if (!mounted) return [undefined, undefined];
+    return nowHM(timezoneId);
+  }, [time, timezoneId, mounted]);
+
+  const [h24, setH24] = useState<number | undefined>(initialHM[0]);
+  const [m, setM] = useState<number | undefined>(initialHM[1]);
+
+  const [initialH, initialM] = initialHM;
+
+  useEffect(() => {
+    setH24(initialH);
+    setM(initialM);
+  }, [initialH, initialM]);
 
   const secondsTick = useSecondsTimer();
   const minuteTick = useMinuteTick();
-
-  const tick = showSeconds ? secondsTick : minuteTick;
+  const tickKey = showSeconds ? secondsTick : minuteTick;
 
   useEffect(() => {
-    if (!mounted) return;
-
-    if (time) {
-      const parsed = parseHM(time);
-      if (parsed) {
-        setH24(parsed[0]);
-        setM(parsed[1]);
-        return;
-      }
-    }
-
+    if (!mounted || !live) return;
     const [hh, mm] = nowHM(timezoneId);
     setH24(hh);
     setM(mm);
-  }, [mounted, time, timezoneId]);
-
-  useEffect(() => {
-    if (!mounted || !live || time) return;
-    const [hh, mm] = nowHM(timezoneId);
-    setH24(hh);
-    setM(mm);
-  }, [mounted, live, time, timezoneId, tick]);
+  }, [mounted, live, timezoneId, tickKey]);
 
   const placeholder = !mounted || h24 === undefined || m === undefined;
 
