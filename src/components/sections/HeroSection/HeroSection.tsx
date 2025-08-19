@@ -31,12 +31,10 @@ export const HeroSection = memo<HeroSectionProps>(({ cities, bgImage, className 
       )}
       <Container>
         <div className="hero-section__inner">
-          {cities?.length > 0 && (
-            <HeroCitySelector
-              cities={cities}
-              title="What's the Time in"
-            />
-          )}
+          <HeroCitySelector
+            cities={cities}
+            title="What's the Time in"
+          />
         </div>
       </Container>
     </section>
