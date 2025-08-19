@@ -1,7 +1,7 @@
 .cards-section {
 	@apply bg-text-secondary text-center rounded-[0.625rem] mt-2.5;
 
-	@apply lg:text-left;
+	@apply lg:text-left lg:lg:mt-5;
 
 	&-inner {
 		@apply p-[2.1875rem];
