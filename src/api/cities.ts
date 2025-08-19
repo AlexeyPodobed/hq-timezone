@@ -1,7 +1,9 @@
 import { BASE_API, WP_API } from "@/consts/api";
-import { CityNameWP, SunInfoResult } from "@/types/cities";
+import { CityNameWP, CityTime } from "@/types/cities";
 
 import api from "./api";
+
+type BaseUrl = string;
 
 export const getCityWp = async (city: string, signal?: AbortSignal): Promise<{ data: CityNameWP[]; status: number }> => {
   try {
@@ -18,16 +20,19 @@ export const getCityWp = async (city: string, signal?: AbortSignal): Promise<{ d
   }
 };
 
-export const getCitySunInfo = async (
-  params: { lat: number; lng: number },
-  signal?: AbortSignal
-): Promise<{ data: SunInfoResult; status: number }> => {
+export const getCityTime = async (
+  params: { lat: string; lng: string },
+  signal?: AbortSignal,
+  baseUrl: BaseUrl = BASE_API
+): Promise<{ data: CityTime; status: number }> => {
   try {
-    const { data, status } = await api.get(`${BASE_API}/json`, params, { signal });
-
-    return { data: data.results, status };
-  } catch (error) {
-    console.log("Sun API error:", error);
+    const { data, status } = await api.get(`${baseUrl}/timezoneJSON`, params, { signal });
+    // console.log("getCityTime:", data);
+    return { data, status };
+  } catch (error: any) {
+    if (error?.name !== "AbortError") {
+      console.log("GeoNames timezone fetch error:", error);
+    }
     throw error;
   }
 };

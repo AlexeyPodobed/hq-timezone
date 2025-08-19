@@ -1,20 +1,24 @@
-import { ImageWrapper } from "@/common/ImageWrapper";
 import { memo } from "react";
 
+import { ImageWrapper } from "@/common/ImageWrapper";
+
 export interface CardItemProps {
-	bgSrc: string;
-	bgAlt: string;
-	tag: string; 
+  bgSrc: string;
+  bgAlt: string;
+  tag: string;
   title: string;
 }
 
-export const CardItem = memo<CardItemProps>(({bgSrc, bgAlt, tag, title}) => {
-	return (
-		<div className="card-item">
-			<ImageWrapper src={bgSrc} alt={bgAlt}  
-					className="absolute w-full h-full top-0 left-0"
-					cover absolute 
-				/>
+export const CardItem = memo<CardItemProps>(({ bgSrc, bgAlt, tag, title }) => {
+  return (
+    <div className="card-item">
+      <ImageWrapper
+        src={bgSrc}
+        alt={bgAlt}
+        className="absolute w-full h-full top-0 left-0"
+        cover
+        absolute
+      />
 
 			<div className="card-item-inner">
 				<div className="card-item__text">
@@ -23,13 +27,11 @@ export const CardItem = memo<CardItemProps>(({bgSrc, bgAlt, tag, title}) => {
 				{/* <div className="card-item__icon">
 					
 				</div> */}
-				<div className="card-item__tag">
-					{tag}
-				</div>
-				<div className="card-item__title">
-					{title}
-				</div>
-			</div>
-		</div>
-	);
+        <div className="card-item__tag">{tag}</div>
+        <div className="card-item__title">{title}</div>
+      </div>
+    </div>
+  );
 });
+
+CardItem.displayName = "CardItem";

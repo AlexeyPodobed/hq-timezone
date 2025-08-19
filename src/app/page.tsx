@@ -1,48 +1,55 @@
 import { getHomePage } from "@/api/homepage";
+import { CardsSection } from "@/components/sections/CardsSection/CardsSection";
 import { HeroSection } from "@/components/sections/HeroSection/HeroSection";
 import { MeetSection } from "@/components/sections/MeetSection/MeetSection";
-import { CardsSection } from "@/components/sections/CardsSection/CardsSection";
 import { CityFull } from "@/types/cities";
-import { fetchCitiesFullInfo } from "@/utils/cities";
+import { HeroSectionBlock, MeetSectionBlock, PostsSectionBlock } from "@/types/home";
+import { fetchCitiesFull } from "@/utils/cities";
 
 export default async function Home() {
   const { data: homepage } = await getHomePage();
 
   const sections = homepage?.homepage_flexible_content ?? [];
+  const heroSection = homepage.homepage_flexible_content.find((section): section is HeroSectionBlock => section.acf_fc_layout === "hero");
+  const cityNames: string[] = heroSection?.cities_list.map((c) => c.city_name) ?? [];
 
-  const heroSection = homepage.homepage_flexible_content.find((section) => section.acf_fc_layout === "hero");
-	const cardsSectionData = homepage.homepage_flexible_content.find((section) => section.acf_fc_layout === "posts");
-
-  const cityNames: string[] = heroSection?.cities_list?.map((c) => c.city_name) ?? [];
-
-  const citiesFull: CityFull[] = await fetchCitiesFullInfo(cityNames);
-
-  const filteredCities = citiesFull.filter((city) => cityNames.some((name) => city.name.toLowerCase() === name.toLowerCase()));
+  const citiesFull: CityFull[] = await fetchCitiesFull(cityNames);
+  const cityNameSet = new Set(cityNames.map((name) => name.toLowerCase()));
+  const filteredCities = citiesFull.filter((c) => cityNameSet.has(c.name.toLowerCase()));
 
   return (
     <div className="page-wrapper">
-      {sections.map((block: any, idx: number) => {
-        switch (block?.acf_fc_layout) {
-          case "hero":
+      {sections.map((block, idx) => {
+        switch (block.acf_fc_layout) {
+          case "hero": {
+            const heroBlock = block as HeroSectionBlock;
             return (
               <HeroSection
                 key={`hero-${idx}`}
                 cities={filteredCities}
-                bgImage={block?.background_image?.url}
+                bgImage={heroBlock.background_image?.url}
               />
             );
-          case "meet":
+          }
+          case "meet": {
+            const meetBlock = block as MeetSectionBlock;
             return (
               <MeetSection
                 key={`meet-${idx}`}
-                title={block?.title ?? ""}
-                cities={citiesFull}
+                title={meetBlock.title ?? ""}
+                cities={filteredCities}
               />
             );
-          case "posts":
+          }
+          case "posts": {
+            const postsBlock = block as PostsSectionBlock;
             return (
-             	<CardsSection posts={cardsSectionData?.posts} key={`posts-${idx}`} />
+              <CardsSection
+                key={`posts-${idx}`}
+                posts={postsBlock.posts}
+              />
             );
+          }
         }
       })}
     </div>

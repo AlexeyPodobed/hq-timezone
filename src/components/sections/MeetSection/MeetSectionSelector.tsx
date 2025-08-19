@@ -6,42 +6,42 @@ import { memo, useMemo } from "react";
 import "./MeetSection.scss";
 import { CustomSelect } from "@/components/base/CustomSelect";
 import { Icon } from "@/components/base/Icon";
-// import { Time } from "@/components/base/Time";
+import { Time } from "@/components/base/Time";
 import { useCitySelect } from "@/hooks/useCitySelect";
 import { CityFull } from "@/types/cities";
-import { buildTzDayLabel } from "@/utils/global";
+import { buildTzDayLabel, floorTo30, minutesToHHMM, normDayMinutes, toMinutes } from "@/utils/global";
 
 export interface MeetSectionSelectorProps {
   cities: CityFull[];
   className?: string;
 }
 
-// const buildPairsFullDay = (startA: number, diffMinutes: number, step = 30) => {
-//   const rows = 1440 / step;
-//   const diff = normDayMinutes(diffMinutes);
-//   return Array.from({ length: rows }, (_, i) => {
-//     const a = startA + i * step;
-//     const b = a + diff;
-//     return { a: minutesToHHMM(a), b: minutesToHHMM(b) };
-//   });
-// };
+const buildPairsFullDay = (startA: number, diffMinutes: number, step = 30) => {
+  const rows = 1440 / step;
+  const diff = normDayMinutes(diffMinutes);
+  return Array.from({ length: rows }, (_, i) => {
+    const a = startA + i * step;
+    const b = a + diff;
+    return { a: minutesToHHMM(a), b: minutesToHHMM(b) };
+  });
+};
 
 export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, className }) => {
   const aCity = useCitySelect(cities, { storageKey: "meetCityA" });
   const bCity = useCitySelect(cities, { storageKey: "meetCityB", defaultCity: 1 });
 
-  const aLabel = useMemo(() => buildTzDayLabel(aCity.selected?.timezone), [aCity.selected]);
-  const bLabel = useMemo(() => buildTzDayLabel(bCity.selected?.timezone), [bCity.selected]);
+  const aLabel = useMemo(() => buildTzDayLabel(aCity.selected?.timeData?.timezoneId), [aCity.selected]);
+  const bLabel = useMemo(() => buildTzDayLabel(bCity.selected?.timeData?.timezoneId), [bCity.selected]);
 
-  // const diffMinutes = useMemo(() => {
-  //   const A = toMinutes(aCity.selected?.timezone);
-  //   const B = toMinutes(bCity.selected?.timezone);
-  //   const raw = normDayMinutes(B - A);
-  //   return normDayMinutes(floorTo30(raw));
-  // }, [aCity.selected, bCity.selected]);
+  const diffMinutes = useMemo(() => {
+    const A = toMinutes(aCity.selected?.timeData?.time);
+    const B = toMinutes(bCity.selected?.timeData?.time);
+    const raw = normDayMinutes(B - A);
+    return normDayMinutes(floorTo30(raw));
+  }, [aCity.selected, bCity.selected]);
 
-  // const startA = useMemo(() => floorTo30(toMinutes(aCity.selected?.timeData?.time)), [aCity.selected]);
-  // const pairs = useMemo(() => buildPairsFullDay(startA, diffMinutes, 30), [startA, diffMinutes]);
+  const startA = useMemo(() => floorTo30(toMinutes(aCity.selected?.timeData?.time)), [aCity.selected]);
+  const pairs = useMemo(() => buildPairsFullDay(startA, diffMinutes, 30), [startA, diffMinutes]);
 
   return (
     <div className={clsx("meet-section__selector", className)}>
@@ -82,17 +82,17 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
       <div className="meet-section__select-results">
         <div className="meet-section__results-cities">
           <div className="meet-section__results-city">
-            <h4>{aCity.selected?.name}</h4>
+            <h4>{aCity.selected.name}</h4>
             <p>{aLabel}</p>
           </div>
           <div className="meet-section__results-city">
-            <h4>{bCity.selected?.name}</h4>
+            <h4>{bCity.selected.name}</h4>
             <p>{bLabel}</p>
           </div>
         </div>
 
         <div className="meet-section__results-time">
-          {/* {pairs.map((p, i) => (
+          {pairs.map((p, i) => (
             <div
               key={i}
               className="meet-section__time-item"
@@ -112,7 +112,7 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
                 />
               </div>
             </div>
-          ))} */}
+          ))}
         </div>
       </div>
     </div>

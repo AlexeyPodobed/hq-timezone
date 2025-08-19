@@ -6,7 +6,7 @@ import { Button } from "@/components/base/Button";
 import { Icon } from "@/components/base/Icon";
 import { Time } from "@/components/base/Time";
 import { CityFull } from "@/types/cities";
-import { getFormattedDateInTZ, formatTimeZoneVerbose, getTimeDifferenceByTZ } from "@/utils/global";
+import { calcDayLength, formatDateFromDateTime, formatTimeZoneVerbose, getTimeDifferenceByTZ } from "@/utils/global";
 
 export interface HeroMainTimeProps {
   city: CityFull;
@@ -14,19 +14,25 @@ export interface HeroMainTimeProps {
 }
 
 export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
-  const timezoneId = city.timezone;
-  const { sunrise, sunset, day_length } = city.sunData;
+  const {
+    timezone,
+    timeData: { time, sunrise, sunset },
+  } = city;
 
-  const timeDiff = useMemo(() => getTimeDifferenceByTZ(timezoneId), [timezoneId]);
-  const date = useMemo(() => getFormattedDateInTZ(timezoneId), [timezoneId]);
-  const formattedTimezone = useMemo(() => formatTimeZoneVerbose(timezoneId), [timezoneId]);
+  const dayLength = useMemo(() => calcDayLength(sunrise, sunset), [sunrise, sunset]);
+  const timeDiff = useMemo(() => getTimeDifferenceByTZ(timezone), [timezone]);
+  const date = useMemo(() => formatDateFromDateTime(time), [time]);
+  const formattedTimezone = useMemo(() => formatTimeZoneVerbose(timezone), [timezone]);
 
   return (
     <div className={clsx("hero-section__main-time", className)}>
       <div className="hero-section__main-time-block">
         <h3 className="hero-section__main-city">{city.name}</h3>
         <h1 className="hero-section__main-time-value">
-          <Time timezoneId={timezoneId} />
+          <Time
+            time={time}
+            timezoneId={timezone}
+          />
         </h1>
         <div className="hero-section__main-date">{date}</div>
       </div>
@@ -44,7 +50,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
             <Time
               time={sunrise}
               showSeconds={false}
-              timezoneId={timezoneId}
+              timezoneId={timezone}
               live={false}
             />
           </Button>
@@ -59,11 +65,11 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
             <Time
               time={sunset}
               showSeconds={false}
-              timezoneId={timezoneId}
+              timezoneId={timezone}
               live={false}
             />
           </Button>
-          <span className="hero-section__main-day-time">{day_length}</span>
+          <span className="hero-section__main-day-time">{dayLength}</span>
         </div>
 
         <div className={clsx("hero-section__main-info", className)}>

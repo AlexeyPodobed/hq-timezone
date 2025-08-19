@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { getCityWp, getCitySunInfo } from "@/api/cities";
+import { getCityWp } from "@/api/cities";
 import { useDebounce } from "@/hooks/useDebounce";
 import { CityFull } from "@/types/cities";
+import { getCityTimeViaProxy } from "@/utils/cities";
 
 export interface UseCitySelectOptions {
   storageKey?: string;
@@ -25,6 +26,7 @@ const uniqueByName = (list: CityFull[]) => {
 export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOptions = {}) {
   const storageKey = opts.storageKey ?? "selectedCity";
   const debounceMs = opts.debounceMs ?? 300;
+  const maxRows = opts.maxRows ?? 5;
   const defaultCity = opts.defaultCity ?? 0;
 
   const [selected, setSelected] = useState<CityFull>(initialCities[defaultCity]);
@@ -71,14 +73,30 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     if (restoredRef.current) return;
     if (typeof window === "undefined") return;
     restoredRef.current = true;
-    try {
-      const raw = sessionStorage.getItem(storageKey);
-      if (!raw) return;
-      const parsed: CityFull = JSON.parse(raw);
-      if (parsed?.name) selectCity(parsed);
-    } catch {
-      console.log("sessionStorage parse failed");
-    }
+
+    (async () => {
+      try {
+        const raw = sessionStorage.getItem(storageKey);
+        if (!raw) return;
+        const parsed: CityFull = JSON.parse(raw);
+
+        if (!parsed?.name) return;
+
+        if (!parsed.timeData) {
+          try {
+            const { data: timeData } = await getCityTimeViaProxy({ lat: parsed.latitude, lng: parsed.longitude });
+            selectCity({ ...parsed, timeData });
+          } catch (err) {
+            console.warn("Failed to restore timeData:", err);
+            selectCity(parsed);
+          }
+        } else {
+          selectCity(parsed);
+        }
+      } catch {
+        console.log("sessionStorage parse failed");
+      }
+    })();
   }, [selectCity, storageKey]);
 
   useEffect(() => {
@@ -99,30 +117,13 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     (async () => {
       try {
         const { data } = await getCityWp(term, ac.signal);
-        if (!Array.isArray(data)) {
-          setExtraCities([]);
-          return;
-        }
-
         const enriched = await Promise.all(
-          data.map(async (city) => {
-            try {
-              const { data: sunData } = await getCitySunInfo(
-                {
-                  lat: Number(city.latitude),
-                  lng: Number(city.longitude),
-                },
-                ac.signal
-              );
-
-              return { ...city, sunData } as CityFull;
-            } catch {
-              return null;
-            }
+          data.map(async (c) => {
+            const { data: timeData } = await getCityTimeViaProxy({ lat: c.latitude, lng: c.longitude }, ac.signal);
+            return { ...c, timeData } as CityFull;
           })
         );
-
-        setExtraCities(enriched.filter((c): c is CityFull => c !== null));
+        setExtraCities(enriched);
       } catch (err: any) {
         if (err?.name !== "AbortError") console.log("City search failed:", err);
       } finally {
@@ -131,7 +132,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     })();
 
     return () => ac.abort();
-  }, [debounced]);
+  }, [debounced, maxRows]);
 
   return {
     selected,
