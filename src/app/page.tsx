@@ -33,7 +33,7 @@ export default async function Home() {
               <MeetSection
                 key={`meet-${idx}`}
                 title={block?.title ?? ""}
-                cities={citiesFull}
+                cities={filteredCities}
               />
             );
         }

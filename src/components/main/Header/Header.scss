@@ -1,27 +1,27 @@
 .header {
-		@apply px-[0.625rem] pt-[0.625rem] bg-primary-1;
+    @apply px-[0.625rem] pt-[0.625rem] bg-primary-1;
 
-		@apply lg:p-0;
+    @apply lg:p-0;
 
-		&-inner {
-				@apply flex items-center justify-between bg-white rounded-lg shadow-default pt-[0.3125rem] pb-[0.3125rem] pr-[0.4375rem] pl-[0.75rem];
-	
-    		@apply lg:py-[0.875rem] lg:px-4 lg:z-50 lg:absolute lg:top-[3.125rem] lg:left-[3.125rem] lg:right-[3.125rem];
-		}
+    &-inner {
+        @apply flex items-center justify-between bg-white rounded-lg shadow-default pt-[0.3125rem] pb-[0.3125rem] pr-[0.4375rem] pl-[0.75rem];
+
+        @apply lg:py-[0.875rem] lg:px-4 lg:z-50 lg:absolute lg:top-[3.125rem] lg:left-[3.125rem] lg:right-[3.125rem];
+    }
 
     &__switcher {
         @apply h-max p-1 flex items-center gap-1 bg-primary-1 rounded-[0.3125rem];
 
-				@apply lg:p-1.5 lg:gap-1.5;
+        @apply lg:p-1.5 lg:gap-1.5;
     }
 
     &__switcher-btn {
-        @apply p-2 relative flex items-center justify-center text-[1.125rem] font-bold leading-normal text-white border border-transparent rounded-[0.25rem] transition-all;
+        @apply p-2 relative flex items-center justify-center text-[1.125rem] font-bold leading-normal text-white border border-transparent rounded-[0.25rem] transition-all cursor-pointer;
 
-				@apply lg:p-[0.625rem];
+        @apply lg:p-[0.625rem];
 
         &.active {
-            @apply text-yellow border-yellow ;
+            @apply text-yellow border-yellow;
         }
     }
 
@@ -36,8 +36,8 @@
     &__time-wrap {
         @apply h-max  hidden flex-col items-center justify-center gap-[0.063rem] text-lg leading-none text-yellow  bg-primary-1 rounded-[0.313rem];
 
-				@apply md:flex md:p-2;
+        @apply md:flex md:p-2;
 
-				@apply lg:p-3;
+        @apply lg:p-3;
     }
 }
