@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getCityWp, getCitySunInfo } from "@/api/cities";
 import { useDebounce } from "@/hooks/useDebounce";
 import { CityFull } from "@/types/cities";
+import { isoToHM, secsToHumanHM } from "@/utils/global";
 
 export interface UseCitySelectOptions {
   storageKey?: string;
@@ -106,14 +107,25 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
 
         const enriched = await Promise.all(
           data.map(async (city) => {
+            const { latitude, longitude, timezone } = city;
+            if (!latitude || !longitude) return null;
+
             try {
-              const { data: sunData } = await getCitySunInfo(
+              const { data: sunDataRaw } = await getCitySunInfo(
                 {
-                  lat: Number(city.latitude),
-                  lng: Number(city.longitude),
+                  latitude: Number(latitude),
+                  longitude: Number(longitude),
+                  daily: "sunrise,sunset,daylight_duration",
+                  timezone: timezone || "auto",
                 },
                 ac.signal
               );
+
+              const sunData = {
+                sunrise: isoToHM(sunDataRaw.daily.sunrise?.[0]),
+                sunset: isoToHM(sunDataRaw.daily.sunset?.[0]),
+                daylight_duration: secsToHumanHM(sunDataRaw.daily.daylight_duration?.[0]),
+              };
 
               return { ...city, sunData } as CityFull;
             } catch {

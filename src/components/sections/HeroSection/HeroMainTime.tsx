@@ -15,7 +15,7 @@ export interface HeroMainTimeProps {
 
 export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
   const timezoneId = city.timezone;
-  const { sunrise, sunset, day_length } = city.sunData;
+  const { sunrise, sunset, daylight_duration } = city.sunData;
 
   const timeDiff = useMemo(() => getTimeDifferenceByTZ(timezoneId), [timezoneId]);
   const date = useMemo(() => getFormattedDateInTZ(timezoneId), [timezoneId]);
@@ -63,7 +63,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
               live={false}
             />
           </Button>
-          <span className="hero-section__main-day-time">{day_length}</span>
+          <span className="hero-section__main-day-time">{daylight_duration}</span>
         </div>
 
         <div className={clsx("hero-section__main-info", className)}>
