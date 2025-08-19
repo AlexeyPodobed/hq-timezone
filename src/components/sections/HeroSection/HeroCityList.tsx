@@ -22,7 +22,7 @@ export const HeroCityList = memo<HeroCityListProps>(({ cities, onSelect }) => {
     <div className="hidden md:flex md:flex-wrap md:gap-2.5">
       {cities.map((city) => (
         <Button
-          key={city.geonameId}
+          key={city.id}
           onClick={() => handleClick(city)}
           className="lg:min-w-[11.4375rem] line-clamp-1 lg:px-3"
         >

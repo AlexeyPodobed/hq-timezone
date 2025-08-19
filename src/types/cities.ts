@@ -1,13 +1,9 @@
-export interface CityName {
+export interface CityNameWP {
+  id: string;
   name: string;
-  toponymName: string;
-  lat: string;
-  lng: string;
-  geonameId: number;
-  countryCode: string;
-  countryName: string;
-  fcl: string;
-  fcode: string;
+  latitude: string;
+  longitude: string;
+  timezone: string;
 }
 
 export interface CityTime {
@@ -22,11 +18,6 @@ export interface CityTime {
   countryName: string;
 }
 
-export interface CityFull extends CityName {
+export interface CityFull extends CityNameWP {
   timeData: CityTime;
-}
-
-export interface CitiesResponse {
-  totalResultsCount: number;
-  geonames: CityName[];
 }

@@ -1,22 +1,20 @@
-import { BASE_API } from "@/consts/api";
-import { CitiesResponse, CityTime } from "@/types/cities";
+import { BASE_API, WP_API } from "@/consts/api";
+import { CityNameWP, CityTime } from "@/types/cities";
 
 import api from "./api";
 
 type BaseUrl = string;
 
-export const getCity = async (
-  params: Record<string, any>,
-  signal?: AbortSignal,
-  baseUrl: BaseUrl = BASE_API
-): Promise<{ data: CitiesResponse; status: number }> => {
+export const getCityWp = async (city: string, signal?: AbortSignal): Promise<{ data: CityNameWP[]; status: number }> => {
   try {
-    const { data, status } = await api.get(`${baseUrl}/searchJSON`, params, { signal });
-    // console.log("getCity:", data);
+    const { data, status } = await api.get(`${WP_API}/cities/${encodeURIComponent(city)}`, {
+      signal,
+    });
+
     return { data, status };
   } catch (error: any) {
     if (error?.name !== "AbortError") {
-      console.log("GeoNames city fetch error:", error);
+      console.log("City fetch error:", error);
     }
     throw error;
   }

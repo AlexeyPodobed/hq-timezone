@@ -13,6 +13,8 @@ export default async function Home() {
   const cityNames: string[] = heroSection?.cities_list?.map((c) => c.city_name) ?? [];
 
   const citiesFull: CityFull[] = await fetchCitiesFull(cityNames);
+  const cityNameSet = new Set(cityNames.map((name) => name.toLowerCase()));
+  const filteredCities = citiesFull.filter((c) => cityNameSet.has(c.name.toLowerCase()));
 
   return (
     <div className="page-wrapper">
@@ -22,7 +24,7 @@ export default async function Home() {
             return (
               <HeroSection
                 key={`hero-${idx}`}
-                cities={citiesFull}
+                cities={filteredCities}
                 bgImage={block?.background_image?.url}
               />
             );
@@ -31,7 +33,7 @@ export default async function Home() {
               <MeetSection
                 key={`meet-${idx}`}
                 title={block?.title ?? ""}
-                cities={citiesFull}
+                cities={filteredCities}
               />
             );
         }

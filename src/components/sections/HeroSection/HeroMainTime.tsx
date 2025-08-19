@@ -14,12 +14,15 @@ export interface HeroMainTimeProps {
 }
 
 export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
-  const { time, sunrise, sunset, timezoneId } = city.timeData;
+  const {
+    timezone,
+    timeData: { time, sunrise, sunset },
+  } = city;
 
   const dayLength = useMemo(() => calcDayLength(sunrise, sunset), [sunrise, sunset]);
-  const timeDiff = useMemo(() => getTimeDifferenceByTZ(timezoneId), [timezoneId]);
+  const timeDiff = useMemo(() => getTimeDifferenceByTZ(timezone), [timezone]);
   const date = useMemo(() => formatDateFromDateTime(time), [time]);
-  const formattedTimezone = useMemo(() => formatTimeZoneVerbose(timezoneId), [timezoneId]);
+  const formattedTimezone = useMemo(() => formatTimeZoneVerbose(timezone), [timezone]);
 
   return (
     <div className={clsx("hero-section__main-time", className)}>
@@ -28,7 +31,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
         <h1 className="hero-section__main-time-value">
           <Time
             time={time}
-            timezoneId={timezoneId}
+            timezoneId={timezone}
           />
         </h1>
         <div className="hero-section__main-date">{date}</div>
@@ -47,7 +50,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
             <Time
               time={sunrise}
               showSeconds={false}
-              timezoneId={timezoneId}
+              timezoneId={timezone}
               live={false}
             />
           </Button>
@@ -62,7 +65,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
             <Time
               time={sunset}
               showSeconds={false}
-              timezoneId={timezoneId}
+              timezoneId={timezone}
               live={false}
             />
           </Button>

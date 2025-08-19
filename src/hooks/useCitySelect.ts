@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { getCityWp } from "@/api/cities";
 import { useDebounce } from "@/hooks/useDebounce";
 import { CityFull } from "@/types/cities";
-import { getCityViaProxy, getCityTimeViaProxy } from "@/utils/cities";
+import { getCityTimeViaProxy } from "@/utils/cities";
 
 export interface UseCitySelectOptions {
   storageKey?: string;
@@ -83,7 +84,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
 
         if (!parsed.timeData) {
           try {
-            const { data: timeData } = await getCityTimeViaProxy({ lat: parsed.lat, lng: parsed.lng });
+            const { data: timeData } = await getCityTimeViaProxy({ lat: parsed.latitude, lng: parsed.longitude });
             selectCity({ ...parsed, timeData });
           } catch (err) {
             console.warn("Failed to restore timeData:", err);
@@ -115,11 +116,10 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
 
     (async () => {
       try {
-        const { data } = await getCityViaProxy({ q: term, maxRows }, ac.signal);
-        const base = data.geonames ?? [];
+        const { data } = await getCityWp(term, ac.signal);
         const enriched = await Promise.all(
-          base.map(async (c) => {
-            const { data: timeData } = await getCityTimeViaProxy({ lat: c.lat, lng: c.lng }, ac.signal);
+          data.map(async (c) => {
+            const { data: timeData } = await getCityTimeViaProxy({ lat: c.latitude, lng: c.longitude }, ac.signal);
             return { ...c, timeData } as CityFull;
           })
         );
