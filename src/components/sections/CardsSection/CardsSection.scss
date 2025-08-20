@@ -1,19 +1,45 @@
 .cards-section {
 	@apply bg-text-secondary text-center rounded-[0.625rem] mt-2.5;
 
+	@apply lg:text-left lg:lg:mt-5;
+
 	&-inner {
 		@apply p-[2.1875rem];
+
+		@apply lg:py-20 lg:px-0;
+
+		@apply 2xl:pt-[12.375rem] 2xl:pb-[4.4375rem] 2xl:px-0;
+	}
+
+	.container-common {
+		@apply 2xl:w-[106rem];
 	}
 
 	&__row {
 		@apply flex flex-col gap-2.5;
+
+		@apply md:flex-row md:flex-wrap;
+
+		@apply 2xl:gap-10;
 	}
 
 	.card-item {
 		@apply relative rounded-lg overflow-hidden;
 
+		@apply md:w-[calc(33.33%-0.4375rem)];
+
+		@apply rounded-[1.25rem];
+
+		@apply 2xl:min-h-[41.625rem] 2xl:w-[calc(33.33%-1.6875rem)];
+
 		&-inner {
-			@apply relative z-10 py-10 px-12 min-h-[25rem];
+			@apply relative z-10 py-10 px-12 min-h-[25rem] h-full;
+
+			@apply md:px-4;
+
+			@apply lg:pt-[7rem];
+
+			@apply 2xl:px-16 2xl:py-28;
 
 			&::before {
 				@apply content-[''] absolute top-0 right-0 bottom-0 left-0 bg-primary-1 opacity-60 -z-10;
@@ -21,15 +47,25 @@
 		}
 
 		&__text {
-			@apply hidden;
+			@apply absolute top-0 right-0 bottom-0 left-0 p-4 bg-primary-1 text-text-secondary px-14 py-5 overflow-auto flex items-center transition-opacity opacity-0 hover:opacity-100;
+		}
+
+		&__icon {
+			@apply mb-[2.625rem] max-w-10 max-h-40 mx-auto;
+
+			@apply lg:mx-0 lg:mb-0 lg:absolute top-6 right-6 max-w-16 max-h-16;
 		}
 
 		&__tag {
 			@apply text-yellow mb-[1.875rem] font-bold;
+
+			@apply 2xl:mb-[1.875rem] 2xl:text-[1.875rem];
 		}
 
 		&__title {
 			@apply text-[2.1875rem] leading-[1.25] font-anton text-text-secondary;
+
+			@apply 2xl:text-[4.375rem];
 		}
 	}
 }
