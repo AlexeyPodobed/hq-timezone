@@ -9,6 +9,7 @@ import { CityFull } from "@/types/cities";
 import { buildTzDayLabel, floorTo30, minutesToHHMM, normDayMinutes, toMinutes } from "@/utils/global";
 
 export interface MeetSectionResultsListProps {
+  id?: number;
   a: CityFull;
   b: CityFull;
   className?: string;
@@ -24,7 +25,7 @@ const buildPairsFullDay = (startA: number, diffMinutes: number, step = 30) => {
   });
 };
 
-export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b }) => {
+export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ id, a, b }) => {
   const labelA = useMemo(() => buildTzDayLabel(a.timeData?.timezoneId), [a]);
   const labelB = useMemo(() => buildTzDayLabel(b.timeData?.timezoneId), [b]);
 
@@ -38,11 +39,14 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b 
 
   const pairs = useMemo(() => buildPairsFullDay(startA, diffMinutes, 30), [startA, diffMinutes]);
 
+  const navPrev = `.arrow-prev-${id}`;
+  const navNext = `.arrow-next-${id}`;
+
   const swiperSettings = {
     slidesPerView: 5,
     navigation: {
-      nextEl: ".arrow-next",
-      prevEl: ".arrow-prev",
+      nextEl: navNext,
+      prevEl: navPrev,
     },
     breakpoints: {
       320: {
@@ -100,8 +104,8 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b 
         </SwiperComponent>
 
         <SwiperNavigation
-          prevClassName="arrow-prev"
-          nextClassName="arrow-next"
+          prevClassName={`arrow-prev-${id}`}
+          nextClassName={`arrow-next-${id}`}
           direction="both"
           className="meet-section__results-nav"
         />

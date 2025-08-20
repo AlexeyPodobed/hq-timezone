@@ -11,11 +11,17 @@ export default async function Home() {
 
   const sections = homepage?.homepage_flexible_content ?? [];
   const heroSection = homepage.homepage_flexible_content.find((section): section is HeroSectionBlock => section.acf_fc_layout === "hero");
-  const cityNames: string[] = heroSection?.cities_list.map((c) => c.city_name) ?? [];
+  const cityList = heroSection?.cities_list ?? [];
 
-  const citiesFull: CityFull[] = await fetchCitiesFull(cityNames);
-  const cityNameSet = new Set(cityNames.map((name) => name.toLowerCase()));
-  const filteredCities = citiesFull.filter((c) => cityNameSet.has(c.name.toLowerCase()));
+  const citySet = new Set(
+    cityList.map(({ city_name, city_timezone }) => `${city_name.toLowerCase()}|${city_timezone.replace(/['"]/g, "").toLowerCase()}`)
+  );
+
+  const citiesFull: CityFull[] = await fetchCitiesFull(cityList.map((c) => c.city_name));
+  const filteredCities = citiesFull.filter((c) => {
+    const key = `${c.name.toLowerCase()}|${c.timeData?.timezoneId.toLowerCase()}`;
+    return citySet.has(key);
+  });
 
   return (
     <div className="page-wrapper">

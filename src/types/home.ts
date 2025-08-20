@@ -10,6 +10,7 @@ export interface HeroSectionBlock {
   };
   cities_list: {
     city_name: string;
+    city_timezone: string;
   }[];
 }
 

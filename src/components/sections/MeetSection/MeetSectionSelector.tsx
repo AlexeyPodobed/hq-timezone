@@ -75,9 +75,10 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
           b={baseB}
         />
 
-        {addedPairs.map((pair, i) => (
+        {addedPairs.map((pair, index) => (
           <MeetSectionResultsList
-            key={i}
+            key={index}
+            id={index}
             a={pair.a}
             b={pair.b}
           />

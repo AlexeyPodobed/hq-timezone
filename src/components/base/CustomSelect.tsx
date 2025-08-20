@@ -90,7 +90,7 @@ export const CustomSelect = memo<CustomSelectProps>(
                 type="text"
                 className={clsx(
                   "w-full mb-3 p-2.5 border rounded-lg",
-                  variant === "yellow" ? "text-text-secondary border-yellow" : "text-primary-1 border-primary-1"
+                  variant === "yellow" ? "text-primary-1 border-yellow" : "text-primary-1 border-primary-1"
                 )}
                 placeholder="Search..."
                 value={search}
