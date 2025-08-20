@@ -6,13 +6,13 @@ interface Image {
 }
 
 interface Link {
-	url: string;
-	title: string;
-	target?: string;
+  url: string;
+  title: string;
+  target?: string;
 }
 
 interface LinkObj {
-	link: Link
+  link: Link;
 }
 
 export interface Header {
@@ -20,8 +20,8 @@ export interface Header {
 }
 
 export interface Footer {
-	footer_logo: Image;
-	footer_menu: Link[];
-	footer_buttons: LinkObj[];
-	footer_text: string;
+  footer_logo: Image;
+  footer_menu: Link[];
+  footer_buttons: LinkObj[];
+  footer_text: string;
 }
