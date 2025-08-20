@@ -90,4 +90,4 @@ export function formatDayMonthInTZ(timezoneId: string, date = new Date()): strin
   return tzFormat(date, "d MMM", { timeZone: timezoneId });
 }
 
-export const buildTzDayLabel = (tzId?: string) => (tzId ? `${getTimeZoneAbbr(tzId)} ${formatDayMonthInTZ(tzId)}` : "");
+export const buildTzDayLabel = (tzId?: string) => (tzId ? `${getTimeZoneAbbr(tzId).replace(/([+-]\d+)$/, "")} ${formatDayMonthInTZ(tzId)}` : "");

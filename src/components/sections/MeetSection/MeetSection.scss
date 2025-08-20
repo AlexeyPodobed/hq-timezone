@@ -33,12 +33,16 @@
         @apply text-[2.8125rem] leading-none text-white font-semibold;
     }
 
+    &__select-results-list {
+        @apply w-full flex flex-col gap-7;
+    }
+
     &__select-results {
         @apply mt-[6.25rem] flex gap-[8.75rem];
     }
 
     &__results-cities {
-        @apply flex flex-col gap-10;
+        @apply min-w-44 flex flex-col gap-10;
     }
 
     &__results-city {
@@ -52,7 +56,12 @@
     }
 
     &__results-time {
-        @apply w-full flex gap-[6.25rem];
+        @apply relative w-full pt-5 flex flex-col w-full overflow-hidden;
+
+        &::before {
+            content: "";
+            @apply absolute top-0 left-[50%] -translate-x-[50%] w-40 h-full border border-border-primary rounded-[1.25rem] pointer-events-none z-10;
+        }
     }
 
     &__time-item {
@@ -60,7 +69,12 @@
     }
 
     &__item-time {
-        @apply text-3xl leading-none whitespace-nowrap text-center;
+        @apply relative text-3xl leading-normal whitespace-nowrap text-center;
+
+        &::before {
+            content: "";
+            @apply absolute -top-[0.3125rem] left-[50%] -translate-x-[50%] w-[100%] h-[0.1875rem] bg-border-primary;
+        }
 
         .ampm {
             @apply text-lg leading-normal;
@@ -73,5 +87,9 @@
         &.meet-section__item-time-bCity {
             @apply text-white;
         }
+    }
+
+    &__results-nav {
+        @apply w-full mt-5 flex items-center justify-between;
     }
 }
