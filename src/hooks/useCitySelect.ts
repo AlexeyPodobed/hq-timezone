@@ -105,7 +105,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
 
     const inInitial = initialCities.some((x) => x.name.toLowerCase() === selected.name.toLowerCase());
     setExtraCities(inInitial ? [] : [selected]);
-  }, [debounced, initialCities, selected]);
+  }, [debounced, selected]);
 
   useEffect(() => {
     const term = debounced.trim();
