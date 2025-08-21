@@ -10,7 +10,6 @@ import { getCityTimeViaProxy } from "@/utils/cities";
 export interface UseCitySelectOptions {
   storageKey?: string;
   debounceMs?: number;
-  maxRows?: number;
   defaultCity?: number;
 }
 
@@ -26,7 +25,6 @@ const uniqueByName = (list: CityFull[]) => {
 export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOptions = {}) {
   const storageKey = opts.storageKey ?? "selectedCity";
   const debounceMs = opts.debounceMs ?? 300;
-  const maxRows = opts.maxRows ?? 5;
   const defaultCity = opts.defaultCity ?? 0;
 
   const [selected, setSelected] = useState<CityFull>(initialCities[defaultCity]);
@@ -132,7 +130,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     })();
 
     return () => ac.abort();
-  }, [debounced, maxRows]);
+  }, [debounced]);
 
   return {
     selected,
