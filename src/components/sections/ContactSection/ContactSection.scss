@@ -1,8 +1,12 @@
 .contact {
-    @apply text-text-secondary relative z-10 overflow-hidden pt-[16.875rem] pb-20 rounded-[1.25rem] mt-[1.5625rem];
+    @apply text-text-secondary relative z-10 overflow-hidden pb-5 pt-10 mt-2.5 rounded-[0.625rem];
+
+    @apply lg:pt-[16.875rem] lg:mt-[1.5625rem] lg:rounded-[1.25rem] lg:pb-20;
 
     &::after {
-        @apply font-anton text-light-blue block content-['NO_MATTER_YOUR_TIMEZONE'] absolute -bottom-16 w-full text-[11.875rem] leading-[17.875rem] opacity-15 text-center whitespace-nowrap left-1/2 -translate-x-1/2;
+        @apply hidden;
+
+        @apply lg:font-anton lg:text-light-blue lg:block lg:content-['NO_MATTER_YOUR_TIMEZONE'] lg:absolute lg:-bottom-[4.5rem] lg:w-full lg:text-[11.875rem] lg:leading-[17.875rem] lg:opacity-15 lg:text-center lg:whitespace-nowrap lg:left-1/2 lg:-translate-x-1/2;
     }
 
     &__bg {
@@ -14,22 +18,48 @@
     }
 
     &__title {
-        @apply mb-4 font-anton text-[1.875rem];
+        @apply font-anton text-4xl px-11 mx-auto text-center mb-6;
+
+        @apply lg:mb-4 lg:text-[1.875rem] lg:px-0;
     }
 
     &-row {
-        @apply flex gap-24;
+        @apply flex flex-col gap-6;
+
+        @apply lg:gap-24 lg:flex-row;
     }
 
     &-col {
-        @apply w-1/2;
+        @apply lg:w-1/2;
+
+        &--img {
+            @apply order-1 relative;
+
+            @apply lg:order-none;
+
+            @apply 2xl:static;
+
+            &::before {
+                @apply content-[''] w-[23.25rem] h-[11.0625rem] block absolute bg-[url(/images/contact-figure.svg)] bg-no-repeat bg-contain bg-right bottom-4 -left-24;
+
+                @apply lg:w-[43.75rem] lg:h-[22.7rem] lg:-left-[15.35em] lg:-top-[5rem] lg:bottom-auto;
+
+                @apply 2xl:left-0 2xl:top-[9.5625rem] 2xl:w-[62.5rem] 2xl:h-[32.4375rem];
+
+                @media (min-width: 1536px) { // 2xl
+                    background-position: left center;
+                }
+            }
+        }
     }
 
     &__img {
-        @apply rounded-[1.25rem] overflow-hidden;
+        @apply rounded-[1.25rem] overflow-hidden ;
 
         img {
-            @apply w-full h-full object-cover;
+            @apply w-full h-full object-cover min-h-96;
+
+            @apply lg:min-h-[36.4375rem];
         }
     }
 
@@ -41,16 +71,20 @@
         }
 
         &-row {
-            @apply flex gap-2.5 w-full;
+            @apply flex flex-col gap-2.5 w-full;
+
+            @apply lg:flex-row;
         }
 
         &-col {
-            @apply w-1/2;
+            @apply lg:w-1/2;
         }
 
         input,
         textarea {
-            @apply border border-text-secondary text-text-secondary block bg-transparent text-[1.125rem] leading-[1.4375rem] py-3 px-5 rounded w-full;
+            @apply border border-text-secondary text-text-secondary block bg-transparent text-[1.125rem] leading-[1.4375rem] py-3 px-3.5 rounded w-full;
+
+            @apply lg:px-5;
 
             &::placeholder {
                 @apply text-text-secondary opacity-60;
@@ -70,7 +104,7 @@
         }
 
         .checkbox-with-text {
-            @apply flex items-center gap-2.5 leading-8;
+            @apply flex items-center gap-2.5 leading-[1.4];
 
             .custom-checkbox {
                 @apply border border-text-secondary text-text-secondary block w-5 h-5 rounded-[0.125rem] relative overflow-hidden;
@@ -78,6 +112,10 @@
                 &::after {
                     @apply content-[''] absolute top-0 left-0 w-full h-full bg-transparent transition-colors;
                 }
+            }
+
+            &__text {
+                @apply w-[calc(100%-2.0625rem)];
             }
 
             input[type="checkbox"] {

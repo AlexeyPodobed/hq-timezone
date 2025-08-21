@@ -21,7 +21,7 @@ interface ContactSectionProps {
 
 export const ContactSection = memo<ContactSectionProps>(({ background_image, image }) => {
   return (
-    <section className="contact bordered-section">
+    <section className="contact">
       <ImageWrapper
         src={background_image.url}
         alt={background_image.alt}
@@ -29,7 +29,7 @@ export const ContactSection = memo<ContactSectionProps>(({ background_image, ima
       />
       <Container>
         <div className="contact-row">
-          <div className="contact-col">
+          <div className="contact-col contact-col--img">
             <ImageWrapper
               src={image.url}
               alt={image.alt}
@@ -61,7 +61,7 @@ export const ContactSection = memo<ContactSectionProps>(({ background_image, ima
                   <label className="checkbox-with-text">
                     <input type="checkbox" />
                     <span className="custom-checkbox"></span>
-                    <span>Keep me updated when calendar integrations (Google or Outlook) become available.</span>
+                    <span className="checkbox-with-text__text">Keep me updated when calendar integrations (Google or Outlook) become available.</span>
                   </label>
                   <input
                     type="submit"
