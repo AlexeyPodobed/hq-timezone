@@ -66,6 +66,18 @@
     &-form {
         @apply relative z-10;
 
+        &__loader {
+            @apply absolute top-0 right-0 bottom-0 left-0 flex items-center justify-center z-50;
+        }
+
+        form {
+            @apply transition-opacity;
+
+            &.disabled {
+                @apply opacity-25;
+            }
+        }
+
         &-inner {
             @apply flex flex-wrap gap-2.5;
         }
@@ -92,6 +104,14 @@
 
             &:focus {
                 @apply outline-0;
+            }
+
+            &.invalid {
+                @apply border-red-500;
+            }
+
+            & ~ .error-message {
+                @apply text-sm text-red-400;
             }
         }
 
@@ -132,6 +152,20 @@
 
             &:hover {
                 @apply bg-yellow text-primary-1 border-transparent;
+            }
+        }
+
+        &-result {
+            @apply text-center text-2xl font-bold py-3;
+
+            @apply lg:py-5;
+
+            &.error {
+                @apply text-red-400;
+            }
+
+            &.success {
+                @apply text-green-400;
             }
         }
     }
