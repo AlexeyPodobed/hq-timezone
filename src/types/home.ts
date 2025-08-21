@@ -39,7 +39,23 @@ export interface PostsSectionBlock {
   }[];
 }
 
-export type HomePageFlexibleContent = HeroSectionBlock | MeetSectionBlock | PostsSectionBlock;
+export interface ContactSectionBlock {
+  acf_fc_layout: "contact";
+  background_image: {
+    url: string;
+    alt: string;
+    height: number;
+    width: number;
+  };
+  image: {
+    url: string;
+    alt: string;
+    height: number;
+    width: number;
+  };
+}
+
+export type HomePageFlexibleContent = HeroSectionBlock | MeetSectionBlock | PostsSectionBlock | ContactSectionBlock;
 
 export interface HomePageAPI {
   homepage_flexible_content: HomePageFlexibleContent[];

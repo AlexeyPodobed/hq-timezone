@@ -1,9 +1,10 @@
 import { getHomePage } from "@/api/homepage";
 import { CardsSection } from "@/components/sections/CardsSection/CardsSection";
+import { ContactSection } from "@/components/sections/ContactSection/ContactSection.tsx";
 import { HeroSection } from "@/components/sections/HeroSection/HeroSection";
 import { MeetSection } from "@/components/sections/MeetSection/MeetSection";
 import { CityFull } from "@/types/cities";
-import { HeroSectionBlock, MeetSectionBlock, PostsSectionBlock } from "@/types/home";
+import { ContactSectionBlock, HeroSectionBlock, MeetSectionBlock, PostsSectionBlock } from "@/types/home";
 import { fetchCitiesFull } from "@/utils/cities";
 
 export default async function Home() {
@@ -53,6 +54,16 @@ export default async function Home() {
               <CardsSection
                 key={`posts-${idx}`}
                 posts={postsBlock.posts}
+              />
+            );
+          }
+          case "contact": {
+            const postsBlock = block as ContactSectionBlock;
+            return (
+              <ContactSection
+                key={`contact-${idx}`}
+                background_image={postsBlock.background_image}
+                image={postsBlock.image}
               />
             );
           }

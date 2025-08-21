@@ -1,0 +1,100 @@
+.contact {
+    @apply text-text-secondary relative z-10 overflow-hidden pt-[16.875rem] pb-20 rounded-[1.25rem] mt-[1.5625rem];
+
+    &::after {
+        @apply font-anton text-light-blue block content-['NO_MATTER_YOUR_TIMEZONE'] absolute -bottom-16 w-full text-[11.875rem] leading-[17.875rem] opacity-15 text-center whitespace-nowrap left-1/2 -translate-x-1/2;
+    }
+
+    &__bg {
+        @apply absolute top-0 left-0 w-full h-full -z-10;
+
+        img {
+            @apply w-full h-full object-cover;
+        }
+    }
+
+    &__title {
+        @apply mb-4 font-anton text-[1.875rem];
+    }
+
+    &-row {
+        @apply flex gap-24;
+    }
+
+    &-col {
+        @apply w-1/2;
+    }
+
+    &__img {
+        @apply rounded-[1.25rem] overflow-hidden;
+
+        img {
+            @apply w-full h-full object-cover;
+        }
+    }
+
+    &-form {
+        @apply relative z-10;
+
+        &-inner {
+            @apply flex flex-wrap gap-2.5;
+        }
+
+        &-row {
+            @apply flex gap-2.5 w-full;
+        }
+
+        &-col {
+            @apply w-1/2;
+        }
+
+        input,
+        textarea {
+            @apply border border-text-secondary text-text-secondary block bg-transparent text-[1.125rem] leading-[1.4375rem] py-3 px-5 rounded w-full;
+
+            &::placeholder {
+                @apply text-text-secondary opacity-60;
+            }
+
+            &:focus {
+                @apply outline-0;
+            }
+        }
+
+        input {
+            @apply min-h-[4.4375rem];
+        }
+
+        textarea {
+            @apply min-h-[8.5rem];
+        }
+
+        .checkbox-with-text {
+            @apply flex items-center gap-2.5 leading-8;
+
+            .custom-checkbox {
+                @apply border border-text-secondary text-text-secondary block w-5 h-5 rounded-[0.125rem] relative overflow-hidden;
+
+                &::after {
+                    @apply content-[''] absolute top-0 left-0 w-full h-full bg-transparent transition-colors;
+                }
+            }
+
+            input[type="checkbox"] {
+                @apply hidden;
+
+                &:checked ~ .custom-checkbox::after {
+                    @apply bg-yellow;
+                }
+            }
+        }
+
+        input[type="submit"] {
+            @apply text-text-secondary font-anton text-[1.25rem] h-[4.375rem] cursor-pointer transition-colors;
+
+            &:hover {
+                @apply bg-yellow text-primary-1 border-transparent;
+            }
+        }
+    }
+}
