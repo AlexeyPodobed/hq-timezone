@@ -84,16 +84,6 @@ export function formatTimeZoneVerbose(timezoneId: string, date = new Date()): st
   return `(${short}) ${long}`;
 }
 
-export function getTimeZoneAbbr(timezoneId: string, date = new Date()): string {
-  return tzFormat(date, "zzz", { timeZone: timezoneId });
-}
-
-export function formatDayMonthInTZ(timezoneId: string, date = new Date()): string {
-  return tzFormat(date, "d MMM", { timeZone: timezoneId });
-}
-
-export const buildTzDayLabel = (tzId?: string) => (tzId ? `${getTimeZoneAbbr(tzId).replace(/([+-]\d+)$/, "")} ${formatDayMonthInTZ(tzId)}` : "");
-
 export const getNextDayLabel = (time: string | undefined) => {
   if (!time) return null;
   const [hours, minutes] = time.split(":").map(Number);
@@ -101,3 +91,14 @@ export const getNextDayLabel = (time: string | undefined) => {
   const result = addMinutes(base, hours * 60 + minutes);
   return format(result, "d MMM");
 };
+
+export const formatDayMonthInTZ = (tz: string) => {
+  const zoned = toZonedTime(new Date(), tz);
+  return format(zoned, "dd MMM");
+};
+
+export function getTimeZoneAbbr(timezoneId: string, date = new Date()): string {
+  return tzFormat(date, "zzz", { timeZone: timezoneId });
+}
+
+export const buildTzDayLabel = (tzId?: string) => (tzId ? `${getTimeZoneAbbr(tzId).replace(/([+-]\d+)$/, "")} ${formatDayMonthInTZ(tzId)}` : "");

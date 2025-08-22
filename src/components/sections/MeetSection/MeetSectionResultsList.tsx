@@ -1,5 +1,7 @@
 "use client";
 
+import { addMinutes } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz";
 import { memo, useMemo } from "react";
 
 import { Icon } from "@/components/base/Icon";
@@ -7,7 +9,7 @@ import { Time } from "@/components/base/Time";
 import SwiperComponent from "@/components/swiper/SwiperComponent";
 import SwiperNavigation from "@/components/swiper/SwiperNavigation";
 import { CityFull } from "@/types/cities";
-import { buildTzDayLabel, floorTo30, getNextDayLabel, minutesToHHMM, normDayMinutes, toMinutes } from "@/utils/global";
+import { buildTzDayLabel } from "@/utils/global";
 
 export interface MeetSectionResultsListProps {
   a: CityFull;
@@ -16,13 +18,11 @@ export interface MeetSectionResultsListProps {
   onDelete?: (index: number) => void;
   className?: string;
 }
-const buildPairsFullDay = (startA: number, diffMinutes: number, step = 30) => {
-  const rows = 1440 / step;
-  const diff = normDayMinutes(diffMinutes);
-  return Array.from({ length: rows }, (_, i) => {
-    const a = startA + i * step;
-    const b = a + diff;
-    return { a: minutesToHHMM(a), b: minutesToHHMM(b) };
+
+const buildUtcPairsFullDay = (baseUtc: Date, step = 30, count = 48, timezones: string[]) => {
+  return Array.from({ length: count }, (_, i) => {
+    const utc = addMinutes(baseUtc, i * step);
+    return timezones.map((tz) => toZonedTime(utc, tz));
   });
 };
 
@@ -30,28 +30,23 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b,
   const labelA = useMemo(() => buildTzDayLabel(a.timeData?.timezoneId), [a]);
   const labelB = useMemo(() => buildTzDayLabel(b.timeData?.timezoneId), [b]);
 
-  const startA = useMemo(() => floorTo30(toMinutes(a.timeData?.time)), [a]);
-  const diffMinutes = useMemo(() => {
-    const A = toMinutes(a.timeData?.time);
-    const B = toMinutes(b.timeData?.time);
-    const raw = normDayMinutes(B - A);
-    return normDayMinutes(floorTo30(raw));
-  }, [a, b]);
+  const allTimezones = useMemo(() => {
+    const extras = Object.values(extraSelected)
+      .filter(Boolean)
+      .map((c) => c!.timeData?.timezoneId);
+    return [a.timeData?.timezoneId, b.timeData?.timezoneId, ...extras.filter(Boolean)] as string[];
+  }, [a, b, extraSelected]);
 
-  const isMidnight = (time: string | undefined) => time?.startsWith("00:00");
+  const baseUtc = useMemo(() => {
+    const now = new Date();
+    const mins = now.getUTCMinutes();
+    now.setUTCMinutes(mins < 30 ? 0 : 30, 0, 0);
+    return now;
+  }, []);
 
-  const pairs = useMemo(() => buildPairsFullDay(startA, diffMinutes, 30), [startA, diffMinutes]);
+  const pairs = useMemo(() => buildUtcPairsFullDay(baseUtc, 30, 48, allTimezones), [baseUtc, allTimezones]);
 
-  const extraPairs = useMemo(() => {
-    return Object.entries(extraSelected)
-      .filter(([, city]) => city !== null)
-      .reduce<Record<string, ReturnType<typeof buildPairsFullDay>>>((acc, [index, city]) => {
-        const minutesC = toMinutes(city!.timeData?.time);
-        const diffC = normDayMinutes(minutesC - toMinutes(a.timeData?.time));
-        acc[index] = buildPairsFullDay(startA, floorTo30(diffC), 30);
-        return acc;
-      }, {});
-  }, [extraSelected, a, startA]);
+  const isMidnight = (date: Date) => format(date, "HH:mm").startsWith("00:00");
 
   const swiperSettings = {
     slidesPerView: 5,
@@ -60,16 +55,9 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b,
       prevEl: ".arrow-prev",
     },
     breakpoints: {
-      320: {
-        slidesPerView: 1,
-        spaceBetween: 16,
-      },
-      768: {
-        slidesPerView: 3,
-      },
-      1024: {
-        slidesPerView: 5,
-      },
+      320: { slidesPerView: 1, spaceBetween: 16 },
+      768: { slidesPerView: 3 },
+      1024: { slidesPerView: 5 },
     },
   };
 
@@ -88,13 +76,12 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b,
             <p>{labelB}</p>
           </div>
         </div>
-
         {Object.entries(extraSelected)
           .filter(([, city]) => city !== null)
           .map(([index, city]) => (
             <div
-              className="meet-section__results-city"
               key={index}
+              className="meet-section__results-city"
             >
               <div className="meet-section__results-flex">
                 <h4>{city?.name}</h4>
@@ -118,40 +105,22 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b,
           settings={swiperSettings}
           className="w-full max-w-full !ml-0 !mr-0 !overflow-visible"
         >
-          {pairs.map((p, i) => (
+          {pairs.map((row, i) => (
             <div
               key={i}
               className="meet-section__time-item"
             >
-              <div className="meet-section__item-time">
-                <Time
-                  time={p.a}
-                  live={false}
-                  showSeconds={false}
-                />
-
-                {isMidnight(p.a) && <div className="meet-section__item-new-day">{getNextDayLabel(p.a)}</div>}
-              </div>
-              <div className="meet-section__item-time">
-                <Time
-                  time={p.b}
-                  live={false}
-                  showSeconds={false}
-                />
-                {isMidnight(p.b) && <div className="meet-section__item-new-day">{getNextDayLabel(p.b)}</div>}
-              </div>
-
-              {Object.entries(extraPairs).map(([index, pairList]) => (
+              {row.map((date, j) => (
                 <div
-                  key={index}
+                  key={j}
                   className="meet-section__item-time"
                 >
                   <Time
-                    time={pairList[i]?.b}
+                    time={format(date, "HH:mm")}
                     live={false}
                     showSeconds={false}
                   />
-                  {isMidnight(pairList[i]?.b) && <div className="meet-section__item-new-day">{getNextDayLabel(pairList[i]?.b)}</div>}
+                  {isMidnight(date) && <div className="meet-section__item-new-day">{format(date, "dd MMM")}</div>}
                 </div>
               ))}
             </div>
