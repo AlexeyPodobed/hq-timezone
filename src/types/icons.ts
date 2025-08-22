@@ -5,6 +5,7 @@ export enum ICON_NAMES {
   "plus",
   "arrow-left",
   "arrow-right",
+  "minus",
 }
 
 export type ICON_SIZE =

@@ -22,6 +22,7 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
 
   const [extraCount, setExtraCount] = useState(0);
   const [extraSelected, setExtraSelected] = useState<Record<number, CityFull | null>>({});
+  const isMaxReached = extraCount >= 10;
 
   const handleExtraChange = useCallback((index: number, value: CityFull | null) => {
     setExtraSelected((prev) => ({ ...prev, [index]: value }));
@@ -45,8 +46,27 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
   }, [extraCount]);
 
   const handleAdd = () => {
+    if (isMaxReached) return;
     setExtraCount((prev) => prev + 1);
   };
+
+  const handleDeleteExtra = useCallback((index: number) => {
+    setExtraSelected((prev) => {
+      const copy = { ...prev };
+      delete copy[index];
+      return copy;
+    });
+
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem(`meetExtraCity${index}`);
+    }
+
+    setExtraCount((prev) => {
+      const updated = Math.max(0, prev - 1);
+      sessionStorage.setItem("meetExtraCount", String(updated));
+      return updated;
+    });
+  }, []);
 
   return (
     <div className={clsx("meet-section__selector", className)}>
@@ -87,7 +107,7 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
         ))}
 
         <div
-          className="cursor-pointer"
+          className={clsx("cursor-pointer transition-all", isMaxReached && "opacity-50 pointer-events-none")}
           onClick={handleAdd}
         >
           <Icon
@@ -101,6 +121,7 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
         a={aCity.selected}
         b={bCity.selected}
         extraSelected={extraSelected}
+        onDelete={handleDeleteExtra}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import { format, parseISO, isValid, differenceInMinutes } from "date-fns";
+import { format, parseISO, isValid, differenceInMinutes, addMinutes, startOfDay, addDays } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { toZonedTime, format as tzFormat } from "date-fns-tz";
 
@@ -6,6 +6,8 @@ export const rem = (rem: number) =>
   rem * (typeof window === "undefined" ? 16 : +getComputedStyle(document.documentElement).fontSize.replace("px", ""));
 
 export const getCurrentDate = () => new Date();
+
+export const parseTzTime = (timeStr: string) => parseISO(timeStr.replace(" ", "T"));
 
 export function formatMonthDate(date: Date, showYear: boolean = true): string {
   return format(date, showYear ? "MMM d, yyyy" : "MMM d");
@@ -91,3 +93,11 @@ export function formatDayMonthInTZ(timezoneId: string, date = new Date()): strin
 }
 
 export const buildTzDayLabel = (tzId?: string) => (tzId ? `${getTimeZoneAbbr(tzId).replace(/([+-]\d+)$/, "")} ${formatDayMonthInTZ(tzId)}` : "");
+
+export const getNextDayLabel = (time: string | undefined) => {
+  if (!time) return null;
+  const [hours, minutes] = time.split(":").map(Number);
+  const base = addDays(startOfDay(new Date()), 1);
+  const result = addMinutes(base, hours * 60 + minutes);
+  return format(result, "d MMM");
+};

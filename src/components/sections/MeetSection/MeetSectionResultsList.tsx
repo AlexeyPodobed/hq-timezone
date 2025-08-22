@@ -2,16 +2,18 @@
 
 import { memo, useMemo } from "react";
 
+import { Icon } from "@/components/base/Icon";
 import { Time } from "@/components/base/Time";
 import SwiperComponent from "@/components/swiper/SwiperComponent";
 import SwiperNavigation from "@/components/swiper/SwiperNavigation";
 import { CityFull } from "@/types/cities";
-import { buildTzDayLabel, floorTo30, minutesToHHMM, normDayMinutes, toMinutes } from "@/utils/global";
+import { buildTzDayLabel, floorTo30, getNextDayLabel, minutesToHHMM, normDayMinutes, toMinutes } from "@/utils/global";
 
 export interface MeetSectionResultsListProps {
   a: CityFull;
   b: CityFull;
   extraSelected?: Record<number, CityFull | null>;
+  onDelete?: (index: number) => void;
   className?: string;
 }
 const buildPairsFullDay = (startA: number, diffMinutes: number, step = 30) => {
@@ -24,7 +26,7 @@ const buildPairsFullDay = (startA: number, diffMinutes: number, step = 30) => {
   });
 };
 
-export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b, extraSelected = {} }) => {
+export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b, extraSelected = {}, onDelete }) => {
   const labelA = useMemo(() => buildTzDayLabel(a.timeData?.timezoneId), [a]);
   const labelB = useMemo(() => buildTzDayLabel(b.timeData?.timezoneId), [b]);
 
@@ -35,6 +37,8 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b,
     const raw = normDayMinutes(B - A);
     return normDayMinutes(floorTo30(raw));
   }, [a, b]);
+
+  const isMidnight = (time: string | undefined) => time?.startsWith("00:00");
 
   const pairs = useMemo(() => buildPairsFullDay(startA, diffMinutes, 30), [startA, diffMinutes]);
 
@@ -73,12 +77,16 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b,
     <div className="meet-section__select-results">
       <div className="meet-section__results-cities">
         <div className="meet-section__results-city">
-          <h4>{a.name}</h4>
-          <p>{labelA}</p>
+          <div className="meet-section__results-flex">
+            <h4>{a.name}</h4>
+            <p>{labelA}</p>
+          </div>
         </div>
         <div className="meet-section__results-city">
-          <h4>{b.name}</h4>
-          <p>{labelB}</p>
+          <div className="meet-section__results-flex">
+            <h4>{b.name}</h4>
+            <p>{labelB}</p>
+          </div>
         </div>
 
         {Object.entries(extraSelected)
@@ -88,8 +96,19 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b,
               className="meet-section__results-city"
               key={index}
             >
-              <h4>{city?.name}</h4>
-              <p>{buildTzDayLabel(city!.timeData?.timezoneId)}</p>
+              <div className="meet-section__results-flex">
+                <h4>{city?.name}</h4>
+                <p>{buildTzDayLabel(city!.timeData?.timezoneId)}</p>
+              </div>
+              <div
+                className="cursor-pointer"
+                onClick={() => onDelete?.(Number(index))}
+              >
+                <Icon
+                  name="minus"
+                  className="text-[2.875rem] text-red-700"
+                />
+              </div>
             </div>
           ))}
       </div>
@@ -104,31 +123,35 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b,
               key={i}
               className="meet-section__time-item"
             >
-              <div className="meet-section__item-time meet-section__item-time-aCity">
+              <div className="meet-section__item-time">
                 <Time
                   time={p.a}
                   live={false}
                   showSeconds={false}
                 />
+
+                {isMidnight(p.a) && <div className="meet-section__item-new-day">{getNextDayLabel(p.a)}</div>}
               </div>
-              <div className="meet-section__item-time meet-section__item-time-bCity">
+              <div className="meet-section__item-time">
                 <Time
                   time={p.b}
                   live={false}
                   showSeconds={false}
                 />
+                {isMidnight(p.b) && <div className="meet-section__item-new-day">{getNextDayLabel(p.b)}</div>}
               </div>
 
               {Object.entries(extraPairs).map(([index, pairList]) => (
                 <div
                   key={index}
-                  className="meet-section__item-time meet-section__item-time-bCity"
+                  className="meet-section__item-time"
                 >
                   <Time
                     time={pairList[i]?.b}
                     live={false}
                     showSeconds={false}
                   />
+                  {isMidnight(pairList[i]?.b) && <div className="meet-section__item-new-day">{getNextDayLabel(pairList[i]?.b)}</div>}
                 </div>
               ))}
             </div>

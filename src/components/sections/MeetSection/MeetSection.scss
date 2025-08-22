@@ -46,6 +46,10 @@
     }
 
     &__results-city {
+        @apply flex items-center gap-6;
+    }
+
+    &__results-flex {
         @apply flex flex-col whitespace-nowrap;
         h4 {
             @apply text-[1.875rem] leading-none text-yellow font-bold;
@@ -85,7 +89,19 @@
         }
     }
 
+    &__item-new-day {
+        @apply absolute left-[50%] -translate-x-[50%]  w-fit h-6 px-[0.4375rem] flex items-center justify-center rounded-full bg-yellow text-lg font-semibold leading-none text-primary-1;
+    }
+
     &__results-nav {
         @apply w-full mt-5 flex items-center justify-between;
+
+        .arrow-prev,
+        .arrow-next {
+            @apply transition-all;
+            &.swiper-button-disabled {
+                @apply opacity-50;
+            }
+        }
     }
 }
