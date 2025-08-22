@@ -9,12 +9,11 @@ import { CityFull } from "@/types/cities";
 import { buildTzDayLabel, floorTo30, minutesToHHMM, normDayMinutes, toMinutes } from "@/utils/global";
 
 export interface MeetSectionResultsListProps {
-  id?: number;
   a: CityFull;
   b: CityFull;
+  extraSelected?: Record<number, CityFull | null>;
   className?: string;
 }
-
 const buildPairsFullDay = (startA: number, diffMinutes: number, step = 30) => {
   const rows = 1440 / step;
   const diff = normDayMinutes(diffMinutes);
@@ -25,7 +24,7 @@ const buildPairsFullDay = (startA: number, diffMinutes: number, step = 30) => {
   });
 };
 
-export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ id, a, b }) => {
+export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b, extraSelected = {} }) => {
   const labelA = useMemo(() => buildTzDayLabel(a.timeData?.timezoneId), [a]);
   const labelB = useMemo(() => buildTzDayLabel(b.timeData?.timezoneId), [b]);
 
@@ -39,14 +38,22 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ id, a
 
   const pairs = useMemo(() => buildPairsFullDay(startA, diffMinutes, 30), [startA, diffMinutes]);
 
-  const navPrev = `.arrow-prev-${id}`;
-  const navNext = `.arrow-next-${id}`;
+  const extraPairs = useMemo(() => {
+    return Object.entries(extraSelected)
+      .filter(([, city]) => city !== null)
+      .reduce<Record<string, ReturnType<typeof buildPairsFullDay>>>((acc, [index, city]) => {
+        const minutesC = toMinutes(city!.timeData?.time);
+        const diffC = normDayMinutes(minutesC - toMinutes(a.timeData?.time));
+        acc[index] = buildPairsFullDay(startA, floorTo30(diffC), 30);
+        return acc;
+      }, {});
+  }, [extraSelected, a, startA]);
 
   const swiperSettings = {
     slidesPerView: 5,
     navigation: {
-      nextEl: navNext,
-      prevEl: navPrev,
+      nextEl: ".arrow-next",
+      prevEl: ".arrow-prev",
     },
     breakpoints: {
       320: {
@@ -73,6 +80,18 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ id, a
           <h4>{b.name}</h4>
           <p>{labelB}</p>
         </div>
+
+        {Object.entries(extraSelected)
+          .filter(([, city]) => city !== null)
+          .map(([index, city]) => (
+            <div
+              className="meet-section__results-city"
+              key={index}
+            >
+              <h4>{city?.name}</h4>
+              <p>{buildTzDayLabel(city!.timeData?.timezoneId)}</p>
+            </div>
+          ))}
       </div>
 
       <div className="meet-section__results-time">
@@ -99,13 +118,26 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ id, a
                   showSeconds={false}
                 />
               </div>
+
+              {Object.entries(extraPairs).map(([index, pairList]) => (
+                <div
+                  key={index}
+                  className="meet-section__item-time meet-section__item-time-bCity"
+                >
+                  <Time
+                    time={pairList[i]?.b}
+                    live={false}
+                    showSeconds={false}
+                  />
+                </div>
+              ))}
             </div>
           ))}
         </SwiperComponent>
 
         <SwiperNavigation
-          prevClassName={`arrow-prev-${id}`}
-          nextClassName={`arrow-next-${id}`}
+          prevClassName="arrow-prev"
+          nextClassName="arrow-next"
           direction="both"
           className="meet-section__results-nav"
         />

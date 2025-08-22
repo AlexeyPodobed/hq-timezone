@@ -65,15 +65,15 @@
     }
 
     &__time-item {
-        @apply min-h-[6.625rem] flex flex-col gap-[2.5625rem];
+        @apply min-h-[6.625rem] flex flex-col gap-[3.5rem];
     }
 
     &__item-time {
-        @apply relative text-3xl leading-normal whitespace-nowrap text-center;
+        @apply relative text-3xl leading-normal whitespace-nowrap text-center text-white;
 
         &::before {
             content: "";
-            @apply absolute -top-[0.3125rem] left-[50%] -translate-x-[50%] w-[100%] h-[0.1875rem] bg-border-primary text-white;
+            @apply absolute -top-[0.3125rem] left-[50%] -translate-x-[50%] w-[100%] h-[0.1875rem] bg-border-primary;
         }
 
         &:first-child {

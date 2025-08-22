@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { memo, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 
 import { CustomSelect } from "@/components/base/CustomSelect";
 import { Icon } from "@/components/base/Icon";
@@ -9,8 +9,7 @@ import { useCitySelect } from "@/hooks/useCitySelect";
 import { CityFull } from "@/types/cities";
 
 import { MeetSectionExtraSelect } from "./MeetSectionExtraSelect";
-
-// import { MeetSectionResultsList } from "./MeetSectionResultsList";
+import { MeetSectionResultsList } from "./MeetSectionResultsList";
 
 export interface MeetSectionSelectorProps {
   cities: CityFull[];
@@ -24,9 +23,9 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
   const [extraCount, setExtraCount] = useState(0);
   const [extraSelected, setExtraSelected] = useState<Record<number, CityFull | null>>({});
 
-  const handleExtraChange = (index: number, value: CityFull | null) => {
+  const handleExtraChange = useCallback((index: number, value: CityFull | null) => {
     setExtraSelected((prev) => ({ ...prev, [index]: value }));
-  };
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -98,18 +97,11 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
         </div>
       </div>
 
-      <div className="text-white">
-        {Object.entries(extraSelected)
-          .filter(([, city]) => city !== null)
-          .map(([index, city]) => (
-            <div
-              key={index}
-              className="text-sm text-white"
-            >
-              Extra #{index}: {(city as CityFull).name}
-            </div>
-          ))}
-      </div>
+      <MeetSectionResultsList
+        a={aCity.selected}
+        b={bCity.selected}
+        extraSelected={extraSelected}
+      />
     </div>
   );
 });
