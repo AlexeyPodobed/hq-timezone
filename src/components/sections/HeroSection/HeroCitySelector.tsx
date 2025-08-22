@@ -18,7 +18,6 @@ export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) =>
   const { selected, options, setSearch, selectCity, selectByName } = useCitySelect(cities, {
     storageKey: "selectedHeroCity",
     debounceMs: 300,
-    maxRows: 5,
   });
 
   return (
