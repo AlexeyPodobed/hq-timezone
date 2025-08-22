@@ -1,14 +1,16 @@
 "use client";
 
 import clsx from "clsx";
-import { memo, useState, useCallback } from "react";
+import { memo, useEffect, useState } from "react";
 
 import { CustomSelect } from "@/components/base/CustomSelect";
 import { Icon } from "@/components/base/Icon";
 import { useCitySelect } from "@/hooks/useCitySelect";
 import { CityFull } from "@/types/cities";
 
-import { MeetSectionResultsList } from "./MeetSectionResultsList";
+import { MeetSectionExtraSelect } from "./MeetSectionExtraSelect";
+
+// import { MeetSectionResultsList } from "./MeetSectionResultsList";
 
 export interface MeetSectionSelectorProps {
   cities: CityFull[];
@@ -16,18 +18,36 @@ export interface MeetSectionSelectorProps {
 }
 
 export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, className }) => {
-  const [baseA, baseB, ...selectableCities] = cities;
+  const aCity = useCitySelect(cities, { storageKey: "meetCityA" });
+  const bCity = useCitySelect(cities, { storageKey: "meetCityB", defaultCity: 1 });
 
-  const aCity = useCitySelect(selectableCities, { storageKey: "meetCityA" });
-  const bCity = useCitySelect(selectableCities, { storageKey: "meetCityB", defaultCity: 1 });
+  const [extraCount, setExtraCount] = useState(0);
+  const [extraSelected, setExtraSelected] = useState<Record<number, CityFull | null>>({});
 
-  const [addedPairs, setAddedPairs] = useState<{ a: CityFull; b: CityFull }[]>([]);
+  const handleExtraChange = (index: number, value: CityFull | null) => {
+    setExtraSelected((prev) => ({ ...prev, [index]: value }));
+  };
 
-  const handleAdd = useCallback(() => {
-    if (aCity.selected && bCity.selected) {
-      setAddedPairs((prev) => [...prev, { a: aCity.selected, b: bCity.selected }]);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const raw = sessionStorage.getItem("meetExtraCount");
+    if (raw) {
+      const parsed = parseInt(raw);
+      if (!isNaN(parsed)) {
+        setExtraCount(parsed);
+      }
     }
-  }, [aCity.selected, bCity.selected]);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    sessionStorage.setItem("meetExtraCount", String(extraCount));
+  }, [extraCount]);
+
+  const handleAdd = () => {
+    setExtraCount((prev) => prev + 1);
+  };
 
   return (
     <div className={clsx("meet-section__selector", className)}>
@@ -58,6 +78,15 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
           />
         </div>
 
+        {Array.from({ length: extraCount }).map((_, index) => (
+          <MeetSectionExtraSelect
+            key={index}
+            index={index}
+            cities={cities}
+            onChange={handleExtraChange}
+          />
+        ))}
+
         <div
           className="cursor-pointer"
           onClick={handleAdd}
@@ -69,20 +98,17 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
         </div>
       </div>
 
-      <div className="meet-section__select-results-list">
-        <MeetSectionResultsList
-          a={baseA}
-          b={baseB}
-        />
-
-        {addedPairs.map((pair, index) => (
-          <MeetSectionResultsList
-            key={index}
-            id={index}
-            a={pair.a}
-            b={pair.b}
-          />
-        ))}
+      <div className="text-white">
+        {Object.entries(extraSelected)
+          .filter(([, city]) => city !== null)
+          .map(([index, city]) => (
+            <div
+              key={index}
+              className="text-sm text-white"
+            >
+              Extra #{index}: {(city as CityFull).name}
+            </div>
+          ))}
       </div>
     </div>
   );
