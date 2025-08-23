@@ -1,7 +1,7 @@
 .contact {
-    @apply text-text-secondary relative z-10 overflow-hidden pb-5 pt-10 my-2.5 rounded-[0.625rem] bg-primary-1;
+    @apply text-text-secondary relative z-10 overflow-hidden pb-5 pt-10 rounded-[0.625rem] bg-primary-1;
 
-    @apply lg:pt-[16.875rem] lg:my-[1.5625rem] lg:rounded-[1.25rem] lg:pb-20;
+    @apply lg:pt-[16.875rem] lg:rounded-[1.25rem] lg:pb-20;
 
     &::after {
         @apply hidden;
