@@ -24,16 +24,16 @@ export const ContactSection = memo<ContactSectionProps>(({ background_image, ima
   return (
     <section className="contact">
       <ImageWrapper
-        src={background_image.url}
-        alt={background_image.alt}
+        src={background_image?.url}
+        alt={background_image?.alt}
         className="contact__bg"
       />
       <Container>
         <div className="contact-row">
           <div className="contact-col contact-col--img">
             <ImageWrapper
-              src={image.url}
-              alt={image.alt}
+              src={image?.url}
+              alt={image?.alt}
               className="contact__img"
             />
           </div>

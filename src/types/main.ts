@@ -24,4 +24,18 @@ export interface Footer {
   footer_menu: Link[];
   footer_buttons: LinkObj[];
   footer_text: string;
+  contact_section: {
+    background_image: {
+      url: string;
+      alt: string;
+      width: number;
+      height: number;
+    };
+    image: {
+      url: string;
+      alt: string;
+      width: number;
+      height: number;
+    };
+  };
 }
