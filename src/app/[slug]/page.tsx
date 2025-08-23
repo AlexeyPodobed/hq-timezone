@@ -19,15 +19,17 @@ export default async function Page({ params }: PageProps) {
 
   return (
     <div className="default-page">
-      <Container>
-        {title?.rendered && <h1>{title.rendered}</h1>}
-        {content?.rendered && (
-          <div
-            className="the-content"
-            dangerouslySetInnerHTML={{ __html: content.rendered }}
-          />
-        )}
-      </Container>
+      <div className="default-page-inner">
+        <Container>
+          {title?.rendered && <h1>{title.rendered}</h1>}
+          {content?.rendered && (
+            <div
+              className="the-content"
+              dangerouslySetInnerHTML={{ __html: content.rendered }}
+            />
+          )}
+        </Container>
+      </div>
     </div>
   );
 }
