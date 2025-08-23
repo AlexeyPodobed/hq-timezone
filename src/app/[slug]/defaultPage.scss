@@ -1,0 +1,29 @@
+.default-page {
+    @apply px-3.5 py-16 text-center bg-primary-1 text-white;
+
+    @apply lg:pt-[14.6875rem] lg:pb-[9.0625rem] lg:text-left;
+
+    h1 {
+        @apply font-anton mb-14 text-4xl;
+
+        @apply lg:text-center;
+    }
+
+    h2 {
+        @apply font-bold mb-4;
+    }
+
+    .wp-block-columns {
+        @apply my-14 flex flex-col gap-14;
+
+        @apply lg:flex-row lg:gap-[11.25rem];
+
+        &:last-child {
+            @apply mb-0;
+        }
+
+        .wp-block-column {
+            @apply lg:w-1/2;
+        }
+    }
+}

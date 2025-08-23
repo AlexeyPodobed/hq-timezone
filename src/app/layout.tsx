@@ -1,5 +1,6 @@
 import "@/assets/styles/globals.css";
 import type { Metadata } from "next";
+import React from "react";
 
 import Footer from "@/components/main/Footer/Footer";
 import Header from "@/components/main/Header/Header";
