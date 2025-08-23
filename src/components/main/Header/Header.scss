@@ -39,4 +39,10 @@
 
         @apply lg:p-3;
     }
+
+    &__home-link {
+        @apply font-anton text-[1rem] leading-[2.8125rem] border border-primary-1 rounded px-5;
+
+        @apply md:border-0 text-3xl;
+    }
 }
