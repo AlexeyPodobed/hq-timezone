@@ -5,10 +5,14 @@ import { usePathname } from "next/navigation";
 import { HeaderHomeLink } from "@/components/main/Header/HeaderHomeLink.tsx";
 import { useTimeStore } from "@/store/timeStore";
 
+export function useIsHomepage() {
+  const pathname = usePathname();
+  return pathname === "/";
+}
+
 export default function HeaderTimeSwitcher() {
   const { is24h, set24h } = useTimeStore();
-  const pathname = usePathname();
-  const isHome = pathname === "/";
+  const isHome = useIsHomepage();
 
   return (
     <>
