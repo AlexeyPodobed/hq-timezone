@@ -60,6 +60,8 @@
 	&__link {
 		@apply min-w-[16.1875rem] border-2 border-yellow text-yellow font-anton text-[1.25rem] leading-[2.1875rem] text-center p-4 rounded mb-4 no-underline transition-colors;
 
+		@apply hover:shadow-xl;
+
 		&:hover {
 			@apply text-primary-1 bg-yellow;
 		}

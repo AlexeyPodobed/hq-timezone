@@ -66,7 +66,7 @@ export const CustomSelect = memo<CustomSelectProps>(
       >
         <div
           className={clsx(
-            "max-w-full flex justify-between items-center gap-2.5 p-2.5 border rounded-lg cursor-pointer lg:p-5",
+            "max-w-full flex justify-between items-center gap-2.5 p-2.5 border rounded-lg cursor-pointer lg:p-5 transition-opacity hover:opacity-50",
             customSelectVariants({ variant })
           )}
           onClick={() => setOpen((o) => !o)}
@@ -90,7 +90,7 @@ export const CustomSelect = memo<CustomSelectProps>(
                 type="text"
                 className={clsx(
                   "w-full mb-3 p-2.5 border rounded-lg",
-                  variant === "yellow" ? "text-primary-1 border-yellow" : "text-primary-1 border-primary-1"
+                  variant === "yellow" ? "text-white border-yellow bg-primary-1" : "text-primary-1 border-primary-1"
                 )}
                 placeholder="Search..."
                 value={search}

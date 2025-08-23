@@ -16,11 +16,16 @@
     }
 
     &__switcher-btn {
-        @apply p-2 relative flex items-center justify-center text-[1.125rem] font-bold leading-normal text-white border border-transparent rounded-[0.25rem] transition-all cursor-pointer;
+        @apply p-2 relative flex items-center justify-center text-[1.125rem] font-bold leading-normal text-white border border-transparent rounded-[0.25rem] transition-opacity cursor-pointer;
+
         @apply lg:p-[0.625rem];
 
         &.active {
             @apply text-yellow border-yellow;
+        }
+
+        &:not(.active):hover {
+            @apply opacity-65;
         }
     }
 
@@ -41,8 +46,10 @@
     }
 
     &__home-link {
-        @apply font-anton text-[1rem] leading-[2.8125rem] border border-primary-1 rounded px-5;
+        @apply font-anton text-[1rem] leading-[2.8125rem] border border-primary-1 rounded px-5 transition-opacity;
 
         @apply md:border-0 text-3xl;
+
+        @apply hover:opacity-75;
     }
 }

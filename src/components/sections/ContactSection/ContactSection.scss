@@ -98,12 +98,10 @@
 
             @apply lg:px-5;
 
+            @apply focus:outline-0 focus:border-yellow;
+
             &::placeholder {
                 @apply text-text-secondary opacity-60;
-            }
-
-            &:focus {
-                @apply outline-0;
             }
 
             &.invalid {
@@ -148,11 +146,9 @@
         }
 
         input[type="submit"] {
-            @apply text-text-secondary font-anton text-[1.25rem] h-[4.375rem] cursor-pointer transition-colors;
+            @apply text-text-secondary font-anton text-[1.25rem] h-[4.375rem] cursor-pointer transition;
 
-            &:hover {
-                @apply bg-yellow text-primary-1 border-transparent;
-            }
+            @apply hover:bg-text-secondary hover:shadow-xl hover:text-primary-1 hover:border-transparent;
         }
 
         &-result {
