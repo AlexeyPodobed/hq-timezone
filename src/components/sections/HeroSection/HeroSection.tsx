@@ -6,7 +6,7 @@ import "./HeroSection.scss";
 import { Container } from "@/common/Container";
 import { CityFull } from "@/types/cities";
 
-// import { HeroCitySelector } from "./HeroCitySelector";
+import { HeroCitySelector } from "./HeroCitySelector";
 
 export interface HeroSectionProps {
   cities: CityFull[];
@@ -32,11 +32,10 @@ export const HeroSection = memo<HeroSectionProps>(({ cities, bgImage, className 
       <Container>
         <div className="hero-section__inner">
           {cities?.length > 0 && (
-            <div>test</div>
-            // <HeroCitySelector
-            //   cities={cities}
-            //   title="What's the Time in"
-            // />
+            <HeroCitySelector
+              cities={cities}
+              title="What's the Time in"
+            />
           )}
         </div>
       </Container>
