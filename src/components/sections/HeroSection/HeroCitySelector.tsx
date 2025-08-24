@@ -7,7 +7,7 @@ import { useCitySelect } from "@/hooks/useCitySelect";
 import { CityFull } from "@/types/cities";
 
 import { HeroCityList } from "./HeroCityList";
-// import { HeroMainTime } from "./HeroMainTime";
+import { HeroMainTime } from "./HeroMainTime";
 
 export interface HeroCitySelectProps {
   title: string;
@@ -34,7 +34,9 @@ export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) =>
         />
       </div>
 
-      <div className="hero-section__main-content">{/* <HeroMainTime city={selected} /> */}</div>
+      <div className="hero-section__main-content">
+        <HeroMainTime city={selected} />
+      </div>
 
       <HeroCityList
         cities={cities}
