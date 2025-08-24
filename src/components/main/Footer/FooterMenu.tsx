@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { memo } from "react";
 
+import { getSlugFromWpUrl } from "@/utils/global";
+
 interface MenuLink {
   url: string;
   title: string;
@@ -17,8 +19,9 @@ export const FooterMenu = memo<FooterMenuProps>(({ items }) => {
       {items.map((item, index) => (
         <Link
           key={index}
-          href={item.url}
+          href={getSlugFromWpUrl(item.url)}
           target={item.target}
+          prefetch
         >
           {item.title}
         </Link>

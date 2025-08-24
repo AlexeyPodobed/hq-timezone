@@ -5,6 +5,7 @@ import { Container } from "@/common/Container";
 import "@/components/components.scss";
 import "./Footer.scss";
 import { ContactSection } from "@/components/sections/ContactSection/ContactSection.tsx";
+import { getSlugFromWpUrl } from "@/utils/global";
 
 import { FooterLogo } from "./FooterLogo";
 import { FooterMenu } from "./FooterMenu";
@@ -51,7 +52,7 @@ export default async function Footer() {
               {footer_buttons.map((button, index) => (
                 <Link
                   key={index}
-                  href={button.link.url}
+                  href={getSlugFromWpUrl(button.link.url)}
                   target={button.link.target}
                   className="footer__link"
                 >
