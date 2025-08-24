@@ -2,8 +2,8 @@ import { clsx } from "clsx";
 import { memo, useMemo } from "react";
 
 import "./HeroSection.scss";
-// import { Button } from "@/components/base/Button";
-// import { Icon } from "@/components/base/Icon";
+import { Button } from "@/components/base/Button";
+import { Icon } from "@/components/base/Icon";
 import { Time } from "@/components/base/Time";
 import { CityFull } from "@/types/cities";
 // import { calcDayLength, formatDateFromDateTime, formatTimeZoneVerbose, getTimeDifferenceByTZ } from "@/utils/date";
@@ -17,8 +17,7 @@ export interface HeroMainTimeProps {
 export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
   const {
     timezone,
-    // timeData: { time, sunrise, sunset },
-    timeData: { time },
+    timeData: { time, sunrise, sunset },
   } = city;
 
   // const dayLength = useMemo(() => calcDayLength(sunrise, sunset), [sunrise, sunset]);
@@ -40,7 +39,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
       </div>
 
       <div className="hero-section__main-col-left">
-        {/* <div className="hero-section__main-sun">
+        <div className="hero-section__main-sun">
           <Button
             asChild
             className="hero-section__main-sun__btn"
@@ -71,8 +70,8 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
               live={false}
             />
           </Button>
-          <span className="hero-section__main-day-time">{dayLength}</span>
-        </div> */}
+          {/* <span className="hero-section__main-day-time">{dayLength}</span> */}
+        </div>
 
         {/* <div className={clsx("hero-section__main-info", className)}>
           <Button
