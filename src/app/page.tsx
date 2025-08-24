@@ -1,5 +1,6 @@
 import { getHomePage } from "@/api/homepage";
 import { CardsSection } from "@/components/sections/CardsSection/CardsSection";
+import { DiffrenceSection } from "@/components/sections/DiffrenceSection/DiffrenceSection";
 import { HeroSection } from "@/components/sections/HeroSection/HeroSection";
 import { MeetSection } from "@/components/sections/MeetSection/MeetSection";
 import { CityFull } from "@/types/cities";
@@ -64,6 +65,14 @@ export default async function Home() {
               <MeetSection
                 key={`meet-${idx}`}
                 title={meetBlock.title ?? ""}
+                cities={filteredCities}
+              />
+            );
+          }
+          case "difference": {
+            return (
+              <DiffrenceSection
+                key={`difference-${idx}`}
                 cities={filteredCities}
               />
             );

@@ -115,3 +115,8 @@ export function getTimeZoneAbbr(timezoneId: string, date = new Date()): string {
 }
 
 export const buildTzDayLabel = (tzId?: string) => (tzId ? `${getTimeZoneAbbr(tzId)} ${formatDayMonthInTZ(tzId)}` : "");
+
+export const formatDayFullInTZ = (tz: string, date = new Date()): string => {
+  const zoned = toZonedTime(date, tz);
+  return format(zoned, "d MMMM"); // e.g., "24 August"
+};

@@ -21,6 +21,10 @@ export interface MeetSectionBlock {
   title: string;
 }
 
+export interface DifferenceBlock {
+  acf_fc_layout: "difference";
+}
+
 export interface PostsSectionBlock {
   acf_fc_layout: "posts";
   posts: {
@@ -57,7 +61,7 @@ export interface ContactSectionBlock {
   };
 }
 
-export type HomePageFlexibleContent = HeroSectionBlock | MeetSectionBlock | PostsSectionBlock | ContactSectionBlock;
+export type HomePageFlexibleContent = HeroSectionBlock | MeetSectionBlock | DifferenceBlock | PostsSectionBlock | ContactSectionBlock;
 
 export interface HomePageAPI {
   meta: MetaOptions;

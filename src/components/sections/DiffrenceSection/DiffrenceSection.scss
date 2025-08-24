@@ -1,0 +1,97 @@
+.diffrence-section {
+    @apply relative mt-2.5 pt-[9.25rem] pb-[6.8125rem] border border-white rounded-[0.625rem] overflow-hidden;
+
+    @apply lg:mt-5 lg:pt-[9.25rem] lg:pb-[6.8125rem] lg:rounded-[1.25rem];
+
+    &::after {
+        @apply content-[''] absolute right-0 top-0 w-[16.8125rem] h-full bg-yellow z-0;
+    }
+
+    &__decor {
+        @apply absolute bottom-0 right-0 w-[33.75rem] z-10;
+    }
+
+    &__inner {
+        @apply relative flex flex-col z-10;
+    }
+
+    &__selector {
+        @apply w-full mt-[5.3125rem];
+    }
+
+    &__selects {
+        @apply flex flex-wrap items-center gap-5;
+    }
+
+    &__select {
+        @apply flex items-center gap-5;
+    }
+
+    &__select-title {
+        @apply text-[2.8125rem] leading-none text-white font-semibold;
+    }
+
+    &__main-time {
+        @apply w-full flex flex-col gap-7 text-center;
+
+        @apply md:flex-row md:items-center;
+
+        @apply lg:items-center lg:gap-[4.188rem] lg:text-left;
+    }
+
+    &__main-time-block {
+        @apply flex flex-col;
+
+        @apply md:w-1/2;
+
+        @apply xl:w-auto;
+    }
+
+    &__main-city {
+        @apply text-[1rem] font-bold text-white leading-none opacity-20;
+
+        @apply lg:text-3xl lg:leading-[2.875rem];
+    }
+
+    &__main-time-value {
+        @apply text-[4rem] leading-none font-anton whitespace-nowrap text-white;
+
+        @apply lg:text-[6rem];
+
+        @apply xl:text-[12.5rem];
+    }
+
+    &__main-diffrence {
+        @apply text-[1rem] leading-none text-light-blue;
+
+        @apply lg:text-3xl;
+    }
+
+    &__city-list {
+        @apply mt-[9.25rem] flex gap-[3.125rem];
+    }
+
+    &__city-item {
+        @apply flex flex-col;
+    }
+
+    &__city-title {
+        @apply text-[2.8125rem] font-semibold text-yellow;
+    }
+
+    &__city-country {
+        @apply text-xl leading-[1.875rem] font-semibold text-white opacity-60;
+    }
+
+    &__city-time {
+        @apply flex gap-[1.875rem] text-white;
+
+        .time {
+            @apply text-[3.125rem] font-semibold;
+        }
+
+        .date {
+            @apply text-[1.875rem] font-semibold;
+        }
+    }
+}
