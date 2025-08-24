@@ -16,7 +16,6 @@ export interface HeroMainTimeProps {
 }
 
 export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
-  const [isClient, setIsClient] = useState(false);
   const [formattedTimezone, setFormattedTimezone] = useState("");
   const [timeDiff, setTimeDiff] = useState("");
 
@@ -29,7 +28,6 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
   const date = useMemo(() => formatDateFromDateTime(time), [time]);
 
   useEffect(() => {
-    setIsClient(true);
     setTimeDiff(getTimeDifferenceByTZ(timezone));
     setFormattedTimezone(formatTimeZoneVerbose(timezone));
   }, [timezone]);
@@ -82,26 +80,24 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
           <span className="hero-section__main-day-time">{dayLength}</span>
         </div>
 
-        {isClient && (
-          <div className={clsx("hero-section__main-info", className)}>
-            <Button
-              asChild
-              variant="black"
-              size="lg"
-              className="w-full cursor-default"
-            >
-              <span className="line-clamp-1 whitespace-break-spaces">{formattedTimezone}</span>
-            </Button>
-            <Button
-              asChild
-              variant="black"
-              size="lg"
-              className="w-full cursor-default"
-            >
-              <span className="line-clamp-1 whitespace-break-spaces">{timeDiff} Hours from your time</span>
-            </Button>
-          </div>
-        )}
+        <div className={clsx("hero-section__main-info", className)}>
+          <Button
+            asChild
+            variant="black"
+            size="lg"
+            className="w-full cursor-default"
+          >
+            <span className="line-clamp-1 whitespace-break-spaces">{formattedTimezone}</span>
+          </Button>
+          <Button
+            asChild
+            variant="black"
+            size="lg"
+            className="w-full cursor-default"
+          >
+            <span className="line-clamp-1 whitespace-break-spaces">{timeDiff} Hours from your time</span>
+          </Button>
+        </div>
       </div>
     </div>
   );
