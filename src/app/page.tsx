@@ -23,7 +23,7 @@ export async function generateMetadata() {
     title: meta.meta_title ?? "Meta Title Fallback",
     description: meta.meta_description ?? "Meta Desctiption Fallback",
     keywords: (meta.meta_keywords ?? "").split(", "), // TODO: delete when metadata from api avalible
-    // keywords: meta.meta_keywords.split(", ") ?? "", TODO: add when metadata from api avalible
+    // keywords: meta.meta_keywords.split(", "), TODO: add when metadata from api avalible
   };
 }
 
