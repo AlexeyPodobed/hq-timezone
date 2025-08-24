@@ -7,7 +7,7 @@ export const getPage = async (
   slug: string
 ): Promise<{
   status: number;
-  data: PageAPI;
+  data: PageAPI[];
 }> => {
   try {
     const { data, status } = await api.get(`${WP_CORE_API}/pages?slug=${slug}`, {}, { next: { revalidate: EXPIRE_5_MINUTES } });
