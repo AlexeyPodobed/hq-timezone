@@ -1,11 +1,12 @@
 import { getHomePage } from "@/api/homepage";
-import { CardsSection } from "@/components/sections/CardsSection/CardsSection";
-import { DiffrenceSection } from "@/components/sections/DiffrenceSection/DiffrenceSection";
-import { HeroSection } from "@/components/sections/HeroSection/HeroSection";
-import { MeetSection } from "@/components/sections/MeetSection/MeetSection";
-import { CityFull } from "@/types/cities";
-import { HeroSectionBlock, HomePageAPI, MeetSectionBlock, PostsSectionBlock } from "@/types/home";
-import { fetchCitiesFull } from "@/utils/cities";
+// import { CardsSection } from "@/components/sections/CardsSection/CardsSection";
+// import { DiffrenceSection } from "@/components/sections/DiffrenceSection/DiffrenceSection";
+// import { HeroSection } from "@/components/sections/HeroSection/HeroSection";
+// import { MeetSection } from "@/components/sections/MeetSection/MeetSection";
+// import { CityFull } from "@/types/cities";
+// import { HeroSectionBlock, HomePageAPI, MeetSectionBlock, PostsSectionBlock } from "@/types/home";
+// import { fetchCitiesFull } from "@/utils/cities";
+import { HomePageAPI } from "@/types/home";
 
 let cache: HomePageAPI | null = null;
 
@@ -29,25 +30,25 @@ export async function generateMetadata() {
 }
 
 export default async function Home() {
-  const { data: homepage } = await getHomePage();
+  // const { data: homepage } = await getHomePage();
 
-  const sections = homepage?.homepage_flexible_content ?? [];
-  const heroSection = homepage.homepage_flexible_content.find((section): section is HeroSectionBlock => section.acf_fc_layout === "hero");
-  const cityList = heroSection?.cities_list ?? [];
+  // const sections = homepage?.homepage_flexible_content ?? [];
+  // const heroSection = homepage.homepage_flexible_content.find((section): section is HeroSectionBlock => section.acf_fc_layout === "hero");
+  // const cityList = heroSection?.cities_list ?? [];
 
-  const citySet = new Set(
-    cityList.map(({ city_name, city_timezone }) => `${city_name.toLowerCase()}|${city_timezone.replace(/['"]/g, "").toLowerCase()}`)
-  );
+  // const citySet = new Set(
+  //   cityList.map(({ city_name, city_timezone }) => `${city_name.toLowerCase()}|${city_timezone.replace(/['"]/g, "").toLowerCase()}`)
+  // );
 
-  const citiesFull: CityFull[] = await fetchCitiesFull(cityList.map((c) => c.city_name));
-  const filteredCities = citiesFull.filter((c) => {
-    const key = `${c.name.toLowerCase()}|${c.timeData?.timezoneId.toLowerCase()}`;
-    return citySet.has(key);
-  });
+  // const citiesFull: CityFull[] = await fetchCitiesFull(cityList.map((c) => c.city_name));
+  // const filteredCities = citiesFull.filter((c) => {
+  //   const key = `${c.name.toLowerCase()}|${c.timeData?.timezoneId.toLowerCase()}`;
+  //   return citySet.has(key);
+  // });
 
   return (
     <div className="page-wrapper">
-      {sections.map((block, idx) => {
+      {/* {sections.map((block, idx) => {
         switch (block.acf_fc_layout) {
           case "hero": {
             const heroBlock = block as HeroSectionBlock;
@@ -87,7 +88,7 @@ export default async function Home() {
             );
           }
         }
-      })}
+      })} */}
     </div>
   );
 }

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import React from "react";
 
 import Footer from "@/components/main/Footer/Footer";
-import Header from "@/components/main/Header/Header";
+// import Header from "@/components/main/Header/Header";
 
 export const metadata: Metadata = {
   title: "Next App",
@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="text-primary-1">
-        <Header />
+        {/* <Header /> */}
         <main className="relative flex flex-col">{children}</main>
         <Footer />
       </body>
