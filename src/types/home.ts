@@ -1,3 +1,5 @@
+import { MetaOptions } from "./main";
+
 export interface HeroSectionBlock {
   acf_fc_layout: "hero";
   background_image: {
@@ -58,5 +60,6 @@ export interface ContactSectionBlock {
 export type HomePageFlexibleContent = HeroSectionBlock | MeetSectionBlock | PostsSectionBlock | ContactSectionBlock;
 
 export interface HomePageAPI {
+  meta: MetaOptions;
   homepage_flexible_content: HomePageFlexibleContent[];
 }

@@ -1,3 +1,9 @@
+export interface MetaOptions {
+  meta_title: string;
+  meta_description: string;
+  meta_keywords: string;
+}
+
 interface Image {
   url: string;
   alt: string;

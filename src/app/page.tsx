@@ -3,8 +3,29 @@ import { CardsSection } from "@/components/sections/CardsSection/CardsSection";
 import { HeroSection } from "@/components/sections/HeroSection/HeroSection";
 import { MeetSection } from "@/components/sections/MeetSection/MeetSection";
 import { CityFull } from "@/types/cities";
-import { HeroSectionBlock, MeetSectionBlock, PostsSectionBlock } from "@/types/home";
+import { HeroSectionBlock, HomePageAPI, MeetSectionBlock, PostsSectionBlock } from "@/types/home";
 import { fetchCitiesFull } from "@/utils/cities";
+
+let cache: HomePageAPI | null = null;
+
+async function fetchHomePage() {
+  const { data } = await getHomePage();
+  cache = data;
+  return data;
+}
+
+export async function generateMetadata() {
+  //  const { meta } = cache ?? (await fetchHomePage()); TODO: add when metadata from api avalible
+  const homepage = cache ?? (await fetchHomePage()); // TODO: delete when metadata from api avalible
+  const meta = homepage?.meta ?? {}; // TODO: delete when metadata from api avalible
+
+  return {
+    title: meta.meta_title ?? "Meta Title Fallback",
+    description: meta.meta_description ?? "Meta Desctiption Fallback",
+    keywords: (meta.meta_keywords ?? "").split(", "), // TODO: delete when metadata from api avalible
+    // keywords: meta.meta_keywords.split(", ") ?? "", TODO: add when metadata from api avalible
+  };
+}
 
 export default async function Home() {
   const { data: homepage } = await getHomePage();
