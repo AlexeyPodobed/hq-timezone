@@ -1,5 +1,5 @@
 import { clsx } from "clsx";
-import { memo, useMemo } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 
 import "./HeroSection.scss";
 import { Button } from "@/components/base/Button";
@@ -14,6 +14,8 @@ export interface HeroMainTimeProps {
 }
 
 export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
+  const [formattedTimezone, setFormattedTimezone] = useState("");
+
   const {
     timezone,
     timeData: { time, sunrise, sunset },
@@ -22,7 +24,10 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
   const dayLength = useMemo(() => calcDayLength(sunrise, sunset), [sunrise, sunset]);
   const timeDiff = useMemo(() => getTimeDifferenceByTZ(timezone), [timezone]);
   const date = useMemo(() => formatDateFromDateTime(time), [time]);
-  const formattedTimezone = useMemo(() => formatTimeZoneVerbose(timezone), [timezone]);
+
+  useEffect(() => {
+    setFormattedTimezone(formatTimeZoneVerbose(timezone));
+  }, [timezone]);
 
   return (
     <div className={clsx("hero-section__main-time", className)}>
