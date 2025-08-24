@@ -94,8 +94,24 @@ export const formatDayMonthInTZ = (tz: string) => {
   return format(zoned, "dd MMM");
 };
 
+const zoneAbbrMap: Record<string, string> = {
+  "Asia/Tokyo": "JST",
+};
+
 export function getTimeZoneAbbr(timezoneId: string, date = new Date()): string {
-  return tzFormat(date, "zzz", { timeZone: timezoneId });
+  if (zoneAbbrMap[timezoneId]) return zoneAbbrMap[timezoneId];
+
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: timezoneId,
+    timeZoneName: "short",
+    month: "short",
+    day: "2-digit",
+  });
+
+  const parts = formatter.formatToParts(date);
+  const abbr = parts.find((p) => p.type === "timeZoneName")?.value;
+
+  return abbr ?? "";
 }
 
-export const buildTzDayLabel = (tzId?: string) => (tzId ? `${getTimeZoneAbbr(tzId).replace(/([+-]\d+)$/, "")} ${formatDayMonthInTZ(tzId)}` : "");
+export const buildTzDayLabel = (tzId?: string) => (tzId ? `${getTimeZoneAbbr(tzId)} ${formatDayMonthInTZ(tzId)}` : "");
