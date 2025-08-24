@@ -95,7 +95,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
             size="lg"
             className="w-full cursor-default"
           >
-            <span className="line-clamp-1 whitespace-break-spaces">{timeDiff} Hours from your time</span>
+            <span className="line-clamp-1 whitespace-break-spaces">{timeDiff} Hours from your time Test1</span>
           </Button>
         </div>
       </div>
