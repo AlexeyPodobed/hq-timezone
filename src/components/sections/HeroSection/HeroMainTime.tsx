@@ -7,7 +7,7 @@ import { Icon } from "@/components/base/Icon";
 import { Time } from "@/components/base/Time";
 import { CityFull } from "@/types/cities";
 // import { calcDayLength, formatDateFromDateTime, formatTimeZoneVerbose, getTimeDifferenceByTZ } from "@/utils/date";
-import { formatDateFromDateTime } from "@/utils/date";
+import { calcDayLength, formatDateFromDateTime } from "@/utils/date";
 
 export interface HeroMainTimeProps {
   city: CityFull;
@@ -20,7 +20,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
     timeData: { time, sunrise, sunset },
   } = city;
 
-  // const dayLength = useMemo(() => calcDayLength(sunrise, sunset), [sunrise, sunset]);
+  const dayLength = useMemo(() => calcDayLength(sunrise, sunset), [sunrise, sunset]);
   // const timeDiff = useMemo(() => getTimeDifferenceByTZ(timezone), [timezone]);
   const date = useMemo(() => formatDateFromDateTime(time), [time]);
   // const formattedTimezone = useMemo(() => formatTimeZoneVerbose(timezone), [timezone]);
@@ -70,7 +70,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
               live={false}
             />
           </Button>
-          {/* <span className="hero-section__main-day-time">{dayLength}</span> */}
+          <span className="hero-section__main-day-time">{dayLength}</span>
         </div>
 
         {/* <div className={clsx("hero-section__main-info", className)}>
