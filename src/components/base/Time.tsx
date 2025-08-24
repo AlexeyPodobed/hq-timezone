@@ -6,7 +6,7 @@ import { memo, useMemo, useState, useEffect } from "react";
 import { useMounted } from "@/hooks/useMounted";
 import { useSecondsTimer } from "@/hooks/useSecondsTimer";
 import { useTimeStore } from "@/store/timeStore";
-import { extractTime, pad2, to12h } from "@/utils/global";
+import { extractTime, pad2, to12h } from "@/utils/date";
 
 import { Seconds } from "./Seconds";
 import TimeFallback from "./TimeFallback";

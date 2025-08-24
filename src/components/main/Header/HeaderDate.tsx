@@ -1,7 +1,7 @@
 import { memo } from "react";
 
 import { Time } from "@/components/base/Time";
-import { formatMonthDate } from "@/utils/global";
+import { formatMonthDate } from "@/utils/date";
 
 interface HeaderDateProps {
   date: Date;

@@ -9,7 +9,7 @@ import { Time } from "@/components/base/Time";
 import SwiperComponent from "@/components/swiper/SwiperComponent";
 import SwiperNavigation from "@/components/swiper/SwiperNavigation";
 import { CityFull } from "@/types/cities";
-import { buildTzDayLabel } from "@/utils/global";
+import { buildTzDayLabel } from "@/utils/date";
 
 export interface MeetSectionResultsListProps {
   a: CityFull;
