@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
+
 import { getPage } from "@/api/page";
 import "./defaultPage.scss";
 import { Container } from "@/common/Container.tsx";
+import { TextEditor } from "@/components/base/TextEditor";
 
 interface PageProps {
   params: {
@@ -30,12 +32,7 @@ export default async function Page({ params }: PageProps) {
       <div className="default-page-inner">
         <Container>
           {title?.rendered && <h1>{title.rendered}</h1>}
-          {content?.rendered && (
-            <div
-              className="the-content"
-              dangerouslySetInnerHTML={{ __html: content.rendered }}
-            />
-          )}
+          {content?.rendered && <TextEditor content={content.rendered} />}
         </Container>
       </div>
     </div>
