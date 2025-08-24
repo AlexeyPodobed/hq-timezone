@@ -1,10 +1,9 @@
 import { getHomePage } from "@/api/homepage";
-// import { CardsSection } from "@/components/sections/CardsSection/CardsSection";
+import { CardsSection } from "@/components/sections/CardsSection/CardsSection";
 import { HeroSection } from "@/components/sections/HeroSection/HeroSection";
-// import { MeetSection } from "@/components/sections/MeetSection/MeetSection";
+import { MeetSection } from "@/components/sections/MeetSection/MeetSection";
 import { CityFull } from "@/types/cities";
-// import { HeroSectionBlock, HomePageAPI, MeetSectionBlock, PostsSectionBlock } from "@/types/home";
-import { HeroSectionBlock, HomePageAPI } from "@/types/home";
+import { HeroSectionBlock, HomePageAPI, MeetSectionBlock, PostsSectionBlock } from "@/types/home";
 import { fetchCitiesFull } from "@/utils/cities";
 
 let cache: HomePageAPI | null = null;
@@ -59,25 +58,25 @@ export default async function Home() {
               />
             );
           }
-          // case "meet": {
-          //   const meetBlock = block as MeetSectionBlock;
-          //   return (
-          //     <MeetSection
-          //       key={`meet-${idx}`}
-          //       title={meetBlock.title ?? ""}
-          //       cities={filteredCities}
-          //     />
-          //   );
-          // }
-          // case "posts": {
-          //   const postsBlock = block as PostsSectionBlock;
-          //   return (
-          //     <CardsSection
-          //       key={`posts-${idx}`}
-          //       posts={postsBlock.posts}
-          //     />
-          //   );
-          // }
+          case "meet": {
+            const meetBlock = block as MeetSectionBlock;
+            return (
+              <MeetSection
+                key={`meet-${idx}`}
+                title={meetBlock.title ?? ""}
+                cities={filteredCities}
+              />
+            );
+          }
+          case "posts": {
+            const postsBlock = block as PostsSectionBlock;
+            return (
+              <CardsSection
+                key={`posts-${idx}`}
+                posts={postsBlock.posts}
+              />
+            );
+          }
         }
       })}
     </div>
