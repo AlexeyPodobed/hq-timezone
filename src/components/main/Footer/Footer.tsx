@@ -11,18 +11,14 @@ import { FooterMenu } from "./FooterMenu";
 
 export default async function Footer() {
   const { data } = await getFooter();
-  const logo = data.footer_logo;
-  const menu = data.footer_menu;
-  const buttons = data.footer_buttons;
-  const text = data.footer_text;
-  const contactSectionData = data.contact_section;
+  const { footer_logo, footer_menu, footer_buttons, footer_text, contact_section } = data;
 
   return (
     <>
       <div className="page-wrapper !min-h-0">
         <ContactSection
-          background_image={contactSectionData?.background_image}
-          image={contactSectionData?.image}
+          background_image={contact_section?.background_image}
+          image={contact_section?.image}
         />
       </div>
       <footer className="footer">
@@ -30,29 +26,29 @@ export default async function Footer() {
           <div className="footer__inner">
             <div className="footer-left">
               <div>
-                <div className="footer__copyright">{text}</div>
+                <div className="footer__copyright">{footer_text}</div>
                 <div className="footer__by">
                   Designed by <Link href="/">Guyman Studio</Link>
                 </div>
                 <div className="lg:hidden">
-                  <FooterMenu items={menu} />
+                  <FooterMenu items={footer_menu} />
                 </div>
               </div>
               <div className="hidden lg:block">
                 <FooterLogo
-                  src={logo.url}
-                  alt={logo.alt}
+                  src={footer_logo.url}
+                  alt={footer_logo.alt}
                 />
               </div>
             </div>
             <div className="footer-right">
               <div className="lg:hidden mb-5">
                 <FooterLogo
-                  src={logo.url}
-                  alt={logo.alt}
+                  src={footer_logo.url}
+                  alt={footer_logo.alt}
                 />
               </div>
-              {buttons.map((button, index) => (
+              {footer_buttons.map((button, index) => (
                 <Link
                   key={index}
                   href={button.link.url}
@@ -63,7 +59,7 @@ export default async function Footer() {
                 </Link>
               ))}
               <div className="hidden lg:block">
-                <FooterMenu items={menu} />
+                <FooterMenu items={footer_menu} />
               </div>
             </div>
           </div>
