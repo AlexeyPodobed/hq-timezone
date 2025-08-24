@@ -2,11 +2,12 @@ import { clsx } from "clsx";
 import { memo, useMemo } from "react";
 
 import "./HeroSection.scss";
-import { Button } from "@/components/base/Button";
-import { Icon } from "@/components/base/Icon";
+// import { Button } from "@/components/base/Button";
+// import { Icon } from "@/components/base/Icon";
 import { Time } from "@/components/base/Time";
 import { CityFull } from "@/types/cities";
-import { calcDayLength, formatDateFromDateTime, formatTimeZoneVerbose, getTimeDifferenceByTZ } from "@/utils/date";
+// import { calcDayLength, formatDateFromDateTime, formatTimeZoneVerbose, getTimeDifferenceByTZ } from "@/utils/date";
+import { formatDateFromDateTime } from "@/utils/date";
 
 export interface HeroMainTimeProps {
   city: CityFull;
@@ -16,13 +17,14 @@ export interface HeroMainTimeProps {
 export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
   const {
     timezone,
-    timeData: { time, sunrise, sunset },
+    // timeData: { time, sunrise, sunset },
+    timeData: { time },
   } = city;
 
-  const dayLength = useMemo(() => calcDayLength(sunrise, sunset), [sunrise, sunset]);
-  const timeDiff = useMemo(() => getTimeDifferenceByTZ(timezone), [timezone]);
+  // const dayLength = useMemo(() => calcDayLength(sunrise, sunset), [sunrise, sunset]);
+  // const timeDiff = useMemo(() => getTimeDifferenceByTZ(timezone), [timezone]);
   const date = useMemo(() => formatDateFromDateTime(time), [time]);
-  const formattedTimezone = useMemo(() => formatTimeZoneVerbose(timezone), [timezone]);
+  // const formattedTimezone = useMemo(() => formatTimeZoneVerbose(timezone), [timezone]);
 
   return (
     <div className={clsx("hero-section__main-time", className)}>
@@ -38,7 +40,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
       </div>
 
       <div className="hero-section__main-col-left">
-        <div className="hero-section__main-sun">
+        {/* <div className="hero-section__main-sun">
           <Button
             asChild
             className="hero-section__main-sun__btn"
@@ -70,9 +72,9 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
             />
           </Button>
           <span className="hero-section__main-day-time">{dayLength}</span>
-        </div>
+        </div> */}
 
-        <div className={clsx("hero-section__main-info", className)}>
+        {/* <div className={clsx("hero-section__main-info", className)}>
           <Button
             asChild
             variant="black"
@@ -89,7 +91,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
           >
             <span className="line-clamp-1 whitespace-break-spaces">{timeDiff} Hours from your time</span>
           </Button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
