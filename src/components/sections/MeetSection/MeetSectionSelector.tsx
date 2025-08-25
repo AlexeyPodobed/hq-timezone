@@ -121,8 +121,8 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
       </div>
 
       <MeetSectionResultsList
-        a={aCity.selected}
-        b={bCity.selected}
+        aCity={aCity.selected}
+        bCity={bCity.selected}
         extraSelected={extraSelected}
         onDelete={handleDeleteExtra}
       />

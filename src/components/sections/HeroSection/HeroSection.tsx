@@ -23,10 +23,8 @@ export const HeroSection = memo<HeroSectionProps>(({ cities, bgImage, className 
           className="absolute top-0 left-0 w-full h-full object-cover z-0"
           alt="hero-bg"
           sizes="100%"
-          width={0}
-          height={0}
+          fill
           priority
-          loading="eager"
         />
       )}
       <Container>

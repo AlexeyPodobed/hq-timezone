@@ -47,15 +47,26 @@
 
     &__results-city {
         @apply flex items-center gap-6;
+
+        &:first-child {
+            .meet-section__results-flex {
+                h4 {
+                    @apply text-yellow;
+                }
+                p {
+                    @apply text-yellow;
+                }
+            }
+        }
     }
 
     &__results-flex {
         @apply flex flex-col whitespace-nowrap;
         h4 {
-            @apply text-[1.875rem] leading-none text-yellow font-bold;
+            @apply text-[1.875rem] leading-none text-white font-bold;
         }
         p {
-            @apply text-xl leading-[1.875rem] text-yellow opacity-60;
+            @apply text-xl leading-[1.875rem] text-white opacity-60;
         }
     }
 

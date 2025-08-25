@@ -1,7 +1,7 @@
-import { MetaOptions } from "@/types/main.ts";
+import { PageMeta } from "./main";
 
 export interface PageAPI {
-  meta: MetaOptions;
+  meta: PageMeta;
   id: number;
   title?: { rendered?: string };
   content?: { rendered?: string };
