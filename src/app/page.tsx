@@ -21,8 +21,8 @@ export async function generateMetadata() {
   const meta = homepage?.meta ?? {}; // TODO: delete when metadata from api avalible
 
   return {
-    title: meta.meta_title ?? "Meta Title Fallback",
-    description: meta.meta_description ?? "Meta Desctiption Fallback",
+    title: meta.meta_title ?? "HQ TIMEZONE",
+    description: meta.meta_description ?? "HQ TIMEZONE",
     keywords: (meta.meta_keywords ?? "").split(", "), // TODO: delete when metadata from api avalible
     // keywords: meta.meta_keywords.split(", "), TODO: add when metadata from api avalible
   };
