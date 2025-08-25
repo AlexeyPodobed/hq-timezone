@@ -15,7 +15,7 @@ export interface MeetSectionResultsListProps {
   a: CityFull;
   b: CityFull;
   extraSelected?: Record<number, CityFull | null>;
-  onDelete?: (index: number) => void;
+  onDelete?: (id: string) => void;
   className?: string;
 }
 
@@ -78,9 +78,9 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b,
         </div>
         {Object.entries(extraSelected)
           .filter(([, city]) => city !== null)
-          .map(([index, city]) => (
+          .map(([id, city]) => (
             <div
-              key={index}
+              key={id}
               className="meet-section__results-city"
             >
               <div className="meet-section__results-flex">
@@ -89,7 +89,7 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b,
               </div>
               <div
                 className="cursor-pointer"
-                onClick={() => onDelete?.(Number(index))}
+                onClick={() => onDelete?.(id)}
               >
                 <Icon
                   name="minus"

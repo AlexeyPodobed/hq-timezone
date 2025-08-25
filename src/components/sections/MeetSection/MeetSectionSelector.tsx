@@ -2,6 +2,7 @@
 
 import clsx from "clsx";
 import { memo, useCallback, useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import { CustomSelect } from "@/components/base/CustomSelect";
 import { Icon } from "@/components/base/Icon";
@@ -16,56 +17,57 @@ export interface MeetSectionSelectorProps {
   className?: string;
 }
 
+const STORAGE_KEY = "meetExtraIds";
+
 export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, className }) => {
   const aCity = useCitySelect(cities, { storageKey: "meetCityA" });
   const bCity = useCitySelect(cities, { storageKey: "meetCityB", defaultCity: 1 });
 
-  const [extraCount, setExtraCount] = useState(0);
-  const [extraSelected, setExtraSelected] = useState<Record<number, CityFull | null>>({});
-  const isMaxReached = extraCount >= 10;
+  const [extraIds, setExtraIds] = useState<string[]>([]);
+  const [extraSelected, setExtraSelected] = useState<Record<string, CityFull | null>>({});
 
-  const handleExtraChange = useCallback((index: number, value: CityFull | null) => {
-    setExtraSelected((prev) => ({ ...prev, [index]: value }));
-  }, []);
+  const isMaxReached = extraIds.length >= 10;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-
-    const raw = sessionStorage.getItem("meetExtraCount");
-    if (raw) {
-      const parsed = parseInt(raw);
-      if (!isNaN(parsed)) {
-        setExtraCount(parsed);
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    try {
+      const parsed = JSON.parse(raw || "[]");
+      if (Array.isArray(parsed)) {
+        setExtraIds(parsed);
       }
+    } catch (e) {
+      console.warn("Failed to parse meetExtraIds");
     }
   }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    sessionStorage.setItem("meetExtraCount", String(extraCount));
-  }, [extraCount]);
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(extraIds));
+  }, [extraIds]);
 
-  const handleAdd = () => {
+  const handleAdd = useCallback(() => {
     if (isMaxReached) return;
-    setExtraCount((prev) => prev + 1);
-  };
+    const newId = uuidv4();
+    setExtraIds((prev) => [...prev, newId]);
+  }, [isMaxReached]);
 
-  const handleDeleteExtra = useCallback((index: number) => {
+  const handleExtraChange = useCallback((id: string, value: CityFull | null) => {
+    setExtraSelected((prev) => ({ ...prev, [id]: value }));
+  }, []);
+
+  const handleDeleteExtra = useCallback((id: string) => {
+    setExtraIds((prev) => prev.filter((i) => i !== id));
+
     setExtraSelected((prev) => {
       const copy = { ...prev };
-      delete copy[index];
+      delete copy[id];
       return copy;
     });
 
     if (typeof window !== "undefined") {
-      sessionStorage.removeItem(`meetExtraCity${index}`);
+      sessionStorage.removeItem(`meetExtraCity:${id}`);
     }
-
-    setExtraCount((prev) => {
-      const updated = Math.max(0, prev - 1);
-      sessionStorage.setItem("meetExtraCount", String(updated));
-      return updated;
-    });
   }, []);
 
   return (
@@ -97,9 +99,10 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
           />
         </div>
 
-        {Array.from({ length: extraCount }).map((_, index) => (
+        {extraIds.map((id, index) => (
           <MeetSectionExtraSelect
-            key={index}
+            key={id}
+            id={id}
             index={index}
             cities={cities}
             onChange={handleExtraChange}

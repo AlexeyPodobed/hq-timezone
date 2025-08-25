@@ -9,11 +9,13 @@ import type { CityFull } from "@/types/cities";
 interface MeetSectionExtraSelectProps {
   cities: CityFull[];
   index: number;
-  onChange?: (index: number, value: CityFull | null) => void;
+  id: string;
+  onChange?: (id: string, value: CityFull | null) => void;
 }
 
-export const MeetSectionExtraSelect = memo<MeetSectionExtraSelectProps>(({ cities, index, onChange }) => {
-  const city = useCitySelect(cities, { storageKey: `meetExtraCity${index}` });
+export const MeetSectionExtraSelect = memo<MeetSectionExtraSelectProps>(({ cities, index, id, onChange }) => {
+  const city = useCitySelect(cities, { storageKey: `meetExtraCity:${id}` });
+
   const label = `City ${String.fromCharCode(67 + index)}`;
 
   const previous = useRef<CityFull | null>(null);
@@ -22,8 +24,8 @@ export const MeetSectionExtraSelect = memo<MeetSectionExtraSelectProps>(({ citie
     if (city.selected?.name === previous.current?.name) return;
 
     previous.current = city.selected;
-    onChange?.(index, city.selected ?? null);
-  }, [city.selected, index, onChange]);
+    onChange?.(id, city.selected ?? null);
+  }, [city.selected, id, onChange]);
 
   return (
     <div className="meet-section__select">

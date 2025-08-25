@@ -8,12 +8,12 @@ import type { CityFull } from "@/types/cities";
 
 interface DiffrenceExtraSelectProps {
   cities: CityFull[];
-  index: number;
-  onChange?: (index: number, value: CityFull | null) => void;
+  id: string;
+  onChange?: (id: string, value: CityFull | null) => void;
 }
 
-export const DiffrenceExtraSelect = memo<DiffrenceExtraSelectProps>(({ cities, index, onChange }) => {
-  const city = useCitySelect(cities, { storageKey: `diffrenceExtraCity${index}` });
+export const DiffrenceExtraSelect = memo<DiffrenceExtraSelectProps>(({ cities, id, onChange }) => {
+  const city = useCitySelect(cities, { storageKey: `diffrenceExtraCity:${id}` });
 
   const previous = useRef<CityFull | null>(null);
 
@@ -21,8 +21,8 @@ export const DiffrenceExtraSelect = memo<DiffrenceExtraSelectProps>(({ cities, i
     if (city.selected?.name === previous.current?.name) return;
 
     previous.current = city.selected;
-    onChange?.(index, city.selected ?? null);
-  }, [city.selected, index, onChange]);
+    onChange?.(id, city.selected ?? null);
+  }, [city.selected, id, onChange]);
 
   return (
     <>

@@ -10,9 +10,8 @@ import { formatDayFullInTZ } from "@/utils/date";
 export interface DiffrenceCityListProps {
   aCity: CityFull;
   bCity: CityFull;
-  extraSelected?: Record<number, CityFull | null>;
-  onDelete?: (index: number) => void;
-
+  extraSelected?: Record<string, CityFull | null>;
+  onDelete?: (id: string) => void;
   className?: string;
 }
 
@@ -44,9 +43,9 @@ export const DiffrenceCityList = memo<DiffrenceCityListProps>(({ aCity, bCity, e
         );
       })}
 
-      {Object.entries(extraSelected).map(([index, city]) => (
+      {Object.entries(extraSelected).map(([id, city]) => (
         <div
-          key={index}
+          key={id}
           className="diffrence-section__city-item"
         >
           <div className="flex items-center gap-8">
@@ -57,7 +56,7 @@ export const DiffrenceCityList = memo<DiffrenceCityListProps>(({ aCity, bCity, e
 
             <div
               className="cursor-pointer"
-              onClick={() => onDelete?.(Number(index))}
+              onClick={() => onDelete?.(id)}
             >
               <Icon
                 name="minus"
@@ -65,6 +64,7 @@ export const DiffrenceCityList = memo<DiffrenceCityListProps>(({ aCity, bCity, e
               />
             </div>
           </div>
+
           <h4 className="diffrence-section__city-time">
             <Time
               time={city?.timeData.time}

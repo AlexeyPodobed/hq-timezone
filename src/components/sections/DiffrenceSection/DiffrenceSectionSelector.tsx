@@ -2,6 +2,7 @@
 
 import { clsx } from "clsx";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 import "./DiffrenceSection.scss";
 
@@ -15,16 +16,17 @@ import { DiffrenceCityList } from "./DiffrenceCityList";
 import { DiffrenceExtraSelect } from "./DiffrenceExtraSelect";
 import { DiffrenceMainTime } from "./DiffrenceMainTime";
 
-// import { DiffrenceMainTime } from "./DiffrenceMainTime";
-
 export interface DiffrenceSectionSelectorProps {
   cities: CityFull[];
   className?: string;
 }
 
+const STORAGE_KEY = "diffrenceExtraIds";
+
 export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ cities, className }) => {
   const aCity = useCitySelect(cities, { storageKey: "diffrenceCityA" });
   const bCity = useCitySelect(cities, { storageKey: "diffrenceCityB", defaultCity: 1 });
+
   const tzACity = aCity.selected?.timeData?.timezoneId;
   const tzBCity = bCity.selected?.timeData?.timezoneId;
 
@@ -43,64 +45,51 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
     return formatDiffSentence(aCity.selected.name, bCity.selected.name, diff);
   }, [diff, aCity.selected, bCity.selected]);
 
-  const [extraCount, setExtraCount] = useState(0);
-  const [extraSelected, setExtraSelected] = useState<Record<number, CityFull | null>>({});
-  const isMaxReached = extraCount >= 10;
+  const [extraIds, setExtraIds] = useState<string[]>([]);
+  const [extraSelected, setExtraSelected] = useState<Record<string, CityFull | null>>({});
 
-  const handleExtraChange = useCallback((index: number, value: CityFull | null) => {
-    setExtraSelected((prev) => ({ ...prev, [index]: value }));
-  }, []);
+  const isMaxReached = extraIds.length >= 10;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-
-    const raw = sessionStorage.getItem("diffrenceExtraCount");
-    if (raw) {
-      const parsed = parseInt(raw);
-      if (!isNaN(parsed)) {
-        setExtraCount(parsed);
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    try {
+      const parsed = JSON.parse(raw || "[]");
+      if (Array.isArray(parsed)) {
+        setExtraIds(parsed);
       }
+    } catch (e) {
+      console.warn("Failed to parse diffrenceExtraIds");
     }
   }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(extraIds));
+  }, [extraIds]);
 
-    const raw = sessionStorage.getItem("diffrenceExtraCity");
-    if (raw) {
-      const parsed = parseInt(raw);
-      if (!isNaN(parsed)) {
-        setExtraCount(parsed);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    sessionStorage.setItem("diffrenceExtraCity", String(extraCount));
-  }, [extraCount]);
-
-  const handleAdd = () => {
+  const handleAdd = useCallback(() => {
     if (isMaxReached) return;
-    setExtraCount((prev) => prev + 1);
-  };
+    const newId = uuidv4();
+    setExtraIds((prev) => [...prev, newId]);
+  }, [isMaxReached]);
 
-  const handleDeleteExtra = useCallback((index: number) => {
+  const handleExtraChange = useCallback((id: string, value: CityFull | null) => {
+    setExtraSelected((prev) => ({ ...prev, [id]: value }));
+  }, []);
+
+  const handleDeleteExtra = useCallback((id: string) => {
+    setExtraIds((prev) => prev.filter((i) => i !== id));
+
     setExtraSelected((prev) => {
       const copy = { ...prev };
-      delete copy[index];
+      delete copy[id];
       return copy;
     });
 
     if (typeof window !== "undefined") {
-      sessionStorage.removeItem(`diffrenceExtraCity${index}`);
+      sessionStorage.removeItem(`diffrenceExtraCity:${id}`);
     }
-
-    setExtraCount((prev) => {
-      const updated = Math.max(0, prev - 1);
-      sessionStorage.setItem("diffrenceExtraCount", String(updated));
-      return updated;
-    });
   }, []);
 
   return (
@@ -135,17 +124,17 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
             />
           </div>
 
-          {Array.from({ length: extraCount }).map((_, index) => (
+          {extraIds.map((id) => (
             <DiffrenceExtraSelect
-              key={index}
-              index={index}
+              key={id}
+              id={id}
               cities={cities}
               onChange={handleExtraChange}
             />
           ))}
 
           <div
-            className="cursor-pointer transition-all"
+            className={clsx("cursor-pointer transition-all", isMaxReached && "opacity-50 pointer-events-none")}
             onClick={handleAdd}
           >
             <Icon
@@ -157,10 +146,10 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
       </div>
 
       <DiffrenceMainTime
-        aCity={aCity.selected.name ?? ""}
-        bCity={bCity.selected.name ?? ""}
-        timeDiffrence={timeDiffrence ?? ""}
-        sentence={sentence ?? ""}
+        aCity={aCity.selected?.name ?? ""}
+        bCity={bCity.selected?.name ?? ""}
+        timeDiffrence={timeDiffrence}
+        sentence={sentence}
       />
 
       <DiffrenceCityList
