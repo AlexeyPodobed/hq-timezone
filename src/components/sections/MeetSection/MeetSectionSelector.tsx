@@ -109,15 +109,17 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
           />
         ))}
 
-        <div
-          className={clsx("cursor-pointer transition-all", isMaxReached && "opacity-50 pointer-events-none")}
-          onClick={handleAdd}
-        >
-          <Icon
-            name="plus"
-            className="text-[2.875rem] text-yellow"
-          />
-        </div>
+        {!isMaxReached && (
+          <div
+            className="cursor-pointer transition-all"
+            onClick={handleAdd}
+          >
+            <Icon
+              name="plus"
+              className="text-2xl lg:text-[2.875rem] text-yellow"
+            />
+          </div>
+        )}
       </div>
 
       <MeetSectionResultsList
