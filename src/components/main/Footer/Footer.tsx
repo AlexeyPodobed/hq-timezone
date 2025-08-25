@@ -16,7 +16,7 @@ export default async function Footer() {
 
   return (
     <>
-      <div className="page-wrapper !min-h-0">
+      <div className="page-wrapper !min-h-0 !pt-0">
         <ContactSection
           background_image={contact_section?.background_image}
           image={contact_section?.image}

@@ -12,8 +12,8 @@ interface MeetSectionResultsCityProps {
 
 export const MeetSectionResultsCity = ({ name, label, showRemoveBtn = false, removeCallback, diffShort }: MeetSectionResultsCityProps) => {
   return (
-    <div className="meet-section__results-city">
-      <div className="meet-section__results-flex">
+    <div className="meet-section__results-city relative">
+      <div className="meet-section__results-flex pt-2 lg:pt-0">
         {(name || diffShort) && (
           <h4>
             {name && name}
@@ -24,12 +24,12 @@ export const MeetSectionResultsCity = ({ name, label, showRemoveBtn = false, rem
       </div>
       {showRemoveBtn && removeCallback && (
         <div
-          className="cursor-pointer"
+          className="cursor-pointer meet-section__results-city-remove absolute -top-2 right-0 lg:static lg:pt-1"
           onClick={removeCallback}
         >
           <Icon
             name="minus"
-            className="text-[2.875rem] text-red-700"
+            className="text-[1.5rem] pt-2 lg:pt-0 lg:text-[2rem] text-red-500 relative z-10 lg:static"
           />
         </div>
       )}
