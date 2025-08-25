@@ -6,13 +6,13 @@ import { CustomSelect } from "@/components/base/CustomSelect";
 import { useCitySelect } from "@/hooks/useCitySelect";
 import type { CityFull } from "@/types/cities";
 
-type Props = {
+interface MeetSectionExtraSelectProps {
   cities: CityFull[];
   index: number;
   onChange?: (index: number, value: CityFull | null) => void;
-};
+}
 
-export const MeetSectionExtraSelect = memo(function MeetSectionExtraSelect({ cities, index, onChange }: Props) {
+export const MeetSectionExtraSelect = memo<MeetSectionExtraSelectProps>(({ cities, index, onChange }) => {
   const city = useCitySelect(cities, { storageKey: `meetExtraCity${index}` });
   const label = `City ${String.fromCharCode(67 + index)}`;
 
@@ -40,3 +40,5 @@ export const MeetSectionExtraSelect = memo(function MeetSectionExtraSelect({ cit
     </div>
   );
 });
+
+MeetSectionExtraSelect.displayName = "MeetSectionExtraSelect";

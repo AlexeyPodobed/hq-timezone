@@ -4,19 +4,19 @@
     @apply lg:mt-5 lg:pt-[9.25rem] lg:pb-[6.8125rem] lg:rounded-[1.25rem];
 
     &::after {
-        @apply content-[''] absolute right-0 top-0 w-[16.8125rem] h-full bg-yellow z-0;
+        @apply content-[''] absolute right-0 top-0 w-[16.8125rem] h-full bg-yellow z-0 pointer-events-none;
     }
 
     &__decor {
-        @apply absolute bottom-0 right-0 w-[33.75rem] z-10;
+        @apply absolute bottom-0 right-0 w-[33.75rem] z-10 pointer-events-none;
     }
 
     &__inner {
-        @apply relative flex flex-col z-10;
+        @apply relative flex flex-col z-20;
     }
 
     &__selector {
-        @apply w-full mt-[5.3125rem];
+        @apply w-full max-w-[86.25rem] mt-[5.3125rem];
     }
 
     &__selects {
@@ -68,7 +68,7 @@
     }
 
     &__city-list {
-        @apply mt-[9.25rem] flex gap-[3.125rem];
+        @apply max-w-[81.25rem] mt-[9.25rem] flex flex-wrap gap-[3.125rem];
     }
 
     &__city-item {

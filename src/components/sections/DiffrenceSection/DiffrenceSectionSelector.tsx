@@ -1,7 +1,7 @@
 "use client";
 
 import { clsx } from "clsx";
-import { memo, useMemo } from "react";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 
 import "./DiffrenceSection.scss";
 
@@ -12,6 +12,7 @@ import { CityFull } from "@/types/cities";
 import { getTimeDiff, formatDiffShort, formatDiffSentence } from "@/utils/timeDiff";
 
 import { DiffrenceCityList } from "./DiffrenceCityList";
+import { DiffrenceExtraSelect } from "./DiffrenceExtraSelect";
 import { DiffrenceMainTime } from "./DiffrenceMainTime";
 
 // import { DiffrenceMainTime } from "./DiffrenceMainTime";
@@ -24,7 +25,6 @@ export interface DiffrenceSectionSelectorProps {
 export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ cities, className }) => {
   const aCity = useCitySelect(cities, { storageKey: "diffrenceCityA" });
   const bCity = useCitySelect(cities, { storageKey: "diffrenceCityB", defaultCity: 1 });
-
   const tzACity = aCity.selected?.timeData?.timezoneId;
   const tzBCity = bCity.selected?.timeData?.timezoneId;
 
@@ -42,6 +42,66 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
     if (!diff || !aCity.selected || !bCity.selected) return "";
     return formatDiffSentence(aCity.selected.name, bCity.selected.name, diff);
   }, [diff, aCity.selected, bCity.selected]);
+
+  const [extraCount, setExtraCount] = useState(0);
+  const [extraSelected, setExtraSelected] = useState<Record<number, CityFull | null>>({});
+  const isMaxReached = extraCount >= 10;
+
+  const handleExtraChange = useCallback((index: number, value: CityFull | null) => {
+    setExtraSelected((prev) => ({ ...prev, [index]: value }));
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const raw = sessionStorage.getItem("diffrenceExtraCount");
+    if (raw) {
+      const parsed = parseInt(raw);
+      if (!isNaN(parsed)) {
+        setExtraCount(parsed);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const raw = sessionStorage.getItem("diffrenceExtraCity");
+    if (raw) {
+      const parsed = parseInt(raw);
+      if (!isNaN(parsed)) {
+        setExtraCount(parsed);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    sessionStorage.setItem("diffrenceExtraCity", String(extraCount));
+  }, [extraCount]);
+
+  const handleAdd = () => {
+    if (isMaxReached) return;
+    setExtraCount((prev) => prev + 1);
+  };
+
+  const handleDeleteExtra = useCallback((index: number) => {
+    setExtraSelected((prev) => {
+      const copy = { ...prev };
+      delete copy[index];
+      return copy;
+    });
+
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem(`diffrenceExtraCity${index}`);
+    }
+
+    setExtraCount((prev) => {
+      const updated = Math.max(0, prev - 1);
+      sessionStorage.setItem("diffrenceExtraCount", String(updated));
+      return updated;
+    });
+  }, []);
 
   return (
     <div className={clsx("diffrence-section__selector-wrap", className)}>
@@ -75,9 +135,18 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
             />
           </div>
 
+          {Array.from({ length: extraCount }).map((_, index) => (
+            <DiffrenceExtraSelect
+              key={index}
+              index={index}
+              cities={cities}
+              onChange={handleExtraChange}
+            />
+          ))}
+
           <div
             className="cursor-pointer transition-all"
-            //   onClick={handleAdd}
+            onClick={handleAdd}
           >
             <Icon
               name="plus"
@@ -93,9 +162,12 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
         timeDiffrence={timeDiffrence ?? ""}
         sentence={sentence ?? ""}
       />
+
       <DiffrenceCityList
         aCity={aCity.selected}
         bCity={bCity.selected}
+        extraSelected={extraSelected}
+        onDelete={handleDeleteExtra}
       />
     </div>
   );
