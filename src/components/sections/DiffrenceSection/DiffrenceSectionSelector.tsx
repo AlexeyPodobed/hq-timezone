@@ -1,6 +1,5 @@
 "use client";
 
-import { clsx } from "clsx";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -18,12 +17,11 @@ import { DiffrenceMainTime } from "./DiffrenceMainTime";
 
 export interface DiffrenceSectionSelectorProps {
   cities: CityFull[];
-  className?: string;
 }
 
 const STORAGE_KEY = "diffrenceExtraIds";
 
-export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ cities, className }) => {
+export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ cities }) => {
   const aCity = useCitySelect(cities, { storageKey: "diffrenceCityA" });
   const bCity = useCitySelect(cities, { storageKey: "diffrenceCityB", defaultCity: 1 });
 
@@ -93,55 +91,71 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
   }, []);
 
   return (
-    <div className={clsx("diffrence-section__selector-wrap", className)}>
+    <div className="diffrence-section__selector-wrap">
       <div className="diffrence-section__selector">
         <div className="diffrence-section__selects">
-          <h3 className="diffrence-section__select-title">Time Difference Between</h3>
+          <h3 className="diffrence-section__select-title w-full lg:w-auto">Time Difference Between</h3>
 
-          <div className="diffrence-section__select">
-            <CustomSelect
-              options={aCity.options}
-              value={aCity.selected?.name ?? ""}
-              onChange={aCity.selectByName}
-              onSearchChange={aCity.setSearch}
-              placeholder="Select city"
-              searchable
-              variant="yellow"
-            />
+          <div className="diffrence-section__select-wrapper">
+            <div className="diffrence-section__select">
+              <CustomSelect
+                options={aCity.options}
+                value={aCity.selected?.name ?? ""}
+                onChange={aCity.selectByName}
+                onSearchChange={aCity.setSearch}
+                placeholder="Select city"
+                searchable
+                variant="yellow"
+              />
+            </div>
+
+            <h3 className="diffrence-section__select-title">and</h3>
           </div>
 
-          <h3 className="diffrence-section__select-title">and</h3>
+          <div className="diffrence-section__select-wrapper">
+            <div className="diffrence-section__select">
+              <CustomSelect
+                options={bCity.options}
+                value={bCity.selected?.name ?? ""}
+                onChange={bCity.selectByName}
+                onSearchChange={bCity.setSearch}
+                placeholder="Select city"
+                searchable
+                variant="yellow"
+              />
+            </div>
 
-          <div className="diffrence-section__select">
-            <CustomSelect
-              options={bCity.options}
-              value={bCity.selected?.name ?? ""}
-              onChange={bCity.selectByName}
-              onSearchChange={bCity.setSearch}
-              placeholder="Select city"
-              searchable
-              variant="yellow"
-            />
+            {/* Output "and" for second static select, if some of them added */}
+            {extraIds.length > 0 && <h3 className="diffrence-section__select-title">and</h3>}
+
+            {/* If no extra selects - show btn. Hide when there are, because last item has this btn */}
+            {!extraIds.length && (
+              <div
+                className="cursor-pointer pr-4 add-diff xl:pr-0 transition-opacity hover:opacity-50"
+                onClick={handleAdd}
+              >
+                <Icon
+                  name="plus"
+                  className="text-2xl lg:text-[2.875rem] text-yellow"
+                />
+              </div>
+            )}
           </div>
 
-          {extraIds.map((id) => (
-            <DiffrenceExtraSelect
+          {extraIds.map((id, index) => (
+            <div
+              className="diffrence-section__select-wrapper flex-row-reverse"
               key={id}
-              id={id}
-              cities={cities}
-              onChange={handleExtraChange}
-            />
+            >
+              <DiffrenceExtraSelect
+                id={id}
+                cities={cities}
+                onChange={handleExtraChange}
+                isLastItem={index === extraIds.length - 1}
+                addNewSelect={handleAdd}
+              />
+            </div>
           ))}
-
-          <div
-            className={clsx("cursor-pointer transition-all", isMaxReached && "opacity-50 pointer-events-none")}
-            onClick={handleAdd}
-          >
-            <Icon
-              name="plus"
-              className="text-[2.875rem] text-yellow"
-            />
-          </div>
         </div>
       </div>
 

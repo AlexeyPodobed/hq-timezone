@@ -24,8 +24,8 @@ export const DiffrenceCityList = memo<DiffrenceCityListProps>(({ aCity, bCity, e
             key={i}
             className="diffrence-section__city-item"
           >
-            <div className="flex items-center">
-              <div className="flex flex-col">
+            <div className="lg:flex lg:items-center">
+              <div className="lg:flex lg:flex-col">
                 <h3 className="diffrence-section__city-title">{city.name}</h3>
                 <p className="diffrence-section__city-country">{city.timeData?.countryName}</p>
               </div>
@@ -46,21 +46,21 @@ export const DiffrenceCityList = memo<DiffrenceCityListProps>(({ aCity, bCity, e
       {Object.entries(extraSelected).map(([id, city]) => (
         <div
           key={id}
-          className="diffrence-section__city-item"
+          className="diffrence-section__city-item relative"
         >
-          <div className="flex items-center gap-8">
-            <div className="flex flex-col">
+          <div className="lg:flex lg:items-center">
+            <div className="lg:flex lg:flex-col">
               <h3 className="diffrence-section__city-title">{city?.name}</h3>
               <p className="diffrence-section__city-country">{city?.timeData?.countryName}</p>
             </div>
 
             <div
-              className="cursor-pointer"
+              className="cursor-pointer absolute left-0 bottom-1/2 -translate-y-1/2 transition-opacity hover:opacity-50"
               onClick={() => onDelete?.(id)}
             >
               <Icon
                 name="minus"
-                className="text-[2.875rem] text-red-700"
+                className="text-[1rem] lg:text-[2rem] text-red-700"
               />
             </div>
           </div>
