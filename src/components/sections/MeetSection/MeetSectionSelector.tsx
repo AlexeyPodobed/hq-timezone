@@ -111,7 +111,7 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
 
         {!isMaxReached && (
           <div
-            className="cursor-pointer transition-all"
+            className="cursor-pointer transition-opacity hover:opacity-50"
             onClick={handleAdd}
           >
             <Icon

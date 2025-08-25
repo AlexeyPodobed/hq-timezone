@@ -96,7 +96,7 @@
 
         &::before {
             content: "";
-            @apply absolute top-0 left-[50%] -translate-x-[50%] w-16 h-[calc(100%-2.6875rem)] border border-border-primary rounded-[0.625rem] pointer-events-none z-10;
+            @apply absolute top-0 left-[50%] -translate-x-[50%] w-16 h-[calc(100%-2.3rem)] border border-border-primary rounded-[0.625rem] pointer-events-none z-10;
 
             @apply lg:w-40 lg:rounded-[1.25rem];
         }
