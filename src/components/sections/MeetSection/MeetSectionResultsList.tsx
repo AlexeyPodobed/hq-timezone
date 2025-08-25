@@ -10,10 +10,11 @@ import SwiperComponent from "@/components/swiper/SwiperComponent";
 import SwiperNavigation from "@/components/swiper/SwiperNavigation";
 import { CityFull } from "@/types/cities";
 import { buildTzDayLabel } from "@/utils/date";
+import { formatDiffHours, getSignedHourDiff } from "@/utils/timeDiff";
 
 export interface MeetSectionResultsListProps {
-  a: CityFull;
-  b: CityFull;
+  aCity: CityFull;
+  bCity: CityFull;
   extraSelected?: Record<number, CityFull | null>;
   onDelete?: (id: string) => void;
   className?: string;
@@ -26,16 +27,40 @@ const buildUtcPairsFullDay = (baseUtc: Date, step = 30, count = 48, timezones: s
   });
 };
 
-export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b, extraSelected = {}, onDelete }) => {
-  const labelA = useMemo(() => buildTzDayLabel(a.timeData?.timezoneId), [a]);
-  const labelB = useMemo(() => buildTzDayLabel(b.timeData?.timezoneId), [b]);
+export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ aCity, bCity, extraSelected = {}, onDelete }) => {
+  const labelA = useMemo(() => buildTzDayLabel(aCity.timeData?.timezoneId), [aCity]);
+  const labelB = useMemo(() => buildTzDayLabel(bCity.timeData?.timezoneId), [bCity]);
+
+  const tzACity = aCity?.timeData.timezoneId;
+  const tzBCity = bCity?.timeData.timezoneId;
+
+  const bCityDiffShort = useMemo(() => {
+    if (!tzACity || !tzBCity) return "";
+    const diff = getSignedHourDiff(tzACity, tzBCity);
+    return formatDiffHours(diff);
+  }, [tzACity, tzBCity]);
+
+  const extraDiffs = useMemo(() => {
+    const result: Record<string, string> = {};
+    if (!tzACity) return result;
+
+    for (const [id, city] of Object.entries(extraSelected)) {
+      const tz = city?.timeData?.timezoneId;
+      if (!tz) continue;
+
+      const diff = getSignedHourDiff(tzACity, tz);
+      result[id] = formatDiffHours(diff);
+    }
+
+    return result;
+  }, [extraSelected, tzACity]);
 
   const allTimezones = useMemo(() => {
     const extras = Object.values(extraSelected)
       .filter(Boolean)
       .map((c) => c!.timeData?.timezoneId);
-    return [a.timeData?.timezoneId, b.timeData?.timezoneId, ...extras.filter(Boolean)] as string[];
-  }, [a, b, extraSelected]);
+    return [aCity.timeData?.timezoneId, bCity.timeData?.timezoneId, ...extras.filter(Boolean)] as string[];
+  }, [aCity, bCity, extraSelected]);
 
   const baseUtc = useMemo(() => {
     const now = new Date();
@@ -66,13 +91,16 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b,
       <div className="meet-section__results-cities">
         <div className="meet-section__results-city">
           <div className="meet-section__results-flex">
-            <h4>{a.name}</h4>
+            <h4>{aCity.name}</h4>
             <p>{labelA}</p>
           </div>
         </div>
         <div className="meet-section__results-city">
           <div className="meet-section__results-flex">
-            <h4>{b.name}</h4>
+            <h4>
+              {bCity.name}
+              <span> {bCityDiffShort}</span>
+            </h4>
             <p>{labelB}</p>
           </div>
         </div>
@@ -84,7 +112,10 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ a, b,
               className="meet-section__results-city"
             >
               <div className="meet-section__results-flex">
-                <h4>{city?.name}</h4>
+                <h4>
+                  {city?.name}
+                  <span> {extraDiffs[id]}</span>
+                </h4>
                 <p>{buildTzDayLabel(city!.timeData?.timezoneId)}</p>
               </div>
               <div
