@@ -71,7 +71,9 @@ export const CustomSelect = memo<CustomSelectProps>(
           )}
           onClick={() => setOpen((o) => !o)}
         >
-          <span className="text-3xl leading-[3.25rem] line-clamp-1"> {normalizedOptions.find((o) => o.value === value)?.label || placeholder}</span>
+          <span className="text-[1.25rem] leading-relaxed lg:text-3xl lg:leading-[3.25rem] line-clamp-1">
+            {normalizedOptions.find((o) => o.value === value)?.label || placeholder}
+          </span>
           <Icon
             size="0.515rem"
             name="arrow-down"
