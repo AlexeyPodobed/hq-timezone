@@ -4,8 +4,8 @@ import { addMinutes } from "date-fns";
 import { format, toZonedTime } from "date-fns-tz";
 import { memo, useMemo } from "react";
 
-import { Icon } from "@/components/base/Icon";
 import { Time } from "@/components/base/Time";
+import { MeetSectionResultsCity } from "@/components/sections/MeetSection/MeetSectionResultsCity.tsx";
 import SwiperComponent from "@/components/swiper/SwiperComponent";
 import SwiperNavigation from "@/components/swiper/SwiperNavigation";
 import { CityFull } from "@/types/cities";
@@ -79,55 +79,31 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ aCity
       nextEl: ".arrow-next",
       prevEl: ".arrow-prev",
     },
-    breakpoints: {
-      320: { slidesPerView: 1, spaceBetween: 16 },
-      768: { slidesPerView: 3 },
-      1024: { slidesPerView: 5 },
-    },
   };
 
   return (
     <div className="meet-section__select-results">
       <div className="meet-section__results-cities">
-        <div className="meet-section__results-city">
-          <div className="meet-section__results-flex">
-            <h4>{aCity.name}</h4>
-            <p>{labelA}</p>
-          </div>
-        </div>
-        <div className="meet-section__results-city">
-          <div className="meet-section__results-flex">
-            <h4>
-              {bCity.name}
-              <span> {bCityDiffShort}</span>
-            </h4>
-            <p>{labelB}</p>
-          </div>
-        </div>
+        <MeetSectionResultsCity
+          name={aCity.name}
+          label={labelA}
+        />
+        <MeetSectionResultsCity
+          name={bCity.name}
+          diffShort={bCityDiffShort}
+          label={labelB}
+        />
         {Object.entries(extraSelected)
           .filter(([, city]) => city !== null)
           .map(([id, city]) => (
-            <div
+            <MeetSectionResultsCity
               key={id}
-              className="meet-section__results-city"
-            >
-              <div className="meet-section__results-flex">
-                <h4>
-                  {city?.name}
-                  <span> {extraDiffs[id]}</span>
-                </h4>
-                <p>{buildTzDayLabel(city!.timeData?.timezoneId)}</p>
-              </div>
-              <div
-                className="cursor-pointer"
-                onClick={() => onDelete?.(id)}
-              >
-                <Icon
-                  name="minus"
-                  className="text-[2.875rem] text-red-700"
-                />
-              </div>
-            </div>
+              name={city?.name}
+              label={buildTzDayLabel(city!.timeData?.timezoneId)}
+              diffShort={extraDiffs[id]}
+              removeCallback={() => onDelete?.(id)}
+              showRemoveBtn={true}
+            />
           ))}
       </div>
 
