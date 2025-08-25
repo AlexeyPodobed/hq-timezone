@@ -24,7 +24,7 @@ export const HeroCityList = memo<HeroCityListProps>(({ cities, onSelect }) => {
         <Button
           key={city.id}
           onClick={() => handleClick(city)}
-          className="lg:min-w-[11.4375rem] line-clamp-1 lg:px-3"
+          className="lg:min-w-[11.4375rem] line-clamp-1 lg:px-3 transition-colors hover:bg-yellow"
         >
           {city.name}
         </Button>
