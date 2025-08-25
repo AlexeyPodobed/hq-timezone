@@ -1,7 +1,8 @@
 import api from "@/api/api";
 import { WP_API, WP_API_MAIN, WP_CORE_API } from "@/consts/api";
 import { EXPIRE_5_MINUTES } from "@/consts/time";
-import { HomePageAPI, HomePageID, HomePageMeta } from "@/types/home";
+import { HomePageAPI, HomePageID } from "@/types/home";
+import { PageMeta } from "@/types/main";
 
 export const getHomePage = async (): Promise<{
   status: number;
@@ -35,7 +36,7 @@ export const getHomeMetaById = async (
   id: number
 ): Promise<{
   status: number;
-  data: HomePageMeta;
+  data: PageMeta;
 }> => {
   try {
     const { data, status } = await api.get(`${WP_CORE_API}/pages/${id}`, {}, { next: { revalidate: EXPIRE_5_MINUTES } });

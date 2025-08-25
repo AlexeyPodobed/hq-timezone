@@ -1,7 +1,12 @@
-export interface MetaOptions {
-  meta_title: string;
-  meta_description: string;
-  meta_keywords: string;
+export interface PageMeta {
+  yoast_head_json: {
+    title: string;
+    description?: string;
+    og_title?: string;
+    og_description?: string;
+    og_url?: string;
+    og_site_name?: string;
+  };
 }
 
 interface Image {

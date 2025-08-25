@@ -13,11 +13,11 @@ export const generateMetadata = async (props: { params: Promise<{ slug: string }
 
   if (!page) return { title: "Not Found" };
 
-  const meta = page.meta ?? {};
+  const meta = page.meta.yoast_head_json ?? {};
   return {
-    title: meta.meta_title || page.title?.rendered || "Untitled Page",
-    description: meta.meta_description || "",
-    keywords: (meta.meta_keywords ?? "").split(",").filter(Boolean),
+    title: meta.title || page.title?.rendered || "Untitled Page",
+    description: meta.description || "HQ TIMEZONE description",
+    keywords: (meta.og_title, meta.og_description, meta.og_site_name ?? "").split(",").filter(Boolean),
   };
 };
 

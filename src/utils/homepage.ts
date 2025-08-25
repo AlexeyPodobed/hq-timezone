@@ -2,7 +2,7 @@ import { getHomePageId, getHomeMetaById } from "@/api/homepage";
 
 export const fetchFrontPageMeta = async (): Promise<{
   title: string;
-  description: string;
+  description?: string;
   keywords: string[];
 }> => {
   try {

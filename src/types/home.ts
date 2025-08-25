@@ -1,5 +1,3 @@
-import { MetaOptions } from "./main";
-
 export interface HeroSectionBlock {
   acf_fc_layout: "hero";
   background_image: {
@@ -64,21 +62,9 @@ export interface ContactSectionBlock {
 export type HomePageFlexibleContent = HeroSectionBlock | MeetSectionBlock | DifferenceBlock | PostsSectionBlock | ContactSectionBlock;
 
 export interface HomePageAPI {
-  meta: MetaOptions;
   homepage_flexible_content: HomePageFlexibleContent[];
 }
 
 export interface HomePageID {
   page_on_front: number;
-}
-
-export interface HomePageMeta {
-  yoast_head_json: {
-    title: string;
-    description: string;
-    og_title?: string;
-    og_description?: string;
-    og_url?: string;
-    og_site_name?: string;
-  };
 }
