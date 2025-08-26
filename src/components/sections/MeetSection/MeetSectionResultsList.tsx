@@ -1,5 +1,6 @@
 "use client";
 
+import { clsx } from "clsx";
 import { addMinutes } from "date-fns";
 import { format, toZonedTime } from "date-fns-tz";
 import { memo, useMemo } from "react";
@@ -8,6 +9,7 @@ import { Time } from "@/components/base/Time";
 import { MeetSectionResultsCity } from "@/components/sections/MeetSection/MeetSectionResultsCity.tsx";
 import SwiperComponent from "@/components/swiper/SwiperComponent";
 import SwiperNavigation from "@/components/swiper/SwiperNavigation";
+import { useTimeStore } from "@/store/timeStore.ts";
 import { CityFull } from "@/types/cities";
 import { buildTzDayLabel } from "@/utils/date";
 import { formatDiffHours, getSignedHourDiff } from "@/utils/timeDiff";
@@ -81,6 +83,8 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ aCity
     },
   };
 
+  const is24hStore = useTimeStore((s) => s.is24h);
+
   return (
     <div className="meet-section__select-results">
       <div className="meet-section__results-cities">
@@ -106,8 +110,12 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ aCity
             />
           ))}
       </div>
-
-      <div className="meet-section__results-time">
+      <div
+        className={clsx(
+          "meet-section__results-time",
+          is24hStore ? "meet-section__results-time--24h-format" : "meet-section__results-time--12h-format"
+        )}
+      >
         <SwiperComponent
           settings={swiperSettings}
           className="w-full max-w-full !ml-0 !mr-0 !overflow-visible"

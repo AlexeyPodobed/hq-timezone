@@ -101,6 +101,14 @@
             @apply lg:w-40 lg:rounded-[1.25rem];
         }
 
+        &--12h-format::before {
+            @apply lg:w-32;
+        }
+
+        &--24h-format::before {
+            @apply lg:w-28;
+        }
+
         .swiper-slide:first-child .meet-section__item-time:before {
             @apply rounded-l;
         }
@@ -131,7 +139,13 @@
         }
 
         .ampm {
-            @apply text-lg leading-normal;
+            @apply lg:text-lg lg:leading-normal;
+        }
+
+        .time.time-ampm{
+            @apply text-[0.8rem];
+
+            @apply lg:text-2xl;
         }
     }
 
