@@ -55,6 +55,7 @@ export default async function Footer() {
                   href={getSlugFromWpUrl(button.link.url)}
                   target={button.link.target}
                   className="footer__link"
+                  prefetch
                 >
                   {button.link.title}
                 </Link>

@@ -5,6 +5,7 @@ export const HeaderHomeLink = () => {
     <Link
       href="/"
       className="header__home-link"
+      prefetch
     >
       Home
     </Link>
