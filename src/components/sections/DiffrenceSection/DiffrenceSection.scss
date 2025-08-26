@@ -22,7 +22,9 @@
     }
 
     &__selector {
-        @apply mb-14 lg:w-full lg:max-w-[86.25rem] lg:mb-5;
+        @apply mb-14;
+
+        @apply lg:w-full lg:max-w-[86.25rem] lg:mb-5;
     }
 
     &__selects {
