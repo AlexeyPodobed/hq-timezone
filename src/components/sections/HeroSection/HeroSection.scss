@@ -53,9 +53,7 @@
     @apply xl:text-[12.5rem];
 
     .time {
-      @apply my-4 inline-block text-primary-1;
-
-      @apply lg:min-w-[43.5rem];
+      @apply my-4 inline-block text-primary-1 lg:min-w-[43.5rem];
 
       &.time-ampm {
         @apply lg:min-w-[49.688rem];
