@@ -1,107 +1,107 @@
 .hero-section {
-    @apply relative pt-[3.375rem] pb-4 bg-white rounded-[0.625rem] overflow-hidden;
+  @apply relative pt-[3.375rem] pb-4 bg-white rounded-[0.625rem] overflow-hidden;
 
-		@apply lg:rounded-[1.25rem] lg:pt-[18.688rem] lg:pb-[2.875rem];
+  @apply lg:rounded-[1.25rem] lg:pt-[18.688rem] lg:pb-[2.875rem];
 
-    &__inner {
-        @apply relative flex flex-col z-10;
+  &__inner {
+    @apply relative flex flex-col z-10;
+  }
+
+  &__main-content {
+    @apply w-full md:mb-6 lg:mb-[9.188rem] flex;
+  }
+
+  &__selector {
+    @apply flex items-center gap-4 flex-col mb-8;
+
+    @apply lg:gap-5 lg:flex-row;
+  }
+
+  &__title {
+    @apply text-[1.5625rem] leading-[1.875rem] font-semibold text-primary-1;
+
+    @apply lg:text-[2.813rem];
+  }
+
+  &__main-time {
+    @apply w-full flex flex-col gap-7 text-center;
+
+    @apply md:flex-row md:items-center;
+
+    @apply lg:items-center lg:gap-[4.188rem] lg:text-left;
+  }
+
+  &__main-time-block {
+    @apply flex flex-col;
+
+    @apply md:w-1/2;
+
+    @apply xl:w-auto;
+  }
+
+  &__main-city {
+    @apply text-[1rem] font-bold text-gray-opacity-02 leading-none;
+
+    @apply lg:text-3xl lg:leading-[2.875rem];
+  }
+
+  &__main-time-value {
+    @apply text-[4rem] leading-none font-anton whitespace-nowrap;
+
+    @apply lg:text-[6rem];
+
+    @apply xl:text-[12.5rem];
+
+    .time {
+      @apply my-4 inline-block text-primary-1;
+
+      @apply lg:min-w-[43.5rem];
+
+      &.time-ampm {
+        @apply lg:min-w-[49.688rem];
+      }
+
+      .ampm {
+        @apply text-[4.375rem];
+      }
     }
+  }
 
-    &__main-content {
-        @apply w-full md:mb-6 lg:mb-[9.188rem] flex;
+  &__main-date {
+    @apply text-[1rem] leading-none;
+
+    @apply lg:text-3xl;
+  }
+
+  &__main-col-left {
+    @apply flex flex-col gap-10 justify-between;
+
+    @apply md:w-1/2;
+
+    @apply xl:w-auto;
+
+    @apply 2xl:flex-row 2xl:flex-1;
+  }
+
+  &__main-sun {
+    @apply flex gap-[0.313rem] flex-wrap justify-center;
+
+    @apply 2xl:flex-col 2xl:justify-start;
+
+    &__btn {
+      @apply min-w-[7.625rem];
     }
+  }
 
-    &__selector {
-        @apply flex items-center gap-4 flex-col mb-8;
+  &__main-day-time {
+    @apply text-2xl text-light-blue font-bold leading-6 block w-full mt-2;
 
-        @apply lg:gap-5 lg:flex-row;
-    }
+    @apply lg:leading-[2.875rem] lg:text-3xl lg:text-center;
 
-    &__title {
-        @apply text-[1.5625rem] leading-[1.875rem] font-semibold text-primary-1;
+    @apply 2xl:text-right;
+  }
 
-				@apply lg:text-[2.813rem];
-    }
-
-    &__main-time {
-        @apply w-full flex flex-col gap-7 text-center;
-
-				@apply md:flex-row md:items-center;
-
-				@apply lg:items-center lg:gap-[4.188rem] lg:text-left;
-    }
-
-    &__main-time-block {
-        @apply flex flex-col;
-
-				@apply md:w-1/2;
-
-				@apply xl:w-auto;
-    }
-
-    &__main-city {
-        @apply text-[1rem] font-bold text-gray-opacity-02 leading-none;
-
-				@apply lg:text-3xl lg:leading-[2.875rem];
-    }
-
-    &__main-time-value {
-        @apply text-[4rem] leading-none font-anton whitespace-nowrap;
-
-				@apply lg:text-[6rem];
-
-				@apply xl:text-[12.5rem];
-
-        .time {
-            @apply my-4 inline-block text-primary-1;
-
-						@apply lg:min-w-[43.5rem];
-
-            &.time-ampm {
-                @apply min-w-[49.688rem];
-            }
-
-            .ampm {
-                @apply text-[4.375rem];
-            }
-        }
-    }
-
-    &__main-date {
-        @apply text-[1rem] leading-none;
-
-				@apply lg:text-3xl;
-    }
-
-    &__main-col-left {
-        @apply flex flex-col gap-10 justify-between;
-
-				@apply md:w-1/2;
-
-				@apply xl:w-auto;
-
-				@apply 2xl:flex-row 2xl:flex-1;
-    }
-
-    &__main-sun {
-        @apply flex gap-[0.313rem] flex-wrap justify-center;
-
-				@apply 2xl:flex-col 2xl:justify-start;
-
-				&__btn {
-						@apply min-w-[7.625rem] ;
-				}
-    }
-
-    &__main-day-time {
-        @apply text-2xl text-light-blue font-bold leading-6 block w-full mt-2;
-
-				@apply lg:leading-[2.875rem] lg:text-3xl lg:text-center;
-
-				@apply 2xl:text-right;
-    }
-
-    &__main-info {
-        @apply flex flex-col gap-[0.313rem];
-    }
+  &__main-info {
+    @apply flex flex-col gap-[0.313rem];
+  }
 }
