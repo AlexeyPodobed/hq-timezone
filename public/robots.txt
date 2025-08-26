@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hq-timezone.vercel.app/sitemap_index.xml
