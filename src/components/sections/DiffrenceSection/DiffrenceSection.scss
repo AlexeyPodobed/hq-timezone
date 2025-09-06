@@ -12,7 +12,9 @@
     }
 
     &__decor {
-        @apply absolute -bottom-[5rem] w-[22.8125rem] -right-[5rem] z-10 pointer-events-none rotate-[20deg];
+        @apply absolute -bottom-[5rem] w-[22.8125rem] -right-[5rem] z-10 pointer-events-none rotate-[20deg] will-change-transform;
+
+        animation: float-rotate 6s ease-in-out infinite;
 
         @apply xl:w-[33.75rem] xl:bottom-0 xl:rotate-0;
     }

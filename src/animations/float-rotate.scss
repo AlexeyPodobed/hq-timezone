@@ -1,0 +1,11 @@
+@keyframes float-rotate {
+    0% {
+        transform: translateY(12px) rotate(3deg);
+    }
+    50% {
+        transform: translateY(-12px) rotate(15deg);
+    }
+    100% {
+        transform: translateY(12px) rotate(3deg);
+    }
+}

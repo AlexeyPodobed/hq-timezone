@@ -2,6 +2,7 @@ import { clsx } from "clsx";
 import { memo } from "react";
 
 import "./DiffrenceSection.scss";
+import "@/animations/float-rotate.scss";
 
 import { Container } from "@/common/Container";
 import { ImageWrapper } from "@/common/ImageWrapper";
