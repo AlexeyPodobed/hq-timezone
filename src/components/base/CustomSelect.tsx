@@ -108,7 +108,7 @@ export const CustomSelect = memo<CustomSelectProps>(
                 className={clsx(
                   "p-2.5 border-b border-border-primary cursor-pointer",
                   value === opt.value && "",
-                  variant === "yellow" ? "text-text-secondary" : "text-primary-1"
+                  variant === "yellow" ? "text-text-secondary hover:text-yellow" : "text-primary-1 hover:text-light-blue"
                 )}
                 onClick={() => {
                   onChange?.(opt.value);
