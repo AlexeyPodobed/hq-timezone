@@ -22,7 +22,10 @@ interface ContactSectionProps {
 
 export const ContactSection = memo<ContactSectionProps>(({ background_image, image }) => {
   return (
-    <section className="contact">
+    <section
+      className="contact"
+      id="contact"
+    >
       <ImageWrapper
         src={background_image?.url}
         alt={background_image?.alt}
