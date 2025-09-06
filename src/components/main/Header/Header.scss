@@ -1,5 +1,4 @@
 .header {
-    @apply bg-primary-1;
 
     &-inner {
         @apply flex items-center justify-between bg-white rounded-lg shadow-default pt-[0.3125rem] pb-[0.3125rem] pr-[0.4375rem] pl-[0.75rem] fixed top-2.5 left-2.5 right-2.5 z-30;

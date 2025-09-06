@@ -15,7 +15,7 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  @apply bg-primary-1 pt-[4.5625rem];
+  @apply bg-primary-1 pt-[4.5625rem] lg:pt-0;
 }
 
 ::-webkit-credentials-auto-fill-button {
