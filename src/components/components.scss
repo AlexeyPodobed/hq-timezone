@@ -1,7 +1,7 @@
 .page-wrapper {
-    @apply p-[0.625rem] relative min-h-[100vh] bg-primary-1 overflow-hidden;
+    @apply p-[0.625rem] relative min-h-[100vh] bg-primary-1;
 
-		@apply lg:p-[1.625rem];
+    @apply lg:p-[1.625rem];
 }
 
 .link {
