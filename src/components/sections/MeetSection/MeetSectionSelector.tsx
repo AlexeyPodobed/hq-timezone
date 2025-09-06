@@ -22,6 +22,8 @@ const STORAGE_KEY = "meetExtraIds";
 export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, className }) => {
   const aCity = useCitySelect(cities, { storageKey: "meetCityA" });
   const bCity = useCitySelect(cities, { storageKey: "meetCityB", defaultCity: 1 });
+  const isFetchingA = aCity.isFetching;
+  const isFetchingB = bCity.isFetching;
 
   const [extraIds, setExtraIds] = useState<string[]>([]);
   const [extraSelected, setExtraSelected] = useState<Record<string, CityFull | null>>({});
@@ -80,8 +82,10 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
             value={aCity.selected?.name ?? ""}
             onChange={aCity.selectByName}
             onSearchChange={aCity.setSearch}
+            getSelectedLabel={(value) => value}
             placeholder="Select city"
             searchable
+            isFetching={isFetchingA}
             variant="yellow"
           />
         </div>
@@ -93,8 +97,10 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
             value={bCity.selected?.name ?? ""}
             onChange={bCity.selectByName}
             onSearchChange={bCity.setSearch}
+            getSelectedLabel={(value) => value}
             placeholder="Select city"
             searchable
+            isFetching={isFetchingB}
             variant="yellow"
           />
         </div>

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { getCityWp } from "@/api/cities";
-import { useDebounce } from "@/hooks/useDebounce";
+import { debounceDelayTime, useDebounce } from "@/hooks/useDebounce";
 import { CityFull } from "@/types/cities";
 import { getCityTimeViaProxy } from "@/utils/cities";
 
@@ -16,7 +16,7 @@ export interface UseCitySelectOptions {
 const uniqueByName = (list: CityFull[]) => {
   const map = new Map<string, CityFull>();
   for (const c of list) {
-    const key = c.name.trim().toLowerCase();
+    const key = `${c.name.trim().toLowerCase()}|${c.timeData?.countryName?.trim().toLowerCase()}`;
     if (!map.has(key)) map.set(key, c);
   }
   return Array.from(map.values());
@@ -24,7 +24,7 @@ const uniqueByName = (list: CityFull[]) => {
 
 export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOptions = {}) {
   const storageKey = opts.storageKey ?? "selectedCity";
-  const debounceMs = opts.debounceMs ?? 300;
+  const debounceMs = opts.debounceMs ?? debounceDelayTime;
   const defaultCity = opts.defaultCity ?? 0;
 
   const [selected, setSelected] = useState<CityFull>(initialCities[defaultCity]);
@@ -35,7 +35,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
   const debounced = useDebounce(search, debounceMs);
 
   const allCities = useMemo(() => uniqueByName([...initialCities, ...extraCities]), [initialCities, extraCities]);
-  const options = useMemo(() => allCities.map((c) => ({ label: c.name, value: c.name })), [allCities]);
+  const options = useMemo(() => allCities.map((c) => ({ label: `${c.name}, ${c.timeData.countryName}`, value: c.name })), [allCities]);
 
   const selectCity = useCallback(
     (c: CityFull) => {
@@ -113,6 +113,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     setIsFetching(true);
 
     (async () => {
+      // const start = performance.now();
       try {
         const { data } = await getCityWp(term, ac.signal);
         const enriched = await Promise.all(
@@ -122,6 +123,9 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
           })
         );
         setExtraCities(enriched);
+
+        // const end = performance.now();
+        // console.log(`⏱️ Full request + enrichment took ${Math.round(end - start)}ms`);
       } catch (err: any) {
         if (err?.name !== "AbortError") console.log("City search failed:", err);
       } finally {

@@ -4,6 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import clsx from "clsx";
 import { useState, useMemo, useEffect, useRef, memo } from "react";
 
+import { Loader } from "./Loader";
 import { Icon } from "../base/Icon";
 
 export const customSelectVariants = cva("custom-select relative", {
@@ -25,12 +26,14 @@ export interface CustomSelectProps extends VariantProps<typeof customSelectVaria
   value?: string;
   onChange?: (value: string) => void;
   onSearchChange?: (value: string) => void;
+  getSelectedLabel?: (value: string) => string;
   placeholder?: string;
   searchable?: boolean;
+  isFetching?: boolean;
 }
 
 export const CustomSelect = memo<CustomSelectProps>(
-  ({ options, value, onChange, onSearchChange, placeholder = "Select...", variant, searchable = true }) => {
+  ({ options, value, onChange, onSearchChange, getSelectedLabel, placeholder = "Select...", variant, searchable = true, isFetching }) => {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
     const ref = useRef<HTMLDivElement>(null);
@@ -72,7 +75,7 @@ export const CustomSelect = memo<CustomSelectProps>(
           onClick={() => setOpen((o) => !o)}
         >
           <span className="text-[1.25rem] leading-relaxed lg:text-3xl lg:leading-[3.25rem] line-clamp-1">
-            {normalizedOptions.find((o) => o.value === value)?.label || placeholder}
+            {getSelectedLabel?.(value ?? "") || normalizedOptions.find((o) => o.value === value)?.label || placeholder}
           </span>
           <Icon
             size="0.515rem"
@@ -87,24 +90,31 @@ export const CustomSelect = memo<CustomSelectProps>(
               variant === "yellow" ? "bg-primary-1 border-yellow" : "bg-white border-primary-1"
             )}
           >
-            {searchable && (
-              <input
-                type="text"
-                className={clsx(
-                  "w-full mb-3 p-2.5 border rounded-lg",
-                  variant === "yellow" ? "text-white border-yellow bg-primary-1" : "text-primary-1 border-primary-1"
-                )}
-                placeholder="Search..."
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  onSearchChange?.(e.target.value);
-                }}
-              />
-            )}
-            {filtered.map((opt) => (
+            <div className="relative flex items-center justify-between">
+              {searchable && (
+                <input
+                  type="text"
+                  className={clsx(
+                    "w-full mb-3 p-2.5 border rounded-lg",
+                    variant === "yellow" ? "text-white border-yellow bg-primary-1" : "text-primary-1 border-primary-1"
+                  )}
+                  placeholder="Search..."
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    onSearchChange?.(e.target.value);
+                  }}
+                />
+              )}
+              {isFetching && (
+                <div className="absolute -right-11 top-1.5 w-9 h-9">
+                  <Loader className="w-full h-full" />
+                </div>
+              )}
+            </div>
+            {filtered.map((opt, index) => (
               <div
-                key={opt.value}
+                key={`${opt.label}__${index}`}
                 className={clsx(
                   "p-2.5 border-b border-border-primary cursor-pointer",
                   value === opt.value && "",

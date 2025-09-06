@@ -15,6 +15,7 @@ interface MeetSectionExtraSelectProps {
 
 export const MeetSectionExtraSelect = memo<MeetSectionExtraSelectProps>(({ cities, index, id, onChange }) => {
   const city = useCitySelect(cities, { storageKey: `meetExtraCity:${id}` });
+  const { isFetching } = city;
 
   const label = `City ${String.fromCharCode(67 + index)}`;
 
@@ -35,8 +36,10 @@ export const MeetSectionExtraSelect = memo<MeetSectionExtraSelectProps>(({ citie
         value={city.selected?.name ?? ""}
         onChange={city.selectByName}
         onSearchChange={city.setSearch}
+        getSelectedLabel={(value) => value}
         placeholder="Select city"
         searchable
+        isFetching={isFetching}
         variant="yellow"
       />
     </div>
