@@ -1,15 +1,22 @@
 "use client";
 
 import Lenis from "lenis";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 
 export default function LenisProvider({ children }: { children: ReactNode }) {
+  const [isClient, setIsClient] = useState(false);
+
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+
     const lenis = new Lenis({
       duration: 1.2,
-      easing: (t: number) => 1 - Math.pow(1 - t, 3), // custom easing
+      easing: (t: number) => 1 - Math.pow(1 - t, 3),
       smoothWheel: true,
-      // smoothTouch: false,
       prevent: (node) => node.classList.contains("custom-select-dropdown"),
     });
 
@@ -23,7 +30,7 @@ export default function LenisProvider({ children }: { children: ReactNode }) {
     return () => {
       lenis.destroy();
     };
-  }, []);
+  }, [isClient]);
 
-  return <>{children}</>;
+  return <>{isClient ? children : null}</>;
 }

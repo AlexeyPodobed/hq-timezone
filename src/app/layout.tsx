@@ -2,7 +2,7 @@ import "@/assets/styles/globals.css";
 import type { Metadata } from "next";
 import React from "react";
 
-// import LenisProvider from "@/components/LenisProvider.tsx";
+import LenisProvider from "@/components/LenisProvider.tsx";
 import Footer from "@/components/main/Footer/Footer";
 import Header from "@/components/main/Header/Header";
 
@@ -20,11 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="text-primary-1">
-        {/* <LenisProvider> */}
-        <Header />
-        <main className="relative flex flex-col">{children}</main>
-        <Footer />
-        {/* </LenisProvider> */}
+        <LenisProvider>
+          <Header />
+          <main className="relative flex flex-col">{children}</main>
+          <Footer />
+        </LenisProvider>
       </body>
     </html>
   );
