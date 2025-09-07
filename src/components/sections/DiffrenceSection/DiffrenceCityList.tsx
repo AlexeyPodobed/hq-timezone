@@ -33,7 +33,6 @@ export const DiffrenceCityList = memo<DiffrenceCityListProps>(({ aCity, bCity, e
 
             <h4 className="diffrence-section__city-time">
               <Time
-                time={city.timeData.time}
                 timezoneId={city.timezone}
                 showSeconds={false}
               />
@@ -67,7 +66,6 @@ export const DiffrenceCityList = memo<DiffrenceCityListProps>(({ aCity, bCity, e
 
           <h4 className="diffrence-section__city-time">
             <Time
-              time={city?.timeData.time}
               timezoneId={city?.timezone}
               showSeconds={false}
             />

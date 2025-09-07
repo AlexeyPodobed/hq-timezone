@@ -11,6 +11,7 @@ export interface UseCitySelectOptions {
   storageKey?: string;
   debounceMs?: number;
   defaultCity?: number;
+  enrichWithTimeData?: boolean;
 }
 
 const uniqueByName = (list: CityFull[]) => {
@@ -26,6 +27,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
   const storageKey = opts.storageKey ?? "selectedCity";
   const debounceMs = opts.debounceMs ?? debounceDelayTime;
   const defaultCity = opts.defaultCity ?? 0;
+  const { enrichWithTimeData = false } = opts;
 
   const [selected, setSelected] = useState<CityFull>(initialCities[defaultCity]);
   const [search, setSearch] = useState("");
@@ -38,7 +40,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
   const options = useMemo(
     () =>
       allCities.map((c) => ({
-        label: `${c.name}, ${c.timeData.countryName}`,
+        label: `${c.name}, ${c.country_name}`,
         value: JSON.stringify({ name: c.name, timezone: c.timezone }),
       })),
     [allCities]
@@ -92,7 +94,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
 
         if (!parsed?.name) return;
 
-        if (!parsed.timeData) {
+        if (enrichWithTimeData && !parsed.timeData) {
           try {
             const { data: timeData } = await getCityTimeViaProxy({ lat: parsed.latitude, lng: parsed.longitude });
             selectCity({ ...parsed, timeData });
@@ -125,19 +127,19 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     setIsFetching(true);
 
     (async () => {
-      // const start = performance.now();
       try {
         const { data } = await getCityWp(term, ac.signal);
-        const enriched = await Promise.all(
-          data.map(async (c) => {
-            const { data: timeData } = await getCityTimeViaProxy({ lat: c.latitude, lng: c.longitude }, ac.signal);
-            return { ...c, timeData } as CityFull;
-          })
-        );
-        setExtraCities(enriched);
 
-        // const end = performance.now();
-        // console.log(`⏱️ Full request + enrichment took ${Math.round(end - start)}ms`);
+        const enriched = enrichWithTimeData
+          ? await Promise.all(
+              data.map(async (c) => {
+                const { data: timeData } = await getCityTimeViaProxy({ lat: c.latitude, lng: c.longitude }, ac.signal);
+                return { ...c, timeData } as CityFull;
+              })
+            )
+          : (data as CityFull[]);
+
+        setExtraCities(enriched);
       } catch (err: any) {
         if (err?.name !== "AbortError") console.log("City search failed:", err);
       } finally {
@@ -146,7 +148,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     })();
 
     return () => ac.abort();
-  }, [debounced]);
+  }, [debounced, enrichWithTimeData]);
 
   return {
     selected,
