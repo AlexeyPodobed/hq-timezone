@@ -10,6 +10,7 @@ export default function LenisProvider({ children }: { children: ReactNode }) {
       easing: (t: number) => 1 - Math.pow(1 - t, 3), // custom easing
       smoothWheel: true,
       // smoothTouch: false,
+      prevent: (node) => node.classList.contains("custom-select-dropdown"),
     });
 
     function raf(time: number) {

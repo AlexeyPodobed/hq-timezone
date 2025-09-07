@@ -86,7 +86,7 @@ export const CustomSelect = memo<CustomSelectProps>(
         {open && (
           <div
             className={clsx(
-              "custom-select-dropdown absolute top-full translate-y-1 left-0 right-0 w-[19.688rem] max-h-80 pt-[1.625rem] pb-6 pl-5 pr-[3.188rem] border rounded-lg z-50 overflow-auto",
+              "custom-select-dropdown absolute top-full translate-y-1 left-1/2 w-64 -translate-x-1/2 lg:left-0 lg:right-0 lg:w-[19.688rem] lg:translate-x-0 max-h-80 pt-[1.625rem] pb-6 pl-5 pr-[3.188rem] border rounded-lg z-50 overflow-y-auto overflow-x-hidden",
               variant === "yellow" ? "bg-primary-1 border-yellow" : "bg-white border-primary-1"
             )}
           >
