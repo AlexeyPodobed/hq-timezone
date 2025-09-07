@@ -35,7 +35,9 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
   return (
     <div className={clsx("hero-section__main-time", className)}>
       <div className="hero-section__main-time-block">
-        <h3 className="hero-section__main-city">{city.name}</h3>
+        <h3 className="hero-section__main-city">
+          {city.name}, {city.timeData.countryName}
+        </h3>
         <h1 className="hero-section__main-time-value">
           <Time
             time={time}
