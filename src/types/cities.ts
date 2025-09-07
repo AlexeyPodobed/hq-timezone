@@ -1,6 +1,7 @@
 export interface CityNameWP {
   id: string;
   name: string;
+  country_name: string;
   latitude: string;
   longitude: string;
   timezone: string;

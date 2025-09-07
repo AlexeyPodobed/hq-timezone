@@ -17,7 +17,6 @@ export interface HeroCitySelectProps {
 export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) => {
   const { selected, options, isFetching, setSearch, selectCity, selectByName } = useCitySelect(cities, {
     storageKey: "selectedHeroCity",
-    enrichWithTimeData: true,
   });
 
   return (

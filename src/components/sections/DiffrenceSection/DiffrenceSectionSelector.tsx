@@ -22,8 +22,8 @@ export interface DiffrenceSectionSelectorProps {
 const STORAGE_KEY = "diffrenceExtraIds";
 
 export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ cities }) => {
-  const aCity = useCitySelect(cities, { storageKey: "diffrenceCityA", enrichWithTimeData: true });
-  const bCity = useCitySelect(cities, { storageKey: "diffrenceCityB", defaultCity: 1, enrichWithTimeData: true });
+  const aCity = useCitySelect(cities, { storageKey: "diffrenceCityA" });
+  const bCity = useCitySelect(cities, { storageKey: "diffrenceCityB", defaultCity: 1 });
   const isFetchingA = aCity.isFetching;
   const isFetchingB = bCity.isFetching;
 
