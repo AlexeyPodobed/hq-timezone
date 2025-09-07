@@ -119,35 +119,46 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     setExtraCities(inInitial ? [] : [selected]);
   }, [debounced, selected]);
 
+  const prevDebouncedRef = useRef("");
+
   useEffect(() => {
     const term = debounced.trim();
-    if (!term) return;
+
+    if (!term || term === prevDebouncedRef.current) return;
+    prevDebouncedRef.current = term;
 
     const ac = new AbortController();
     setIsFetching(true);
 
     (async () => {
       try {
+        if (ac.signal.aborted) return;
+
         const { data } = await getCityWp(term, ac.signal);
 
         const enriched = enrichWithTimeData
           ? await Promise.all(
               data.map(async (c) => {
+                if (ac.signal.aborted) return null;
                 const { data: timeData } = await getCityTimeViaProxy({ lat: c.latitude, lng: c.longitude }, ac.signal);
                 return { ...c, timeData } as CityFull;
               })
-            )
+            ).then((res) => res.filter(Boolean) as CityFull[])
           : (data as CityFull[]);
 
         setExtraCities(enriched);
       } catch (err: any) {
-        if (err?.name !== "AbortError") console.log("City search failed:", err);
+        if (err?.name !== "AbortError") {
+          console.log("City search failed:", err);
+        }
       } finally {
         setIsFetching(false);
       }
     })();
 
-    return () => ac.abort();
+    return () => {
+      ac.abort();
+    };
   }, [debounced, enrichWithTimeData]);
 
   return {
