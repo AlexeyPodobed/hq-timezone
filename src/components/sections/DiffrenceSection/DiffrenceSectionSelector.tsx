@@ -102,10 +102,20 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
             <div className="diffrence-section__select">
               <CustomSelect
                 options={aCity.options}
-                value={aCity.selected?.name ?? ""}
+                value={JSON.stringify({
+                  name: aCity.selected?.name ?? "",
+                  timezone: aCity.selected?.timezone ?? "",
+                })}
                 onChange={aCity.selectByName}
                 onSearchChange={aCity.setSearch}
-                getSelectedLabel={(value) => value}
+                getSelectedLabel={(value) => {
+                  try {
+                    const parsed = JSON.parse(value);
+                    return parsed.name;
+                  } catch {
+                    return value;
+                  }
+                }}
                 placeholder="Select city"
                 searchable
                 isFetching={isFetchingA}
@@ -120,10 +130,20 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
             <div className="diffrence-section__select">
               <CustomSelect
                 options={bCity.options}
-                value={bCity.selected?.name ?? ""}
+                value={JSON.stringify({
+                  name: bCity.selected?.name ?? "",
+                  timezone: bCity.selected?.timezone ?? "",
+                })}
                 onChange={bCity.selectByName}
                 onSearchChange={bCity.setSearch}
-                getSelectedLabel={(value) => value}
+                getSelectedLabel={(value) => {
+                  try {
+                    const parsed = JSON.parse(value);
+                    return parsed.name;
+                  } catch {
+                    return value;
+                  }
+                }}
                 placeholder="Select city"
                 searchable
                 isFetching={isFetchingB}
