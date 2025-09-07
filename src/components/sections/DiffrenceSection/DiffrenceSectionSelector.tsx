@@ -22,13 +22,13 @@ export interface DiffrenceSectionSelectorProps {
 const STORAGE_KEY = "diffrenceExtraIds";
 
 export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ cities }) => {
-  const aCity = useCitySelect(cities, { storageKey: "diffrenceCityA" });
-  const bCity = useCitySelect(cities, { storageKey: "diffrenceCityB", defaultCity: 1 });
+  const aCity = useCitySelect(cities, { storageKey: "diffrenceCityA", enrichWithTimeData: true });
+  const bCity = useCitySelect(cities, { storageKey: "diffrenceCityB", defaultCity: 1, enrichWithTimeData: true });
   const isFetchingA = aCity.isFetching;
   const isFetchingB = bCity.isFetching;
 
-  const tzACity = aCity.selected?.timeData?.timezoneId;
-  const tzBCity = bCity.selected?.timeData?.timezoneId;
+  const tzACity = aCity.selected?.timezone;
+  const tzBCity = bCity.selected?.timezone;
 
   const diff = useMemo(() => {
     if (!tzACity || !tzBCity) return null;

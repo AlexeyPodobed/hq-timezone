@@ -34,10 +34,10 @@ export const DiffrenceCityList = memo<DiffrenceCityListProps>(({ aCity, bCity, e
             <h4 className="diffrence-section__city-time">
               <Time
                 time={city.timeData.time}
-                timezoneId={city.timeData.timezoneId}
+                timezoneId={city.timezone}
                 showSeconds={false}
               />
-              <span className="date">{formatDayFullInTZ(city.timeData.timezoneId)}</span>
+              <span className="date">{formatDayFullInTZ(city.timezone)}</span>
             </h4>
           </div>
         );
@@ -68,10 +68,10 @@ export const DiffrenceCityList = memo<DiffrenceCityListProps>(({ aCity, bCity, e
           <h4 className="diffrence-section__city-time">
             <Time
               time={city?.timeData.time}
-              timezoneId={city?.timeData.timezoneId}
+              timezoneId={city?.timezone}
               showSeconds={false}
             />
-            <span className="date">{formatDayFullInTZ(city!.timeData?.timezoneId)}</span>
+            <span className="date">{formatDayFullInTZ(city!.timezone)}</span>
           </h4>
         </div>
       ))}

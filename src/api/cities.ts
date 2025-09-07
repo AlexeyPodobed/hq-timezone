@@ -9,8 +9,8 @@ type BaseUrl = string;
 export const getCityWp = async (city: string, signal?: AbortSignal): Promise<{ data: CityNameWP[]; status: number }> => {
   try {
     const { data, status } = await api.get(`${WP_API}/cities/${encodeURIComponent(city)}`, {
-      signal,
       next: { revalidate: EXPIRE_1_DAY },
+      signal,
     });
 
     return { data, status };

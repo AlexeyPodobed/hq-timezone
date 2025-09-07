@@ -40,7 +40,7 @@ export default async function Home() {
 
   const citiesFull: CityFull[] = await fetchCitiesFull(cityList.map((c) => c.city_name));
   const filteredCities = citiesFull.filter((c) => {
-    const key = `${c.name.toLowerCase()}|${c.timeData?.timezoneId.toLowerCase()}`;
+    const key = `${c.name.toLowerCase()}|${c.timezone.toLowerCase()}`;
     return citySet.has(key);
   });
 

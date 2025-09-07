@@ -30,11 +30,11 @@ const buildUtcPairsFullDay = (baseUtc: Date, step = 30, count = 48, timezones: s
 };
 
 export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ aCity, bCity, extraSelected = {}, onDelete }) => {
-  const labelA = useMemo(() => buildTzDayLabel(aCity.timeData?.timezoneId), [aCity]);
-  const labelB = useMemo(() => buildTzDayLabel(bCity.timeData?.timezoneId), [bCity]);
+  const labelA = useMemo(() => buildTzDayLabel(aCity.timezone), [aCity]);
+  const labelB = useMemo(() => buildTzDayLabel(bCity.timezone), [bCity]);
 
-  const tzACity = aCity?.timeData.timezoneId;
-  const tzBCity = bCity?.timeData.timezoneId;
+  const tzACity = aCity?.timezone;
+  const tzBCity = bCity?.timezone;
 
   const bCityDiffShort = useMemo(() => {
     if (!tzACity || !tzBCity) return "";
@@ -47,7 +47,7 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ aCity
     if (!tzACity) return result;
 
     for (const [id, city] of Object.entries(extraSelected)) {
-      const tz = city?.timeData?.timezoneId;
+      const tz = city?.timezone;
       if (!tz) continue;
 
       const diff = getSignedHourDiff(tzACity, tz);
@@ -60,8 +60,8 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ aCity
   const allTimezones = useMemo(() => {
     const extras = Object.values(extraSelected)
       .filter(Boolean)
-      .map((c) => c!.timeData?.timezoneId);
-    return [aCity.timeData?.timezoneId, bCity.timeData?.timezoneId, ...extras.filter(Boolean)] as string[];
+      .map((c) => c!.timezone);
+    return [aCity.timezone, bCity.timezone, ...extras.filter(Boolean)] as string[];
   }, [aCity, bCity, extraSelected]);
 
   const baseUtc = useMemo(() => {
@@ -103,7 +103,7 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ aCity
             <MeetSectionResultsCity
               key={id}
               name={city?.name}
-              label={buildTzDayLabel(city!.timeData?.timezoneId)}
+              label={buildTzDayLabel(city!.timezone)}
               diffShort={extraDiffs[id]}
               removeCallback={() => onDelete?.(id)}
               showRemoveBtn={true}

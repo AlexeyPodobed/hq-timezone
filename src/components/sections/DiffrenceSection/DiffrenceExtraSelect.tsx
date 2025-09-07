@@ -16,7 +16,7 @@ interface DiffrenceExtraSelectProps {
 }
 
 export const DiffrenceExtraSelect = memo<DiffrenceExtraSelectProps>(({ cities, id, onChange, isLastItem, addNewSelect }) => {
-  const city = useCitySelect(cities, { storageKey: `diffrenceExtraCity:${id}` });
+  const city = useCitySelect(cities, { storageKey: `diffrenceExtraCity:${id}`, enrichWithTimeData: true });
   const { isFetching } = city;
 
   const previous = useRef<CityFull | null>(null);
