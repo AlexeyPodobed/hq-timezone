@@ -35,7 +35,14 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
   const debounced = useDebounce(search, debounceMs);
 
   const allCities = useMemo(() => uniqueByName([...initialCities, ...extraCities]), [initialCities, extraCities]);
-  const options = useMemo(() => allCities.map((c) => ({ label: `${c.name}, ${c.timeData.countryName}`, value: c.name })), [allCities]);
+  const options = useMemo(
+    () =>
+      allCities.map((c) => ({
+        label: `${c.name}, ${c.timeData.countryName}`,
+        value: JSON.stringify({ name: c.name, timezone: c.timezone }),
+      })),
+    [allCities]
+  );
 
   const selectCity = useCallback(
     (c: CityFull) => {
@@ -51,7 +58,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
       }
 
       setExtraCities(() => {
-        const inInitial = initialCities.some((x) => x.name.toLowerCase() === c.name.toLowerCase());
+        const inInitial = initialCities.some((x) => x.name.toLowerCase() === c.name.toLowerCase() && x.timezone === c.timezone);
         return inInitial ? [] : [c];
       });
     },
@@ -59,9 +66,14 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
   );
 
   const selectByName = useCallback(
-    (name: string) => {
-      const found = allCities.find((c) => c.name.toLowerCase() === name.toLowerCase());
-      if (found) selectCity(found);
+    (value: string) => {
+      try {
+        const { name, timezone } = JSON.parse(value);
+        const found = allCities.find((c) => c.name.toLowerCase() === name.toLowerCase() && c.timezone === timezone);
+        if (found) selectCity(found);
+      } catch (err) {
+        console.error("Invalid value for selectByName:", value, err);
+      }
     },
     [allCities, selectCity]
   );

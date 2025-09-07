@@ -25,10 +25,20 @@ export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) =>
         <h1 className="hero-section__title">{title}</h1>
         <CustomSelect
           options={options}
-          value={selected?.name ?? ""}
+          value={JSON.stringify({
+            name: selected?.name ?? "",
+            timezone: selected?.timezone ?? "",
+          })}
           onChange={selectByName}
           onSearchChange={setSearch}
-          getSelectedLabel={(value) => value}
+          getSelectedLabel={(value) => {
+            try {
+              const parsed = JSON.parse(value);
+              return parsed.name;
+            } catch {
+              return value;
+            }
+          }}
           placeholder={"Select city"}
           searchable
           isFetching={isFetching}
