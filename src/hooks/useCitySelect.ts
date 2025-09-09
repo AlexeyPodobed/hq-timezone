@@ -11,12 +11,13 @@ export interface UseCitySelectOptions {
   storageKey?: string;
   debounceMs?: number;
   defaultCity?: number;
+  enrichWithTimeData?: boolean;
 }
 
 const uniqueByName = (list: CityFull[]) => {
   const map = new Map<string, CityFull>();
   for (const c of list) {
-    const key = `${c.name.trim().toLowerCase()}|${c.timeData?.countryName?.trim().toLowerCase()}`;
+    const key = `${c.name.trim().toLowerCase()}|${c.country_name?.trim().toLowerCase()}`;
     if (!map.has(key)) map.set(key, c);
   }
   return Array.from(map.values());
@@ -26,6 +27,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
   const storageKey = opts.storageKey ?? "selectedCity";
   const debounceMs = opts.debounceMs ?? debounceDelayTime;
   const defaultCity = opts.defaultCity ?? 0;
+  const { enrichWithTimeData = false } = opts;
 
   const [selected, setSelected] = useState<CityFull>(initialCities[defaultCity]);
   const [search, setSearch] = useState("");
@@ -38,7 +40,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
   const options = useMemo(
     () =>
       allCities.map((c) => ({
-        label: `${c.name}, ${c.timeData.countryName}`,
+        label: `${c.name}, ${c.country_name}`,
         value: JSON.stringify({ name: c.name, timezone: c.timezone }),
       })),
     [allCities]
@@ -92,7 +94,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
 
         if (!parsed?.name) return;
 
-        if (!parsed.timeData) {
+        if (enrichWithTimeData && !parsed.timeData) {
           try {
             const { data: timeData } = await getCityTimeViaProxy({ lat: parsed.latitude, lng: parsed.longitude });
             selectCity({ ...parsed, timeData });
@@ -117,36 +119,47 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     setExtraCities(inInitial ? [] : [selected]);
   }, [debounced, selected]);
 
+  const prevDebouncedRef = useRef("");
+
   useEffect(() => {
     const term = debounced.trim();
-    if (!term) return;
+
+    if (!term || term === prevDebouncedRef.current) return;
+    prevDebouncedRef.current = term;
 
     const ac = new AbortController();
     setIsFetching(true);
 
     (async () => {
-      // const start = performance.now();
       try {
-        const { data } = await getCityWp(term, ac.signal);
-        const enriched = await Promise.all(
-          data.map(async (c) => {
-            const { data: timeData } = await getCityTimeViaProxy({ lat: c.latitude, lng: c.longitude }, ac.signal);
-            return { ...c, timeData } as CityFull;
-          })
-        );
-        setExtraCities(enriched);
+        if (ac.signal.aborted) return;
 
-        // const end = performance.now();
-        // console.log(`⏱️ Full request + enrichment took ${Math.round(end - start)}ms`);
+        const { data } = await getCityWp(term, ac.signal);
+
+        const enriched = enrichWithTimeData
+          ? await Promise.all(
+              data.map(async (c) => {
+                if (ac.signal.aborted) return null;
+                const { data: timeData } = await getCityTimeViaProxy({ lat: c.latitude, lng: c.longitude }, ac.signal);
+                return { ...c, timeData } as CityFull;
+              })
+            ).then((res) => res.filter(Boolean) as CityFull[])
+          : (data as CityFull[]);
+
+        setExtraCities(enriched);
       } catch (err: any) {
-        if (err?.name !== "AbortError") console.log("City search failed:", err);
+        if (err?.name !== "AbortError") {
+          console.log("City search failed:", err);
+        }
       } finally {
         setIsFetching(false);
       }
     })();
 
-    return () => ac.abort();
-  }, [debounced]);
+    return () => {
+      ac.abort();
+    };
+  }, [debounced, enrichWithTimeData]);
 
   return {
     selected,

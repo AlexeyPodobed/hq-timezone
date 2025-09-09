@@ -8,9 +8,9 @@ type BaseUrl = string;
 
 export const getCityWp = async (city: string, signal?: AbortSignal): Promise<{ data: CityNameWP[]; status: number }> => {
   try {
-    const { data, status } = await api.get(`${WP_API}/cities/${encodeURIComponent(city)}`, {
-      signal,
+    const { data, status } = await api.get(`${WP_API}/cities/${encodeURIComponent(city)}`, undefined, {
       next: { revalidate: EXPIRE_1_DAY },
+      signal,
     });
 
     return { data, status };
@@ -29,7 +29,6 @@ export const getCityTime = async (
 ): Promise<{ data: CityTime; status: number }> => {
   try {
     const { data, status } = await api.get(`${baseUrl}/timezoneJSON`, params, { signal, next: { revalidate: EXPIRE_1_DAY } });
-    // console.log("getCityTime:", data);
     return { data, status };
   } catch (error: any) {
     if (error?.name !== "AbortError") {

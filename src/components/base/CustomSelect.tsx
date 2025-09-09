@@ -43,7 +43,17 @@ export const CustomSelect = memo<CustomSelectProps>(
     }, [options]);
 
     const filtered = useMemo(() => {
-      return searchable ? normalizedOptions.filter((opt) => opt.label.toLowerCase().includes(search.toLowerCase())) : normalizedOptions;
+      if (!searchable) return normalizedOptions;
+
+      const normalizeStr = (str: string) =>
+        str
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase();
+
+      const normSearch = normalizeStr(search);
+
+      return normalizedOptions.filter((opt) => normalizeStr(opt.label).includes(normSearch));
     }, [normalizedOptions, search, searchable]);
 
     useEffect(() => {
