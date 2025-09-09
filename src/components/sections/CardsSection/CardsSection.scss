@@ -48,6 +48,8 @@
 
 		&__text {
 			@apply absolute top-0 right-0 bottom-0 left-0 p-4 bg-primary-1 text-text-secondary px-14 py-5 overflow-auto flex items-center transition-opacity opacity-0 hover:opacity-100;
+
+			@apply xl:text-3xl;
 		}
 
 		&__icon {
