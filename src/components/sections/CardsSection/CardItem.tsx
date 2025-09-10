@@ -1,17 +1,17 @@
 import { memo } from "react";
 
 import { ImageWrapper } from "@/common/ImageWrapper";
+import { AnimLottie } from "@/components/lottie.tsx";
 
 export interface CardItemProps {
   bgSrc: string;
   bgAlt: string;
   tag: string;
   title: string;
-  iconSrc: string;
-  iconAlt?: string;
+  icon: string;
 }
 
-export const CardItem = memo<CardItemProps>(({ bgSrc, bgAlt, tag, title, iconSrc, iconAlt }) => {
+export const CardItem = memo<CardItemProps>(({ bgSrc, bgAlt, tag, title, icon }) => {
   return (
     <div className="card-item">
       <ImageWrapper
@@ -24,11 +24,7 @@ export const CardItem = memo<CardItemProps>(({ bgSrc, bgAlt, tag, title, iconSrc
 
       <div className="card-item-inner">
         <div className="card-item__icon">
-          <ImageWrapper
-            src={iconSrc}
-            alt={iconAlt}
-            className="card-item__icon-image"
-          />
+          <AnimLottie json={JSON.parse(icon)} />
         </div>
         <div className="card-item__text">
           <span className="card-item__text-inner">
@@ -36,9 +32,6 @@ export const CardItem = memo<CardItemProps>(({ bgSrc, bgAlt, tag, title, iconSrc
             half-hour or quarter-hour offsets.
           </span>
         </div>
-        {/* <div className="card-item__icon">
-					
-				</div> */}
         <div className="card-item__tag">{tag}</div>
         <div className="card-item__title">{title}</div>
       </div>

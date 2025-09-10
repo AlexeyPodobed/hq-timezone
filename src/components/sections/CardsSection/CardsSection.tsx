@@ -15,12 +15,7 @@ export interface CardsSectionProps {
       width: number;
       height: number;
     };
-    icon: {
-      url: string;
-      alt?: string;
-      width: number;
-      height: number;
-    };
+    icon: string;
   }[];
 }
 
@@ -37,8 +32,7 @@ export const CardsSection = memo<CardsSectionProps>(({ posts }) => {
                 bgAlt={post.image.alt || ""}
                 tag={post.tag}
                 title={post.title}
-                iconSrc={post.icon?.url || ""}
-                iconAlt={post.icon?.alt || ""}
+                icon={post.icon}
               />
             ))}
           </div>

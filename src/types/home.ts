@@ -34,12 +34,7 @@ export interface PostsSectionBlock {
       width: number;
       height: number;
     };
-    icon: {
-      url: string;
-      alt?: string;
-      width: number;
-      height: number;
-    };
+    icon: string;
   }[];
 }
 
