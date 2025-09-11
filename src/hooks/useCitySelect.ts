@@ -14,14 +14,14 @@ export interface UseCitySelectOptions {
   enrichWithTimeData?: boolean;
 }
 
-const uniqueByName = (list: CityFull[]) => {
-  const map = new Map<string, CityFull>();
-  for (const c of list) {
-    const key = `${c.name.trim().toLowerCase()}|${c.country_name?.trim().toLowerCase()}`;
-    if (!map.has(key)) map.set(key, c);
-  }
-  return Array.from(map.values());
-};
+// const uniqueByName = (list: CityFull[]) => {
+//   const map = new Map<string, CityFull>();
+//   for (const c of list) {
+//     const key = `${c.name.trim().toLowerCase()}|${c.country_name?.trim().toLowerCase()}`;
+//     if (!map.has(key)) map.set(key, c);
+//   }
+//   return Array.from(map.values());
+// };
 
 export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOptions = {}) {
   const storageKey = opts.storageKey ?? "selectedCity";
@@ -36,11 +36,11 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
 
   const debounced = useDebounce(search, debounceMs);
 
-  const allCities = useMemo(() => uniqueByName([...initialCities, ...extraCities]), [initialCities, extraCities]);
+  const allCities = useMemo(() => [...initialCities, ...extraCities], [initialCities, extraCities]);
   const options = useMemo(
     () =>
       allCities.map((c) => ({
-        label: `${c.name}, ${c.country_name}`,
+        label: `${c.name}, ${c.country_name} ${c.region ? `, ${c.region}` : ""}`,
         value: JSON.stringify({ name: c.name, timezone: c.timezone }),
       })),
     [allCities]
