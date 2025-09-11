@@ -1,6 +1,6 @@
 import api from "@/api/api";
 import { WP_API } from "@/consts/api";
-import { EXPIRE_5_MINUTES } from "@/consts/time.ts";
+import { EXPIRE_10_MINUTES } from "@/consts/time.ts";
 import { Footer, Header } from "@/types/main";
 
 export const getHeader = async (): Promise<{
@@ -8,7 +8,7 @@ export const getHeader = async (): Promise<{
   data: Header;
 }> => {
   try {
-    const { data, status } = await api.get(`${WP_API}/header`, {}, { next: { revalidate: EXPIRE_5_MINUTES } });
+    const { data, status } = await api.get(`${WP_API}/header`, {}, { next: { revalidate: EXPIRE_10_MINUTES } });
 
     return { data, status };
   } catch (error) {
@@ -22,7 +22,7 @@ export const getFooter = async (): Promise<{
   data: Footer;
 }> => {
   try {
-    const { data, status } = await api.get(`${WP_API}/footer`, {}, { next: { revalidate: EXPIRE_5_MINUTES } });
+    const { data, status } = await api.get(`${WP_API}/footer`, {}, { next: { revalidate: EXPIRE_10_MINUTES } });
     return { data, status };
   } catch (error) {
     console.log("Footer:", error);

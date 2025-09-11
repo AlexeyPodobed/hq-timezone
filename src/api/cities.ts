@@ -1,5 +1,5 @@
 import { BASE_API, WP_API } from "@/consts/api";
-import { EXPIRE_1_DAY } from "@/consts/time";
+import { EXPIRE_1_DAY, EXPIRE_3_HOURS } from "@/consts/time";
 import { CityNameWP, CityTime } from "@/types/cities";
 
 import api from "./api";
@@ -28,7 +28,7 @@ export const getCityTime = async (
   baseUrl: BaseUrl = BASE_API
 ): Promise<{ data: CityTime; status: number }> => {
   try {
-    const { data, status } = await api.get(`${baseUrl}/timezoneJSON`, params, { signal, next: { revalidate: EXPIRE_1_DAY } });
+    const { data, status } = await api.get(`${baseUrl}/timezoneJSON`, params, { signal, next: { revalidate: EXPIRE_3_HOURS } });
     return { data, status };
   } catch (error: any) {
     if (error?.name !== "AbortError") {

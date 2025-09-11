@@ -1,6 +1,6 @@
 import api from "@/api/api";
 import { WP_CORE_API } from "@/consts/api";
-import { EXPIRE_5_MINUTES } from "@/consts/time";
+import { EXPIRE_10_MINUTES } from "@/consts/time";
 import { PageAPI } from "@/types/page";
 
 export const getPage = async (
@@ -10,7 +10,7 @@ export const getPage = async (
   data: PageAPI[];
 }> => {
   try {
-    const { data, status } = await api.get(`${WP_CORE_API}/pages?slug=${slug}`, {}, { next: { revalidate: EXPIRE_5_MINUTES } });
+    const { data, status } = await api.get(`${WP_CORE_API}/pages?slug=${slug}`, {}, { next: { revalidate: EXPIRE_10_MINUTES } });
 
     return { data, status };
   } catch (error) {
