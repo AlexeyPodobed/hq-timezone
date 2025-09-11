@@ -1,6 +1,6 @@
 import { format, parseISO, isValid, differenceInMinutes, addMinutes, startOfDay, addDays } from "date-fns";
-import { enUS } from "date-fns/locale";
-import { toZonedTime, format as tzFormat } from "date-fns-tz";
+import { toZonedTime } from "date-fns-tz";
+import { DateTime } from "luxon";
 
 export const getCurrentDate = () => new Date();
 
@@ -70,15 +70,29 @@ export function getTimeDifferenceByTZ(timezoneId: string): string {
 }
 
 export function formatTimeZoneVerbose(timezoneId: string, date = new Date()): string {
-  const short = tzFormat(date, "zzz", {
-    timeZone: timezoneId,
-    locale: enUS,
-  });
-  const long = tzFormat(date, "zzzz", {
-    timeZone: timezoneId,
-    locale: enUS,
-  });
-  return `(${short}) ${long}`;
+  const dt = DateTime.fromJSDate(date).setZone(timezoneId).setLocale("en");
+
+  const rawShort = dt.offsetNameShort;
+  const rawLong = dt.offsetNameLong;
+
+  const short = rawShort ?? "";
+  const long = rawLong ?? "";
+
+  let displayShort = short;
+
+  if (displayShort.startsWith("GMT")) {
+    displayShort = getAbbreviationFromLongName(long);
+  }
+
+  return `(${displayShort}) ${long}`;
+}
+
+function getAbbreviationFromLongName(longName: string): string {
+  if (!longName) return "";
+  return longName
+    .split(" ")
+    .map((word) => word[0]?.toUpperCase() || "")
+    .join("");
 }
 
 export const getNextDayLabel = (time: string | undefined) => {
@@ -94,27 +108,16 @@ export const formatDayMonthInTZ = (tz: string) => {
   return format(zoned, "dd MMM");
 };
 
-const zoneAbbrMap: Record<string, string> = {
-  "Asia/Tokyo": "JST",
+export const buildTzDayLabel = (tzId?: string): string => {
+  if (!tzId) return "";
+
+  const verbose = formatTimeZoneVerbose(tzId); // → (CDT) Central Daylight Time
+  const match = verbose.match(/\((.*?)\)/);
+  const abbr = match?.[1] ?? "GMT";
+  const day = formatDayMonthInTZ(tzId); // → 11 Sep
+
+  return `${abbr} ${day}`; // → CDT 11 Sep
 };
-
-export function getTimeZoneAbbr(timezoneId: string, date = new Date()): string {
-  if (zoneAbbrMap[timezoneId]) return zoneAbbrMap[timezoneId];
-
-  const formatter = new Intl.DateTimeFormat("en-US", {
-    timeZone: timezoneId,
-    timeZoneName: "short",
-    month: "short",
-    day: "2-digit",
-  });
-
-  const parts = formatter.formatToParts(date);
-  const abbr = parts.find((p) => p.type === "timeZoneName")?.value;
-
-  return abbr ?? "";
-}
-
-export const buildTzDayLabel = (tzId?: string) => (tzId ? `${getTimeZoneAbbr(tzId)} ${formatDayMonthInTZ(tzId)}` : "");
 
 export const formatDayFullInTZ = (tz: string, date = new Date()): string => {
   const zoned = toZonedTime(date, tz);
