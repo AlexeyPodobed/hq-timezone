@@ -104,7 +104,7 @@
     &__city-item {
         @apply flex flex-col w-[calc(50%-0.625rem)] px-4;
 
-        @apply lg:w-[calc(50%-1.25rem)] lg:pl-8 lg:pr-0;
+        @apply lg:w-[calc(50%-1.25rem)] lg:px-0;
     }
 
     &__city-title {
