@@ -9,9 +9,10 @@ export interface CardItemProps {
   tag: string;
   title: string;
   icon: string;
+  text: string;
 }
 
-export const CardItem = memo<CardItemProps>(({ bgSrc, bgAlt, tag, title, icon }) => {
+export const CardItem = memo<CardItemProps>(({ bgSrc, bgAlt, tag, title, icon, text }) => {
   return (
     <div className="card-item">
       <ImageWrapper
@@ -27,10 +28,7 @@ export const CardItem = memo<CardItemProps>(({ bgSrc, bgAlt, tag, title, icon })
           <AnimLottie json={JSON.parse(icon)} />
         </div>
         <div className="card-item__text">
-          <span className="card-item__text-inner">
-            There are 24 main time zones based on Earth`s rotation, but in practice, there are over 40 official time zones due to countries using
-            half-hour or quarter-hour offsets.
-          </span>
+          <span className="card-item__text-inner">{text}</span>
         </div>
         <div className="card-item__tag">{tag}</div>
         <div className="card-item__title">{title}</div>

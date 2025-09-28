@@ -5,18 +5,21 @@ import { Container } from "@/common/Container";
 import "./CardsSection.scss";
 import { CardItem } from "./CardItem";
 
+interface Card {
+  tag: string;
+  title: string;
+  text: string;
+  image: {
+    url: string;
+    alt?: string;
+    width: number;
+    height: number;
+  };
+  icon: string;
+}
+
 export interface CardsSectionProps {
-  posts?: {
-    tag: string;
-    title: string;
-    image: {
-      url: string;
-      alt?: string;
-      width: number;
-      height: number;
-    };
-    icon: string;
-  }[];
+  posts?: Card[];
 }
 
 export const CardsSection = memo<CardsSectionProps>(({ posts }) => {
@@ -33,6 +36,7 @@ export const CardsSection = memo<CardsSectionProps>(({ posts }) => {
                 tag={post.tag}
                 title={post.title}
                 icon={post.icon}
+                text={post.text}
               />
             ))}
           </div>

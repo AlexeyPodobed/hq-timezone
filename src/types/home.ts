@@ -28,6 +28,7 @@ export interface PostsSectionBlock {
   posts: {
     tag: string;
     title: string;
+    text: string;
     image: {
       url: string;
       alt?: string;
