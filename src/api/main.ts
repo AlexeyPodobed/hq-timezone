@@ -23,6 +23,7 @@ export const getFooter = async (): Promise<{
 }> => {
   try {
     const { data, status } = await api.get(`${WP_API}/footer`, {}, { next: { revalidate: EXPIRE_10_MINUTES } });
+
     return { data, status };
   } catch (error) {
     console.log("Footer:", error);
