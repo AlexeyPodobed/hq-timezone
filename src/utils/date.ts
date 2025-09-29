@@ -2,12 +2,17 @@ import { format, parseISO, isValid, differenceInMinutes, addMinutes, startOfDay,
 import { toZonedTime } from "date-fns-tz";
 import { DateTime } from "luxon";
 
-export const getCurrentDate = () => new Date();
+export const getCurrentDate = () => {
+  return DateTime.local().toJSDate();
+};
 
 export const parseTzTime = (timeStr: string) => parseISO(timeStr.replace(" ", "T"));
 
-export function formatMonthDate(date: Date, showYear: boolean = true): string {
-  return format(date, showYear ? "MMM d, yyyy" : "MMM d");
+export function formatMonthDate(date: DateTime | Date, showYear: boolean = true): string {
+  if (date instanceof Date) {
+    return format(date, showYear ? "MMM d, yyyy" : "MMM d");
+  }
+  return date.toFormat(showYear ? "MMM d, yyyy" : "MMM d");
 }
 
 export const formatDateFromDateTime = (dateStr: string): string => {
