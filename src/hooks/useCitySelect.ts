@@ -40,7 +40,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
   const options = useMemo(
     () =>
       allCities.map((c) => ({
-        label: `${c.name}, ${c.country_name} ${c.region ? `, ${c.region}` : ""}`,
+        label: `${c.name}, ${c.region ? `${c.region},` : ""} ${c.country_name}`,
         value: JSON.stringify({ name: c.name, timezone: c.timezone }),
       })),
     [allCities]
