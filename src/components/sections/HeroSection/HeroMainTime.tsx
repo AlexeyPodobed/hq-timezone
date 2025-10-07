@@ -33,7 +33,6 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
 
   const sunriseStr = sunrise ? DateTime.fromJSDate(sunrise).toFormat("HH:mm:ss") : "";
   const sunsetStr = sunset ? DateTime.fromJSDate(sunset).toFormat("HH:mm:ss") : "";
-  console.log("sunriseStr, sunsetStr", sunriseStr, sunsetStr);
 
   const dayLength = useMemo(() => {
     if (!sunrise || !sunset) return null;

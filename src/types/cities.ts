@@ -21,5 +21,5 @@ export interface CityTime {
 }
 
 export interface CityFull extends CityNameWP {
-  timeData: CityTime;
+  timeData?: CityTime;
 }

@@ -5,13 +5,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getCityWp } from "@/api/cities";
 import { debounceDelayTime, useDebounce } from "@/hooks/useDebounce";
 import { CityFull } from "@/types/cities";
-import { getCityTimeViaProxy } from "@/utils/cities";
 
 export interface UseCitySelectOptions {
   storageKey?: string;
   debounceMs?: number;
   defaultCity?: number;
-  enrichWithTimeData?: boolean;
 }
 
 // const uniqueByName = (list: CityFull[]) => {
@@ -27,7 +25,6 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
   const storageKey = opts.storageKey ?? "selectedCity";
   const debounceMs = opts.debounceMs ?? debounceDelayTime;
   const defaultCity = opts.defaultCity ?? 0;
-  const { enrichWithTimeData = false } = opts;
 
   const [selected, setSelected] = useState<CityFull>(initialCities[defaultCity]);
   const [search, setSearch] = useState("");
@@ -94,17 +91,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
 
         if (!parsed?.name) return;
 
-        if (enrichWithTimeData && !parsed.timeData) {
-          try {
-            const { data: timeData } = await getCityTimeViaProxy({ lat: parsed.latitude, lng: parsed.longitude });
-            selectCity({ ...parsed, timeData });
-          } catch (err) {
-            console.warn("Failed to restore timeData:", err);
-            selectCity(parsed);
-          }
-        } else {
-          selectCity(parsed);
-        }
+        selectCity(parsed);
       } catch {
         console.log("sessionStorage parse failed");
       }
@@ -136,15 +123,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
 
         const { data } = await getCityWp(term, ac.signal);
 
-        const enriched = enrichWithTimeData
-          ? await Promise.all(
-              data.map(async (c) => {
-                if (ac.signal.aborted) return null;
-                const { data: timeData } = await getCityTimeViaProxy({ lat: c.latitude, lng: c.longitude }, ac.signal);
-                return { ...c, timeData } as CityFull;
-              })
-            ).then((res) => res.filter(Boolean) as CityFull[])
-          : (data as CityFull[]);
+        const enriched = data as CityFull[];
 
         setExtraCities(enriched);
       } catch (err: any) {
@@ -159,7 +138,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     return () => {
       ac.abort();
     };
-  }, [debounced, enrichWithTimeData]);
+  }, [debounced]);
 
   return {
     selected,

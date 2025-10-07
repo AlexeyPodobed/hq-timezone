@@ -10,10 +10,6 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: `${process.env.NEXT_PUBLIC_GEO_NAMES_PROXY}/:path*`,
-        destination: `${process.env.NEXT_PUBLIC_GEO_NAMES_API}/:path*`,
-      },
-      {
         source: "/sitemap_index.xml",
         destination: "/sitemap.xml",
       },

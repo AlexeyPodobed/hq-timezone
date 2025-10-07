@@ -1,5 +1,4 @@
-import { getCityTime, getCityWp } from "@/api/cities";
-import { BASE_PROXY } from "@/consts/api";
+import { getCityWp } from "@/api/cities";
 import { CityFull } from "@/types/cities";
 
 export const fetchCitiesFull = async (cityNames: string[]): Promise<CityFull[]> => {
@@ -7,14 +6,7 @@ export const fetchCitiesFull = async (cityNames: string[]): Promise<CityFull[]> 
 
   const cities = results.flatMap((r) => r.data).filter(Boolean);
 
-  const citiesFull: CityFull[] = await Promise.all(
-    cities.map(async (city) => {
-      const { data: timeData } = await getCityTime({ lat: city.latitude, lng: city.longitude });
-      return { ...city, timeData };
-    })
-  );
+  const citiesFull: CityFull[] = cities;
 
   return citiesFull;
 };
-
-export const getCityTimeViaProxy = (params: { lat: string; lng: string }, signal?: AbortSignal) => getCityTime(params, signal, BASE_PROXY);
