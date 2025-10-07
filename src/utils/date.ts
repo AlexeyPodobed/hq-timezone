@@ -6,6 +6,11 @@ export const getCurrentDate = () => {
   return DateTime.local().toJSDate();
 };
 
+export const getLocalTimeInTZ = (tz: string): string => {
+  const localDate = toZonedTime(new Date(), tz);
+  return format(localDate, "HH:mm:ss"); // or "yyyy-MM-dd HH:mm:ss"
+};
+
 export const parseTzTime = (timeStr: string) => parseISO(timeStr.replace(" ", "T"));
 
 export function formatMonthDate(date: DateTime | Date, showYear: boolean = true): string {

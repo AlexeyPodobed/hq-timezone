@@ -1,6 +1,7 @@
 "use client";
 
 import { clsx } from "clsx";
+import { DateTime } from "luxon";
 import { memo, useEffect, useMemo, useState } from "react";
 
 import "./HeroSection.scss";
@@ -8,7 +9,8 @@ import { Button } from "@/components/base/Button";
 import { Icon } from "@/components/base/Icon";
 import { Time } from "@/components/base/Time";
 import { CityFull } from "@/types/cities";
-import { calcDayLength, formatDateFromDateTime, formatTimeZoneVerbose, getTimeDifferenceByTZ } from "@/utils/date";
+import { calcDayLength, formatDateFromDateTime, formatTimeZoneVerbose, getLocalTimeInTZ, getTimeDifferenceByTZ } from "@/utils/date";
+import { getSunTimesByTimezone } from "@/utils/sun";
 
 export interface HeroMainTimeProps {
   city: CityFull;
@@ -19,12 +21,25 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
   const [formattedTimezone, setFormattedTimezone] = useState("");
   const [timeDiff, setTimeDiff] = useState("");
 
-  const {
-    timezone,
-    timeData: { time, sunrise, sunset },
-  } = city;
+  const { timezone } = city;
+  const time = getLocalTimeInTZ(timezone);
 
-  const dayLength = useMemo(() => calcDayLength(sunrise, sunset), [sunrise, sunset]);
+  const { sunrise, sunset } = useMemo<{
+    sunrise: Date | undefined;
+    sunset: Date | undefined;
+  }>(() => {
+    return getSunTimesByTimezone(timezone);
+  }, [timezone]);
+
+  const sunriseStr = sunrise ? DateTime.fromJSDate(sunrise).toFormat("HH:mm:ss") : "";
+  const sunsetStr = sunset ? DateTime.fromJSDate(sunset).toFormat("HH:mm:ss") : "";
+  console.log("sunriseStr, sunsetStr", sunriseStr, sunsetStr);
+
+  const dayLength = useMemo(() => {
+    if (!sunrise || !sunset) return null;
+    return calcDayLength(sunrise.toISOString(), sunset.toISOString());
+  }, [sunrise, sunset]);
+
   const date = useMemo(() => formatDateFromDateTime(time), [time]);
 
   useEffect(() => {
@@ -58,7 +73,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
               className="text-light-blue text-[1.5625rem] lg:text-[30px]"
             />
             <Time
-              time={sunrise}
+              time={sunriseStr}
               showSeconds={false}
               timezoneId={timezone}
               live={false}
@@ -73,7 +88,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
               className="text-light-blue text-[1.5625rem] lg:text-[30px]"
             />
             <Time
-              time={sunset}
+              time={sunsetStr}
               showSeconds={false}
               timezoneId={timezone}
               live={false}
