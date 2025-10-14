@@ -7,6 +7,10 @@
     @apply relative flex flex-col z-10;
   }
 
+  &__bg {
+    @apply absolute top-0 left-0 w-full h-full object-cover z-0;
+  }
+
   &__main-content {
     @apply w-full md:mb-6 lg:mb-[9.188rem] flex;
   }

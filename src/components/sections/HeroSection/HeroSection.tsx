@@ -20,11 +20,12 @@ export const HeroSection = memo<HeroSectionProps>(({ cities, bgImage, className 
       {bgImage && (
         <Image
           src={bgImage}
-          className="absolute top-0 left-0 w-full h-full object-cover z-0"
+          className="hero-section__bg"
           alt="hero-bg"
           sizes="100%"
           fill
           priority
+          blurDataURL="/images/hero-bg-mob.webp"
         />
       )}
       <Container>
