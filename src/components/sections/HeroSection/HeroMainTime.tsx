@@ -58,7 +58,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
             timezoneId={timezone}
           />
         </h1>
-        <div className="hero-section__main-date">Trdt {date}</div>
+        <div className="hero-section__main-date">{date}</div>
       </div>
 
       <div className="hero-section__main-col-left">
