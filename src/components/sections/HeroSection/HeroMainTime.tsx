@@ -39,7 +39,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
     return calcDayLength(sunrise.toISOString(), sunset.toISOString());
   }, [sunrise, sunset]);
 
-  const date = useMemo(() => formatDateFromDateTime(time), [time]);
+  const date = useMemo(() => formatDateFromDateTime(timezone), [timezone]);
 
   useEffect(() => {
     setTimeDiff(getTimeDifferenceByTZ(timezone));
@@ -58,7 +58,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
             timezoneId={timezone}
           />
         </h1>
-        <div className="hero-section__main-date">{date}</div>
+        <div className="hero-section__main-date">Trdt {date}</div>
       </div>
 
       <div className="hero-section__main-col-left">

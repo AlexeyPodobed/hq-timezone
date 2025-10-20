@@ -1,4 +1,4 @@
-import { format, parseISO, isValid, differenceInMinutes, addMinutes, startOfDay, addDays } from "date-fns";
+import { format, parseISO, differenceInMinutes, addMinutes, startOfDay, addDays } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import { DateTime } from "luxon";
 
@@ -20,9 +20,10 @@ export function formatMonthDate(date: DateTime | Date, showYear: boolean = true)
   return date.toFormat(showYear ? "MMM d, yyyy" : "MMM d");
 }
 
-export const formatDateFromDateTime = (dateStr: string): string => {
-  const date = parseISO(dateStr.replace(" ", "T"));
-  return isValid(date) ? format(date, "EEEE, MMMM d, yyyy") : "";
+export const formatDateFromDateTime = (timezone: string): string => {
+  if (!timezone) return "";
+  const date = DateTime.now().setZone(timezone);
+  return date.isValid ? date.toFormat("EEEE, MMMM d, yyyy") : "";
 };
 
 export const pad2 = (n: number) => String(n).padStart(2, "0");
