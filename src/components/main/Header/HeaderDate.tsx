@@ -1,21 +1,14 @@
-import { memo } from "react";
-
+import LocalDate from "@/common/LocalDate";
 import { Time } from "@/components/base/Time";
-import { formatMonthDate } from "@/utils/date";
 
-interface HeaderDateProps {
-  date: Date;
-  showYear?: boolean;
-}
-
-export const HeaderDate = memo<HeaderDateProps>(({ date, showYear = true }) => {
+export const HeaderDate = () => {
   return (
     <div className="header__time-wrap">
-      <span>{formatMonthDate(date, showYear)}</span>
+      <LocalDate />
       <Time className="min-w-24 flex gap-0.5 justify-center" />
     </div>
   );
-});
+};
 
 HeaderDate.displayName = "HeaderDate";
 

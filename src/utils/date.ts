@@ -2,10 +2,6 @@ import { format, parseISO, differenceInMinutes, addMinutes, startOfDay, addDays 
 import { toZonedTime } from "date-fns-tz";
 import { DateTime } from "luxon";
 
-export const getCurrentDate = () => {
-  return DateTime.local().toJSDate();
-};
-
 export const getLocalTimeInTZ = (tz: string): string => {
   const localDate = toZonedTime(new Date(), tz);
   return format(localDate, "HH:mm:ss"); // or "yyyy-MM-dd HH:mm:ss"

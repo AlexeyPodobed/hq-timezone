@@ -4,7 +4,6 @@ import { getHeader } from "@/api/main";
 import { ImageWrapper } from "@/common/ImageWrapper";
 import "@/components/components.scss";
 import "./Header.scss";
-import { getCurrentDate } from "@/utils/date";
 
 import { HeaderDate } from "./HeaderDate";
 import HeaderTimeSwitcher from "./HeaderTimeSwitcher";
@@ -12,7 +11,6 @@ import HeaderTimeSwitcher from "./HeaderTimeSwitcher";
 export default async function Header() {
   const { data } = await getHeader();
   const { header_logo } = data;
-  const currentDate = getCurrentDate();
 
   return (
     <header className="header">
@@ -27,7 +25,7 @@ export default async function Header() {
 
         <div className="flex items-center gap-2.5">
           <HeaderTimeSwitcher />
-          <HeaderDate date={currentDate} />
+          <HeaderDate />
         </div>
       </div>
     </header>
