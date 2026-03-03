@@ -1,8 +1,3 @@
-import { BASE_API } from "@/consts/api";
-
-const USERNAME = process.env.NEXT_PUBLIC_ENET_PULSE_USERNAME ?? "";
-const TOKEN = process.env.NEXT_PUBLIC_ENET_PULSE_TOKEN ?? "";
-
 class APIWrapper {
   private appendQueryParams(url: string, params?: Record<string, any>): string {
     const urlObj = new URL(url);
@@ -11,11 +6,6 @@ class APIWrapper {
       Object.keys(params).forEach((key) => {
         urlObj.searchParams.append(key, params[key]);
       });
-    }
-
-    if (url.startsWith(BASE_API)) {
-      urlObj.searchParams.append("username", USERNAME);
-      urlObj.searchParams.append("token", TOKEN);
     }
 
     return urlObj.toString();
