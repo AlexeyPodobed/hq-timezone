@@ -5,17 +5,13 @@ import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
 import { debounceDelayTime, useDebounce } from "@/hooks/useDebounce";
 import { CityFull } from "@/types/cities";
 
-import { useCitySearch } from "./useCitySearch";
-import {
-  DEFAULT_CITY_SELECT_DEFAULT_CITY_INDEX,
-  DEFAULT_CITY_SELECT_MIN_SEARCH_LENGTH,
-  DEFAULT_CITY_SELECT_STORAGE_KEY,
-} from "./useCitySelect.constants";
-import { readStoredCity, writeStoredCity } from "./useCitySelect.storage";
-import { UseCitySelectOptions } from "./useCitySelect.types";
-import { areCitiesEqual, isCityInList, parseCityValue, toCityOption } from "./useCitySelect.utils";
+import { useCitySearch } from "../useCitySearch";
+import { DEFAULT_CITY_SELECT_DEFAULT_CITY_INDEX, DEFAULT_CITY_SELECT_MIN_SEARCH_LENGTH, DEFAULT_CITY_SELECT_STORAGE_KEY } from "./constants";
+import { readStoredCity, writeStoredCity } from "./storage";
+import { UseCitySelectOptions } from "./types";
+import { areCitiesEqual, isCityInList, parseCityValue, toCityOption } from "./utils";
 
-export type { UseCitySelectOptions } from "./useCitySelect.types";
+export type { UseCitySelectOptions } from "./types";
 
 interface CitySelectState {
   selected: CityFull;
@@ -118,7 +114,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
 
     const inInitial = isCityInList(initialCities, selected);
     setExtraCities(inInitial ? [] : [selected]);
-  }, [debounced, initialCities, minSearchLength, selected, setExtraCities]);
+  }, [debounced, initialCities, minSearchLength, selected]);
 
   return {
     selected,

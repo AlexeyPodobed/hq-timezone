@@ -7,7 +7,7 @@ import "./DiffrenceSection.scss";
 
 import { CustomSelect } from "@/components/base/CustomSelect";
 import { Icon } from "@/components/base/Icon";
-import { useCitySelect } from "@/hooks/useCitySelect";
+import { useCitySelect } from "@/hooks/useCitySelect/useCitySelect";
 import { CityFull } from "@/types/cities";
 import { getTimeDiff, formatDiffShort, formatDiffSentence } from "@/utils/timeDiff";
 

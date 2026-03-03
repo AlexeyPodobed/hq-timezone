@@ -4,7 +4,7 @@ import { memo, useEffect, useRef } from "react";
 
 import { CustomSelect } from "@/components/base/CustomSelect";
 import { Icon } from "@/components/base/Icon.tsx";
-import { useCitySelect } from "@/hooks/useCitySelect";
+import { useCitySelect } from "@/hooks/useCitySelect/useCitySelect";
 import type { CityFull } from "@/types/cities";
 
 interface DiffrenceExtraSelectProps {

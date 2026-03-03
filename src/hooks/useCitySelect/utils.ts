@@ -1,6 +1,6 @@
 import { CityFull } from "@/types/cities";
 
-import { CitySelectOption, ParsedCityValue } from "./useCitySelect.types";
+import { CitySelectOption, ParsedCityValue } from "./types";
 
 export const normalizeCityName = (value: string) => value.trim().toLowerCase();
 

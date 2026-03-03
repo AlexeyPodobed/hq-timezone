@@ -3,7 +3,7 @@
 import { memo } from "react";
 
 import { CustomSelect } from "@/components/base/CustomSelect";
-import { useCitySelect } from "@/hooks/useCitySelect";
+import { useCitySelect } from "@/hooks/useCitySelect/useCitySelect";
 import { CityFull } from "@/types/cities";
 
 import { HeroCityList } from "./HeroCityList";

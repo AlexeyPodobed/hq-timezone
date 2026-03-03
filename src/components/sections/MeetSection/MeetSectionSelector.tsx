@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { CustomSelect } from "@/components/base/CustomSelect";
 import { Icon } from "@/components/base/Icon";
-import { useCitySelect } from "@/hooks/useCitySelect";
+import { useCitySelect } from "@/hooks/useCitySelect/useCitySelect";
 import { CityFull } from "@/types/cities";
 
 import { MeetSectionExtraSelect } from "./MeetSectionExtraSelect";
