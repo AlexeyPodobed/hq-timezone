@@ -49,15 +49,15 @@ export default async function Footer() {
                   alt={footer_logo.alt}
                 />
               </div>
-              {footer_buttons.map((button, index) => (
+              {footer_buttons?.map((button, index) => (
                 <Link
                   key={index}
-                  href={getSlugFromWpUrl(button.link.url)}
-                  target={button.link.target}
+                  href={getSlugFromWpUrl(button?.link?.url)}
+                  target={button?.link?.target}
                   className="footer__link"
                   prefetch
                 >
-                  {button.link.title}
+                  {button?.link?.title}
                 </Link>
               ))}
               <div className="hidden lg:block">
