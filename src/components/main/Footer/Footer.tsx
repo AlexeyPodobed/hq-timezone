@@ -49,7 +49,9 @@ export default async function Footer() {
                   alt={footer_logo.alt}
                 />
               </div>
-              {footer_buttons?.map((button, index) => (
+              {footer_buttons
+                ?.filter((button) => button?.link?.url && button?.link?.title)
+                .map((button, index) => (
                 <Link
                   key={index}
                   href={getSlugFromWpUrl(button?.link?.url)}
@@ -59,7 +61,7 @@ export default async function Footer() {
                 >
                   {button?.link?.title}
                 </Link>
-              ))}
+                ))}
               <div className="hidden lg:block">
                 <FooterMenu items={footer_menu} />
               </div>
