@@ -52,15 +52,15 @@ export default async function Footer() {
               {footer_buttons
                 ?.filter((button) => button?.link?.url && button?.link?.title)
                 .map((button, index) => (
-                <Link
-                  key={index}
-                  href={getSlugFromWpUrl(button?.link?.url)}
-                  target={button?.link?.target}
-                  className="footer__link"
-                  prefetch
-                >
-                  {button?.link?.title}
-                </Link>
+                  <Link
+                    key={index}
+                    href={getSlugFromWpUrl(button?.link?.url)}
+                    target={button?.link?.target}
+                    className="footer__link"
+                    prefetch
+                  >
+                    {button?.link?.title}
+                  </Link>
                 ))}
               <div className="hidden lg:block">
                 <FooterMenu items={footer_menu} />
