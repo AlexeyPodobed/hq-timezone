@@ -10,6 +10,7 @@ export interface UseCitySelectOptions {
   storageKey?: string;
   debounceMs?: number;
   defaultCity?: number;
+  minSearchLength?: number;
 }
 
 // const uniqueByName = (list: CityFull[]) => {
@@ -25,6 +26,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
   const storageKey = opts.storageKey ?? "selectedCity";
   const debounceMs = opts.debounceMs ?? debounceDelayTime;
   const defaultCity = opts.defaultCity ?? 0;
+  const minSearchLength = opts.minSearchLength ?? 2;
 
   const [selected, setSelected] = useState<CityFull>(initialCities[defaultCity]);
   const [search, setSearch] = useState("");
@@ -100,18 +102,21 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
 
   useEffect(() => {
     const term = debounced.trim();
-    if (term !== "") return;
+    if (term.length >= minSearchLength) return;
 
     const inInitial = initialCities.some((x) => x.name.toLowerCase() === selected.name.toLowerCase());
     setExtraCities(inInitial ? [] : [selected]);
-  }, [debounced, selected]);
+  }, [debounced, initialCities, minSearchLength, selected]);
 
   const prevDebouncedRef = useRef("");
 
   useEffect(() => {
     const term = debounced.trim();
 
-    if (!term || term === prevDebouncedRef.current) return;
+    if (term.length < minSearchLength || term === prevDebouncedRef.current) {
+      setIsFetching(false);
+      return;
+    }
     prevDebouncedRef.current = term;
 
     const ac = new AbortController();
@@ -138,7 +143,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     return () => {
       ac.abort();
     };
-  }, [debounced]);
+  }, [debounced, minSearchLength]);
 
   return {
     selected,
