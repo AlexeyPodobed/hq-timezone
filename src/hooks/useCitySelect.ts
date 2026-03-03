@@ -1,17 +1,45 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
 
-import { getCityWp } from "@/api/cities";
 import { debounceDelayTime, useDebounce } from "@/hooks/useDebounce";
 import { CityFull } from "@/types/cities";
 
-export interface UseCitySelectOptions {
-  storageKey?: string;
-  debounceMs?: number;
-  defaultCity?: number;
-  minSearchLength?: number;
+import { useCitySearch } from "./useCitySearch";
+import {
+  DEFAULT_CITY_SELECT_DEFAULT_CITY_INDEX,
+  DEFAULT_CITY_SELECT_MIN_SEARCH_LENGTH,
+  DEFAULT_CITY_SELECT_STORAGE_KEY,
+} from "./useCitySelect.constants";
+import { readStoredCity, writeStoredCity } from "./useCitySelect.storage";
+import { UseCitySelectOptions } from "./useCitySelect.types";
+import { areCitiesEqual, isCityInList, parseCityValue, toCityOption } from "./useCitySelect.utils";
+
+export type { UseCitySelectOptions } from "./useCitySelect.types";
+
+interface CitySelectState {
+  selected: CityFull;
+  search: string;
+  extraCities: CityFull[];
 }
+
+type CitySelectAction =
+  | { type: "set-search"; value: string }
+  | { type: "select-city"; city: CityFull; extraCities: CityFull[] }
+  | { type: "set-extra-cities"; cities: CityFull[] };
+
+const citySelectReducer = (state: CitySelectState, action: CitySelectAction): CitySelectState => {
+  switch (action.type) {
+    case "set-search":
+      return { ...state, search: action.value };
+    case "select-city":
+      return { ...state, selected: action.city, search: "", extraCities: action.extraCities };
+    case "set-extra-cities":
+      return { ...state, extraCities: action.cities };
+    default:
+      return state;
+  }
+};
 
 // const uniqueByName = (list: CityFull[]) => {
 //   const map = new Map<string, CityFull>();
@@ -23,58 +51,52 @@ export interface UseCitySelectOptions {
 // };
 
 export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOptions = {}) {
-  const storageKey = opts.storageKey ?? "selectedCity";
+  const storageKey = opts.storageKey ?? DEFAULT_CITY_SELECT_STORAGE_KEY;
   const debounceMs = opts.debounceMs ?? debounceDelayTime;
-  const defaultCity = opts.defaultCity ?? 0;
-  const minSearchLength = opts.minSearchLength ?? 2;
+  const defaultCity = opts.defaultCity ?? DEFAULT_CITY_SELECT_DEFAULT_CITY_INDEX;
+  const minSearchLength = opts.minSearchLength ?? DEFAULT_CITY_SELECT_MIN_SEARCH_LENGTH;
 
-  const [selected, setSelected] = useState<CityFull>(initialCities[defaultCity]);
-  const [search, setSearch] = useState("");
-  const [extraCities, setExtraCities] = useState<CityFull[]>([]);
-  const [isFetching, setIsFetching] = useState(false);
+  const [state, dispatch] = useReducer(citySelectReducer, {
+    selected: initialCities[defaultCity],
+    search: "",
+    extraCities: [],
+  });
+  const { selected, search, extraCities } = state;
+
+  const setSearch = useCallback((value: string) => {
+    dispatch({ type: "set-search", value });
+  }, []);
+
+  const setExtraCities = useCallback((cities: CityFull[]) => {
+    dispatch({ type: "set-extra-cities", cities });
+  }, []);
 
   const debounced = useDebounce(search, debounceMs);
+  const { isFetching } = useCitySearch({ term: debounced, minSearchLength, onResults: setExtraCities });
 
   const allCities = useMemo(() => [...initialCities, ...extraCities], [initialCities, extraCities]);
-  const options = useMemo(
-    () =>
-      allCities.map((c) => ({
-        label: `${c.name}, ${c.region ? `${c.region},` : ""} ${c.country_name}`,
-        value: JSON.stringify({ name: c.name, timezone: c.timezone }),
-      })),
-    [allCities]
-  );
+  const options = useMemo(() => allCities.map(toCityOption), [allCities]);
 
   const selectCity = useCallback(
     (c: CityFull) => {
-      setSelected(c);
-      setSearch("");
+      writeStoredCity(storageKey, c);
 
-      if (typeof window !== "undefined") {
-        try {
-          sessionStorage.setItem(storageKey, JSON.stringify(c));
-        } catch (e) {
-          console.log("sessionStorage set failed:", e);
-        }
-      }
-
-      setExtraCities(() => {
-        const inInitial = initialCities.some((x) => x.name.toLowerCase() === c.name.toLowerCase() && x.timezone === c.timezone);
-        return inInitial ? [] : [c];
-      });
+      const inInitial = isCityInList(initialCities, c);
+      dispatch({ type: "select-city", city: c, extraCities: inInitial ? [] : [c] });
     },
     [initialCities, storageKey]
   );
 
   const selectByName = useCallback(
     (value: string) => {
-      try {
-        const { name, timezone } = JSON.parse(value);
-        const found = allCities.find((c) => c.name.toLowerCase() === name.toLowerCase() && c.timezone === timezone);
-        if (found) selectCity(found);
-      } catch (err) {
-        console.error("Invalid value for selectByName:", value, err);
+      const parsed = parseCityValue(value);
+      if (!parsed) {
+        console.error("Invalid value for selectByName:", value);
+        return;
       }
+
+      const found = allCities.find((city) => areCitiesEqual(city, parsed));
+      if (found) selectCity(found);
     },
     [allCities, selectCity]
   );
@@ -82,68 +104,21 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
   const restoredRef = useRef(false);
   useEffect(() => {
     if (restoredRef.current) return;
-    if (typeof window === "undefined") return;
     restoredRef.current = true;
 
-    (async () => {
-      try {
-        const raw = sessionStorage.getItem(storageKey);
-        if (!raw) return;
-        const parsed: CityFull = JSON.parse(raw);
-
-        if (!parsed?.name) return;
-
-        selectCity(parsed);
-      } catch {
-        console.log("sessionStorage parse failed");
-      }
-    })();
+    const restored = readStoredCity(storageKey);
+    if (restored) {
+      selectCity(restored);
+    }
   }, [selectCity, storageKey]);
 
   useEffect(() => {
     const term = debounced.trim();
     if (term.length >= minSearchLength) return;
 
-    const inInitial = initialCities.some((x) => x.name.toLowerCase() === selected.name.toLowerCase());
+    const inInitial = isCityInList(initialCities, selected);
     setExtraCities(inInitial ? [] : [selected]);
-  }, [debounced, initialCities, minSearchLength, selected]);
-
-  const prevDebouncedRef = useRef("");
-
-  useEffect(() => {
-    const term = debounced.trim();
-
-    if (term.length < minSearchLength || term === prevDebouncedRef.current) {
-      setIsFetching(false);
-      return;
-    }
-    prevDebouncedRef.current = term;
-
-    const ac = new AbortController();
-    setIsFetching(true);
-
-    (async () => {
-      try {
-        if (ac.signal.aborted) return;
-
-        const { data } = await getCityWp(term, ac.signal);
-
-        const enriched = data as CityFull[];
-
-        setExtraCities(enriched);
-      } catch (err: any) {
-        if (err?.name !== "AbortError") {
-          console.log("City search failed:", err);
-        }
-      } finally {
-        setIsFetching(false);
-      }
-    })();
-
-    return () => {
-      ac.abort();
-    };
-  }, [debounced, minSearchLength]);
+  }, [debounced, initialCities, minSearchLength, selected, setExtraCities]);
 
   return {
     selected,
