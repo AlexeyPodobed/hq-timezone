@@ -1,4 +1,4 @@
-import LocalDate from "@/common/LocalDate";
+import { LocalDate } from "@/common/LocalDate";
 import { Time } from "@/components/base/Time";
 
 export const HeaderDate = () => {
@@ -11,5 +11,3 @@ export const HeaderDate = () => {
 };
 
 HeaderDate.displayName = "HeaderDate";
-
-export default HeaderDate;

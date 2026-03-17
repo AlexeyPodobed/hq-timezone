@@ -21,15 +21,10 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
   const [formattedTimezone, setFormattedTimezone] = useState("");
   const [timeDiff, setTimeDiff] = useState("");
 
-  const { timezone } = city;
+  const { timezone, latitude, longitude } = city;
   const time = getLocalTimeInTZ(timezone);
 
-  const { sunrise, sunset } = useMemo<{
-    sunrise: Date | undefined;
-    sunset: Date | undefined;
-  }>(() => {
-    return getSunTimesByTimezone(timezone);
-  }, [timezone]);
+  const { sunrise, sunset } = useMemo(() => getSunTimesByTimezone(timezone, { latitude, longitude }), [timezone, latitude, longitude]);
 
   const sunriseStr = sunrise ? DateTime.fromJSDate(sunrise).toFormat("HH:mm:ss") : "";
   const sunsetStr = sunset ? DateTime.fromJSDate(sunset).toFormat("HH:mm:ss") : "";

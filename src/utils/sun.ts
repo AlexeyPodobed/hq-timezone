@@ -3,11 +3,43 @@ import SunCalc from "suncalc";
 
 import { getCoordinatesFromTimezone } from "./coordinates";
 
-export function getSunTimesByTimezone(timezoneId: string): {
-  sunrise: Date;
-  sunset: Date;
+type CoordinatesLike = {
+  latitude?: number | string | null;
+  longitude?: number | string | null;
+};
+
+const toNumberOrNull = (value?: number | string | null): number | null => {
+  if (value === null || value === undefined || value === "") return null;
+  const parsed = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
+export function getSunTimesByTimezone(
+  timezoneId: string,
+  coords?: CoordinatesLike
+): {
+  sunrise: Date | undefined;
+  sunset: Date | undefined;
 } {
-  const { lat, lon } = getCoordinatesFromTimezone(timezoneId);
+  const latFromCity = toNumberOrNull(coords?.latitude);
+  const lonFromCity = toNumberOrNull(coords?.longitude);
+
+  let lat = latFromCity;
+  let lon = lonFromCity;
+
+  if (lat === null || lon === null) {
+    try {
+      const byTimezone = getCoordinatesFromTimezone(timezoneId);
+      lat = byTimezone.lat;
+      lon = byTimezone.lon;
+    } catch {
+      return { sunrise: undefined, sunset: undefined };
+    }
+  }
+
+  if (lat === null || lon === null) {
+    return { sunrise: undefined, sunset: undefined };
+  }
 
   const today = DateTime.now().setZone(timezoneId);
   const localDate = DateTime.fromObject({ year: today.year, month: today.month, day: today.day, hour: 12 }, { zone: timezoneId });

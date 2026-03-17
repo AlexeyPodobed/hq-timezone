@@ -114,7 +114,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
 
     const inInitial = isCityInList(initialCities, selected);
     setExtraCities(inInitial ? [] : [selected]);
-  }, [debounced, initialCities, minSearchLength, selected]);
+  }, [debounced, initialCities, minSearchLength, selected, setExtraCities]);
 
   return {
     selected,
