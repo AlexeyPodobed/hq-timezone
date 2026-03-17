@@ -12,10 +12,22 @@ export const isCityInList = (cities: CityFull[], target: Pick<CityFull, "name" |
   return cities.some((city) => areCitiesEqual(city, target));
 };
 
-export const toCityOption = (city: CityFull): CitySelectOption => ({
-  label: `${city.name}, ${city.region ? `${city.region},` : ""} ${city.country_name}`,
-  value: JSON.stringify({ name: city.name, timezone: city.timezone }),
-});
+const sanitizeTimezoneWord = (value?: string | null) => {
+  if (!value) return "";
+  return value
+    .replace(/\btimezone\b/gi, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+};
+
+export const toCityOption = (city: CityFull): CitySelectOption => {
+  const parts = [city.name, city.region, city.country_name].map((part) => sanitizeTimezoneWord(part)).filter(Boolean);
+
+  return {
+    label: parts.join(", "),
+    value: JSON.stringify({ name: city.name, timezone: city.timezone }),
+  };
+};
 
 export const parseCityValue = (value: string): ParsedCityValue | null => {
   try {
