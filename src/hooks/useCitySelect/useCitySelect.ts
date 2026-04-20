@@ -19,6 +19,23 @@ interface CitySelectState {
   extraCities: CityFull[];
 }
 
+const FALLBACK_CITY: CityFull = {
+  id: "",
+  name: "",
+  latitude: "",
+  longitude: "",
+  timezone: "",
+  country_name: "",
+  region: null,
+};
+
+const isValidCity = (value: unknown): value is CityFull => {
+  if (!value || typeof value !== "object") return false;
+
+  const city = value as Partial<CityFull>;
+  return typeof city.name === "string" && typeof city.timezone === "string";
+};
+
 type CitySelectAction =
   | { type: "set-search"; value: string }
   | { type: "select-city"; city: CityFull; extraCities: CityFull[] }
@@ -51,9 +68,11 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
   const debounceMs = opts.debounceMs ?? debounceDelayTime;
   const defaultCity = opts.defaultCity ?? DEFAULT_CITY_SELECT_DEFAULT_CITY_INDEX;
   const minSearchLength = opts.minSearchLength ?? DEFAULT_CITY_SELECT_MIN_SEARCH_LENGTH;
+  const safeInitialCities = useMemo(() => (Array.isArray(initialCities) ? initialCities.filter(isValidCity) : []), [initialCities]);
+  const initialSelectedCity = safeInitialCities[defaultCity] ?? safeInitialCities[0] ?? FALLBACK_CITY;
 
   const [state, dispatch] = useReducer(citySelectReducer, {
-    selected: initialCities[defaultCity],
+    selected: initialSelectedCity,
     search: "",
     extraCities: [],
   });
@@ -64,23 +83,27 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
   }, []);
 
   const setExtraCities = useCallback((cities: CityFull[]) => {
-    dispatch({ type: "set-extra-cities", cities });
+    dispatch({ type: "set-extra-cities", cities: Array.isArray(cities) ? cities.filter(isValidCity) : [] });
   }, []);
 
   const debounced = useDebounce(search, debounceMs);
   const { isFetching } = useCitySearch({ term: debounced, minSearchLength, onResults: setExtraCities });
 
-  const allCities = useMemo(() => [...initialCities, ...extraCities], [initialCities, extraCities]);
+  const allCities = useMemo(() => {
+    const safeExtraCities = Array.isArray(extraCities) ? extraCities.filter(isValidCity) : [];
+    return [...safeInitialCities, ...safeExtraCities];
+  }, [extraCities, safeInitialCities]);
   const options = useMemo(() => allCities.map(toCityOption), [allCities]);
 
   const selectCity = useCallback(
     (c: CityFull) => {
+      if (!isValidCity(c)) return;
       writeStoredCity(storageKey, c);
 
-      const inInitial = isCityInList(initialCities, c);
+      const inInitial = isCityInList(safeInitialCities, c);
       dispatch({ type: "select-city", city: c, extraCities: inInitial ? [] : [c] });
     },
-    [initialCities, storageKey]
+    [safeInitialCities, storageKey]
   );
 
   const selectByName = useCallback(
@@ -112,9 +135,9 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     const term = debounced.trim();
     if (term.length >= minSearchLength) return;
 
-    const inInitial = isCityInList(initialCities, selected);
+    const inInitial = isCityInList(safeInitialCities, selected);
     setExtraCities(inInitial ? [] : [selected]);
-  }, [debounced, initialCities, minSearchLength, selected, setExtraCities]);
+  }, [debounced, minSearchLength, safeInitialCities, selected, setExtraCities]);
 
   return {
     selected,

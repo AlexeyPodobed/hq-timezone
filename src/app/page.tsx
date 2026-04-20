@@ -30,12 +30,16 @@ export async function generateMetadata() {
 export default async function Home() {
   const { data: homepage } = await getHomePage();
 
-  const sections = homepage?.homepage_flexible_content ?? [];
-  const heroSection = homepage.homepage_flexible_content.find((section): section is HeroSectionBlock => section.acf_fc_layout === "hero");
-  const cityList = heroSection?.cities_list ?? [];
+  const sections = Array.isArray(homepage?.homepage_flexible_content) ? homepage.homepage_flexible_content : [];
+  const heroSection = sections.find((section): section is HeroSectionBlock => section?.acf_fc_layout === "hero");
+  const cityList = Array.isArray(heroSection?.cities_list) ? heroSection.cities_list : [];
 
   const citySet = new Set(
-    cityList.map(({ city_name, city_timezone }) => `${city_name.toLowerCase()}|${city_timezone.replace(/['"]/g, "").toLowerCase()}`)
+    cityList
+      .filter((city): city is { city_name: string; city_timezone: string } => {
+        return typeof city?.city_name === "string" && typeof city?.city_timezone === "string";
+      })
+      .map(({ city_name, city_timezone }) => `${city_name.toLowerCase()}|${city_timezone.replace(/['"]/g, "").toLowerCase()}`)
   );
 
   const citiesFull: CityFull[] = await fetchCitiesFull(cityList.map((c) => c.city_name));

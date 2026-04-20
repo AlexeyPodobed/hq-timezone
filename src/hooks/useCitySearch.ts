@@ -11,6 +11,13 @@ interface UseCitySearchParams {
   onResults: (cities: CityFull[]) => void;
 }
 
+const isValidCity = (value: unknown): value is CityFull => {
+  if (!value || typeof value !== "object") return false;
+
+  const city = value as Partial<CityFull>;
+  return typeof city.name === "string" && typeof city.timezone === "string";
+};
+
 export function useCitySearch({ term, minSearchLength, onResults }: UseCitySearchParams) {
   const [isFetching, setIsFetching] = useState(false);
   const prevTermRef = useRef("");
@@ -33,11 +40,13 @@ export function useCitySearch({ term, minSearchLength, onResults }: UseCitySearc
         if (abortController.signal.aborted) return;
 
         const { data } = await getCityWp(normalizedTerm, abortController.signal);
-        onResults(data as CityFull[]);
+        const normalizedResults = Array.isArray(data) ? data.filter(isValidCity) : [];
+        onResults(normalizedResults);
       } catch (error: any) {
         if (error?.name !== "AbortError") {
           console.log("City search failed:", error);
         }
+        onResults([]);
       } finally {
         setIsFetching(false);
       }
