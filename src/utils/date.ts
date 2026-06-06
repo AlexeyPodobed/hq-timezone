@@ -2,8 +2,10 @@ import { format, parseISO, differenceInMinutes, addMinutes, startOfDay, addDays 
 import { toZonedTime } from "date-fns-tz";
 import { DateTime } from "luxon";
 
+export const normalizeTimezone = (tz?: string): string => (tz ?? "").trim().replaceAll(" ", "_");
+
 export const getLocalTimeInTZ = (tz: string): string => {
-  const localDate = toZonedTime(new Date(), tz);
+  const localDate = toZonedTime(new Date(), normalizeTimezone(tz));
   return format(localDate, "HH:mm:ss"); // or "yyyy-MM-dd HH:mm:ss"
 };
 
@@ -17,8 +19,9 @@ export function formatMonthDate(date: DateTime | Date, showYear: boolean = true)
 }
 
 export const formatDateFromDateTime = (timezone: string): string => {
-  if (!timezone) return "";
-  const date = DateTime.now().setZone(timezone);
+  const normalizedTimezone = normalizeTimezone(timezone);
+  if (!normalizedTimezone) return "";
+  const date = DateTime.now().setZone(normalizedTimezone);
   return date.isValid ? date.toFormat("EEEE, MMMM d, yyyy") : "";
 };
 
@@ -70,14 +73,14 @@ export const calcDayLength = (sunRise?: string, sunSet?: string): string | null 
 
 export function getTimeDifferenceByTZ(timezoneId: string): string {
   const now = new Date();
-  const zoned = toZonedTime(now, timezoneId);
+  const zoned = toZonedTime(now, normalizeTimezone(timezoneId));
   const diffHours = Math.round((zoned.getTime() - now.getTime()) / 3600000);
   const sign = diffHours >= 0 ? "+" : "-";
   return `${sign}${Math.abs(diffHours)}`;
 }
 
 export function formatTimeZoneVerbose(timezoneId: string, date = new Date()): string {
-  const dt = DateTime.fromJSDate(date).setZone(timezoneId).setLocale("en");
+  const dt = DateTime.fromJSDate(date).setZone(normalizeTimezone(timezoneId)).setLocale("en");
 
   const rawShort = dt.offsetNameShort;
   const rawLong = dt.offsetNameLong;
@@ -111,7 +114,7 @@ export const getNextDayLabel = (time: string | undefined) => {
 };
 
 export const formatDayMonthInTZ = (tz: string) => {
-  const zoned = toZonedTime(new Date(), tz);
+  const zoned = toZonedTime(new Date(), normalizeTimezone(tz));
   return format(zoned, "dd MMM");
 };
 
@@ -127,6 +130,6 @@ export const buildTzDayLabel = (tzId?: string): string => {
 };
 
 export const formatDayFullInTZ = (tz: string, date = new Date()): string => {
-  const zoned = toZonedTime(date, tz);
+  const zoned = toZonedTime(date, normalizeTimezone(tz));
   return format(zoned, "d MMMM"); // e.g., "24 August"
 };
