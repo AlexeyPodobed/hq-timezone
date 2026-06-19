@@ -1,5 +1,7 @@
 import { toDate, toZonedTime } from "date-fns-tz";
 
+import { normalizeTimezone } from "./date";
+
 type DiffResult = {
   hours: number;
   minutes: number;
@@ -7,11 +9,14 @@ type DiffResult = {
 };
 
 export function getTimeDiff(tzA: string, tzB: string, date = new Date()): DiffResult {
-  const zonedA = toZonedTime(date, tzA);
-  const zonedB = toZonedTime(date, tzB);
+  const timezoneA = normalizeTimezone(tzA);
+  const timezoneB = normalizeTimezone(tzB);
 
-  const utcA = toDate(zonedA, { timeZone: tzA }).getTime();
-  const utcB = toDate(zonedB, { timeZone: tzB }).getTime();
+  const zonedA = toZonedTime(date, timezoneA);
+  const zonedB = toZonedTime(date, timezoneB);
+
+  const utcA = toDate(zonedA, { timeZone: timezoneA }).getTime();
+  const utcB = toDate(zonedB, { timeZone: timezoneB }).getTime();
 
   const delta = Math.round((utcA - utcB) / 60000);
   const abs = Math.abs(delta);
@@ -30,11 +35,14 @@ export function formatDiffShort(hours: number, minutes?: number): string {
 }
 
 export function getSignedHourDiff(tzA: string, tzB: string, date = new Date()): number {
-  const zonedA = toZonedTime(date, tzA);
-  const zonedB = toZonedTime(date, tzB);
+  const timezoneA = normalizeTimezone(tzA);
+  const timezoneB = normalizeTimezone(tzB);
 
-  const utcA = toDate(zonedA, { timeZone: tzA }).getTime();
-  const utcB = toDate(zonedB, { timeZone: tzB }).getTime();
+  const zonedA = toZonedTime(date, timezoneA);
+  const zonedB = toZonedTime(date, timezoneB);
+
+  const utcA = toDate(zonedA, { timeZone: timezoneA }).getTime();
+  const utcB = toDate(zonedB, { timeZone: timezoneB }).getTime();
 
   const deltaMinutes = Math.round((utcA - utcB) / 60000);
   const signedHours = Math.floor(deltaMinutes / 60);

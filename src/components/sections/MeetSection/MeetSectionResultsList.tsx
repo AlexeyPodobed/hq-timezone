@@ -11,7 +11,7 @@ import SwiperComponent from "@/components/swiper/SwiperComponent";
 import SwiperNavigation from "@/components/swiper/SwiperNavigation";
 import { useTimeStore } from "@/store/timeStore.ts";
 import { CityFull } from "@/types/cities";
-import { buildTzDayLabel } from "@/utils/date";
+import { buildTzDayLabel, normalizeTimezone } from "@/utils/date";
 import { formatDiffHours, getSignedHourDiff } from "@/utils/timeDiff";
 
 export interface MeetSectionResultsListProps {
@@ -25,7 +25,7 @@ export interface MeetSectionResultsListProps {
 const buildUtcPairsFullDay = (baseUtc: Date, step = 30, count = 48, timezones: string[]) => {
   return Array.from({ length: count }, (_, i) => {
     const utc = addMinutes(baseUtc, i * step);
-    return timezones.map((tz) => toZonedTime(utc, tz));
+    return timezones.map((tz) => toZonedTime(utc, normalizeTimezone(tz)));
   });
 };
 
@@ -33,8 +33,8 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ aCity
   const labelA = useMemo(() => buildTzDayLabel(aCity.timezone), [aCity]);
   const labelB = useMemo(() => buildTzDayLabel(bCity.timezone), [bCity]);
 
-  const tzACity = aCity?.timezone;
-  const tzBCity = bCity?.timezone;
+  const tzACity = normalizeTimezone(aCity?.timezone);
+  const tzBCity = normalizeTimezone(bCity?.timezone);
 
   const bCityDiffShort = useMemo(() => {
     if (!tzACity || !tzBCity) return "";
@@ -47,7 +47,7 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ aCity
     if (!tzACity) return result;
 
     for (const [id, city] of Object.entries(extraSelected)) {
-      const tz = city?.timezone;
+      const tz = normalizeTimezone(city?.timezone);
       if (!tz) continue;
 
       const diff = getSignedHourDiff(tzACity, tz);
@@ -60,8 +60,8 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ aCity
   const allTimezones = useMemo(() => {
     const extras = Object.values(extraSelected)
       .filter(Boolean)
-      .map((c) => c!.timezone);
-    return [aCity.timezone, bCity.timezone, ...extras.filter(Boolean)] as string[];
+      .map((c) => normalizeTimezone(c!.timezone));
+    return [normalizeTimezone(aCity.timezone), normalizeTimezone(bCity.timezone), ...extras.filter(Boolean)] as string[];
   }, [aCity, bCity, extraSelected]);
 
   const baseUtc = useMemo(() => {

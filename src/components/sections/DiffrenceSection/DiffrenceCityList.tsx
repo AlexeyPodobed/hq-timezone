@@ -5,7 +5,7 @@ import "./DiffrenceSection.scss";
 import { Icon } from "@/components/base/Icon";
 import { Time } from "@/components/base/Time";
 import { CityFull } from "@/types/cities";
-import { formatDayFullInTZ } from "@/utils/date";
+import { formatDayFullInTZ, normalizeTimezone } from "@/utils/date";
 
 export interface DiffrenceCityListProps {
   aCity: CityFull;
@@ -19,6 +19,8 @@ export const DiffrenceCityList = memo<DiffrenceCityListProps>(({ aCity, bCity, e
   return (
     <div className={clsx("diffrence-section__city-list", className)}>
       {[aCity, bCity].map((city, i) => {
+        const timezoneId = normalizeTimezone(city.timezone);
+
         return (
           <div
             key={i}
@@ -33,47 +35,53 @@ export const DiffrenceCityList = memo<DiffrenceCityListProps>(({ aCity, bCity, e
 
             <h4 className="diffrence-section__city-time">
               <Time
-                timezoneId={city.timezone}
+                timezoneId={timezoneId}
                 showSeconds={false}
               />
-              <span className="date">{formatDayFullInTZ(city.timezone)}</span>
+              <span className="date">{formatDayFullInTZ(timezoneId)}</span>
             </h4>
           </div>
         );
       })}
 
-      {Object.entries(extraSelected).map(([id, city]) => (
-        <div
-          key={id}
-          className="diffrence-section__city-item relative"
-        >
-          <div className="lg:flex lg:items-center">
-            <div className="flex flex-col items-center lg:items-start">
-              <h3 className="diffrence-section__city-title relative lg:static lg:flex lg:items-center lg:gap-4">
-                {city?.name}
-                <div
-                  className="cursor-pointer absolute lg:static -right-8 lg:right-0 top-1/2 lg:top-0 -translate-y-1/2 lg:translate-y-0 transition-opacity hover:opacity-50"
-                  onClick={() => onDelete?.(id)}
-                >
-                  <Icon
-                    name="minus"
-                    className="text-[1rem] lg:text-[2rem] text-red-700"
-                  />
-                </div>
-              </h3>
-              <p className="diffrence-section__city-country">{city?.country_name}</p>
-            </div>
-          </div>
+      {Object.entries(extraSelected)
+        .filter((entry): entry is [string, CityFull] => entry[1] !== null)
+        .map(([id, city]) => {
+          const timezoneId = normalizeTimezone(city?.timezone);
 
-          <h4 className="diffrence-section__city-time">
-            <Time
-              timezoneId={city?.timezone}
-              showSeconds={false}
-            />
-            <span className="date">{formatDayFullInTZ(city!.timezone)}</span>
-          </h4>
-        </div>
-      ))}
+          return (
+            <div
+              key={id}
+              className="diffrence-section__city-item relative"
+            >
+              <div className="lg:flex lg:items-center">
+                <div className="flex flex-col items-center lg:items-start">
+                  <h3 className="diffrence-section__city-title relative lg:static lg:flex lg:items-center lg:gap-4">
+                    {city.name}
+                    <div
+                      className="cursor-pointer absolute lg:static -right-8 lg:right-0 top-1/2 lg:top-0 -translate-y-1/2 lg:translate-y-0 transition-opacity hover:opacity-50"
+                      onClick={() => onDelete?.(id)}
+                    >
+                      <Icon
+                        name="minus"
+                        className="text-[1rem] lg:text-[2rem] text-red-700"
+                      />
+                    </div>
+                  </h3>
+                  <p className="diffrence-section__city-country">{city.country_name}</p>
+                </div>
+              </div>
+
+              <h4 className="diffrence-section__city-time">
+                <Time
+                  timezoneId={timezoneId}
+                  showSeconds={false}
+                />
+                <span className="date">{formatDayFullInTZ(timezoneId)}</span>
+              </h4>
+            </div>
+          );
+        })}
     </div>
   );
 });
