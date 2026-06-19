@@ -1,10 +1,10 @@
 import { WP_API } from "@/consts/api";
 import { EXPIRE_1_DAY } from "@/consts/time";
-import { CityNameWP } from "@/types/cities";
+import { CityFull } from "@/types/cities";
 
 import api from "./api";
 
-export const getCityWp = async (city: string, signal?: AbortSignal): Promise<{ data: CityNameWP[]; status: number }> => {
+export const getCityWp = async (city: string, signal?: AbortSignal): Promise<{ data: CityFull[]; status: number }> => {
   try {
     const { data, status } = await api.get(`${WP_API}/cities/${encodeURIComponent(city)}`, undefined, {
       next: { revalidate: EXPIRE_1_DAY },
