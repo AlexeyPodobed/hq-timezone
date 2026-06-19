@@ -15,18 +15,19 @@ interface FooterMenuProps {
 
 export const FooterMenu = memo<FooterMenuProps>(({ items }) => {
   return (
-    <div className="footer__menu">
+    <ul className="footer__menu">
       {items.map((item, index) => (
-        <Link
-          key={index}
-          href={getSlugFromWpUrl(item.url)}
-          target={item.target}
-          prefetch
-        >
-          {item.title}
-        </Link>
+        <li key={index}>
+          <Link
+            href={getSlugFromWpUrl(item.url)}
+            target={item.target}
+            prefetch
+          >
+            {item.title}
+          </Link>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 });
 

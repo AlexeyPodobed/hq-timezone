@@ -17,37 +17,41 @@ export default async function Footer() {
   return (
     <>
       <div className="page-wrapper !min-h-0 !pt-0">
-        <ContactSection
-          background_image={contact_section?.background_image}
-          image={contact_section?.image}
-        />
+        {contact_section && (
+          <ContactSection
+            background_image={contact_section?.background_image}
+            image={contact_section?.image}
+          />
+        )}
       </div>
       <footer className="footer">
         <Container>
           <div className="footer__inner">
             <div className="footer-left">
               <div>
-                <div className="footer__copyright">{footer_text}</div>
+                {footer_text && <div className="footer__copyright">{footer_text}</div>}
                 <div className="footer__by">
                   Designed by <Link href="/">Guyman Studio</Link>
                 </div>
-                <div className="lg:hidden">
-                  <FooterMenu items={footer_menu} />
-                </div>
+                <div className="lg:hidden">{footer_menu?.length > 0 && <FooterMenu items={footer_menu} />}</div>
               </div>
               <div className="hidden lg:block">
-                <FooterLogo
-                  src={footer_logo.url}
-                  alt={footer_logo.alt}
-                />
+                {footer_logo && (
+                  <FooterLogo
+                    src={footer_logo.url}
+                    alt={footer_logo.alt}
+                  />
+                )}
               </div>
             </div>
             <div className="footer-right">
               <div className="lg:hidden mb-5">
-                <FooterLogo
-                  src={footer_logo.url}
-                  alt={footer_logo.alt}
-                />
+                {footer_logo && (
+                  <FooterLogo
+                    src={footer_logo.url}
+                    alt={footer_logo.alt}
+                  />
+                )}
               </div>
               {footer_buttons
                 ?.filter((button) => button?.link?.url && button?.link?.title)
@@ -62,9 +66,7 @@ export default async function Footer() {
                     {button?.link?.title}
                   </Link>
                 ))}
-              <div className="hidden lg:block">
-                <FooterMenu items={footer_menu} />
-              </div>
+              <div className="hidden lg:block">{footer_menu?.length > 0 && <FooterMenu items={footer_menu} />}</div>
             </div>
           </div>
         </Container>

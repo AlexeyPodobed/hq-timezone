@@ -26,19 +26,23 @@ export const ContactSection = memo<ContactSectionProps>(({ background_image, ima
       className="contact"
       id="contact"
     >
-      <ImageWrapper
-        src={background_image?.url}
-        alt={background_image?.alt}
-        className="contact__bg"
-      />
+      {background_image && (
+        <ImageWrapper
+          src={background_image.url}
+          alt={background_image.alt}
+          className="contact__bg"
+        />
+      )}
       <Container>
         <div className="contact-row">
           <div className="contact-col contact-col--img">
-            <ImageWrapper
-              src={image?.url}
-              alt={image?.alt}
-              className="contact__img"
-            />
+            {image && (
+              <ImageWrapper
+                src={image.url}
+                alt={image.alt}
+                className="contact__img"
+              />
+            )}
           </div>
           <div className="contact-col">
             <div className="contact__title">Help us make this better!</div>
