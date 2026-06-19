@@ -79,20 +79,10 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
           <h3 className="meet-section__select-title">City A</h3>
           <CustomSelect
             options={aCity.options}
-            value={JSON.stringify({
-              name: aCity.selected?.name ?? "",
-              timezone: aCity.selected?.timezone ?? "",
-            })}
+            value={aCity.selectedValue}
             onChange={aCity.selectByName}
             onSearchChange={aCity.setSearch}
-            getSelectedLabel={(value) => {
-              try {
-                const parsed = JSON.parse(value);
-                return parsed.name;
-              } catch {
-                return value;
-              }
-            }}
+            getSelectedLabel={aCity.getSelectedLabel}
             placeholder="Select city"
             searchable
             isFetching={isFetchingA}
@@ -104,20 +94,10 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
           <h3 className="meet-section__select-title">City B</h3>
           <CustomSelect
             options={bCity.options}
-            value={JSON.stringify({
-              name: bCity.selected?.name ?? "",
-              timezone: bCity.selected?.timezone ?? "",
-            })}
+            value={bCity.selectedValue}
             onChange={bCity.selectByName}
             onSearchChange={bCity.setSearch}
-            getSelectedLabel={(value) => {
-              try {
-                const parsed = JSON.parse(value);
-                return parsed.name;
-              } catch {
-                return value;
-              }
-            }}
+            getSelectedLabel={bCity.getSelectedLabel}
             placeholder="Select city"
             searchable
             isFetching={isFetchingB}

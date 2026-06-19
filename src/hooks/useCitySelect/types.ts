@@ -15,4 +15,5 @@ export interface CitySelectOption {
 export interface ParsedCityValue {
   name: string;
   timezone: CityFull["timezone"];
+  isTimezoneNotActive?: CityFull["isTimezoneNotActive"];
 }

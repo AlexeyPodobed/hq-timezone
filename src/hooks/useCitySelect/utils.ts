@@ -20,13 +20,25 @@ const sanitizeTimezoneWord = (value?: string | null) => {
     .trim();
 };
 
+const withInactiveLabel = (label: string, isInactive?: boolean) => {
+  return isInactive ? `${label} (Inactive)` : label;
+};
+
 export const toCityOption = (city: CityFull): CitySelectOption => {
   const parts = [city.name, city.region, city.country_name].map((part) => sanitizeTimezoneWord(part)).filter(Boolean);
 
   return {
-    label: parts.join(", "),
-    value: JSON.stringify({ name: city.name, timezone: city.timezone }),
+    label: withInactiveLabel(parts.join(", "), city.isTimezoneNotActive),
+    value: toCitySelectValue(city),
   };
+};
+
+export const toCitySelectValue = (city?: Partial<CityFull> | null) => {
+  return JSON.stringify({
+    name: city?.name ?? "",
+    timezone: city?.timezone ?? "",
+    isTimezoneNotActive: city?.isTimezoneNotActive,
+  });
 };
 
 export const parseCityValue = (value: string): ParsedCityValue | null => {
@@ -41,4 +53,11 @@ export const parseCityValue = (value: string): ParsedCityValue | null => {
   } catch {
     return null;
   }
+};
+
+export const getCitySelectedLabel = (value: string) => {
+  const parsed = parseCityValue(value);
+  if (!parsed) return value;
+
+  return withInactiveLabel(parsed.name, parsed.isTimezoneNotActive);
 };

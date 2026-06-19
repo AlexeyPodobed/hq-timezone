@@ -15,7 +15,7 @@ export interface HeroCitySelectProps {
 }
 
 export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) => {
-  const { selected, options, isFetching, setSearch, selectCity, selectByName } = useCitySelect(cities, {
+  const { selected, selectedValue, options, isFetching, getSelectedLabel, setSearch, selectCity, selectByName } = useCitySelect(cities, {
     storageKey: "selectedHeroCity",
   });
 
@@ -25,20 +25,10 @@ export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) =>
         <h1 className="hero-section__title">{title}</h1>
         <CustomSelect
           options={options}
-          value={JSON.stringify({
-            name: selected?.name ?? "",
-            timezone: selected?.timezone ?? "",
-          })}
+          value={selectedValue}
           onChange={selectByName}
           onSearchChange={setSearch}
-          getSelectedLabel={(value) => {
-            try {
-              const parsed = JSON.parse(value);
-              return parsed.name;
-            } catch {
-              return value;
-            }
-          }}
+          getSelectedLabel={getSelectedLabel}
           placeholder={"Select city"}
           searchable
           isFetching={isFetching}

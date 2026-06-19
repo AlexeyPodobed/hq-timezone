@@ -47,20 +47,10 @@ export const DiffrenceExtraSelect = memo<DiffrenceExtraSelectProps>(({ cities, i
       <div className="diffrence-section__select">
         <CustomSelect
           options={city.options}
-          value={JSON.stringify({
-            name: city.selected?.name ?? "",
-            timezone: city.selected?.timezone ?? "",
-          })}
+          value={city.selectedValue}
           onChange={city.selectByName}
           onSearchChange={city.setSearch}
-          getSelectedLabel={(value) => {
-            try {
-              const parsed = JSON.parse(value);
-              return parsed.name;
-            } catch {
-              return value;
-            }
-          }}
+          getSelectedLabel={city.getSelectedLabel}
           placeholder="Select city"
           searchable
           isFetching={isFetching}

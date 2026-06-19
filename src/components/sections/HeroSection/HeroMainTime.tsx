@@ -55,6 +55,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
       <div className="hero-section__main-time-block">
         <h3 className="hero-section__main-city">
           {city.name}, {city.country_name}
+          {city.isTimezoneNotActive ? " (Inactive)" : ""}
         </h3>
         <h1 className="hero-section__main-time-value">
           <Time

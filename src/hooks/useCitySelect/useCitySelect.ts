@@ -9,7 +9,7 @@ import { useCitySearch } from "../useCitySearch";
 import { DEFAULT_CITY_SELECT_DEFAULT_CITY_INDEX, DEFAULT_CITY_SELECT_MIN_SEARCH_LENGTH, DEFAULT_CITY_SELECT_STORAGE_KEY } from "./constants";
 import { readStoredCity, writeStoredCity } from "./storage";
 import { UseCitySelectOptions } from "./types";
-import { areCitiesEqual, isCityInList, parseCityValue, toCityOption } from "./utils";
+import { areCitiesEqual, getCitySelectedLabel, isCityInList, parseCityValue, toCityOption, toCitySelectValue } from "./utils";
 
 export type { UseCitySelectOptions } from "./types";
 
@@ -94,6 +94,7 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     return [...safeInitialCities, ...safeExtraCities];
   }, [extraCities, safeInitialCities]);
   const options = useMemo(() => allCities.map(toCityOption), [allCities]);
+  const selectedValue = useMemo(() => toCitySelectValue(selected), [selected]);
 
   const selectCity = useCallback(
     (c: CityFull) => {
@@ -141,9 +142,11 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
 
   return {
     selected,
+    selectedValue,
     isFetching,
     options,
     allCities,
+    getSelectedLabel: getCitySelectedLabel,
 
     setSearch,
     selectCity,

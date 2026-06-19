@@ -33,20 +33,10 @@ export const MeetSectionExtraSelect = memo<MeetSectionExtraSelectProps>(({ citie
       <h3 className="meet-section__select-title">{label}</h3>
       <CustomSelect
         options={city.options}
-        value={JSON.stringify({
-          name: city.selected?.name ?? "",
-          timezone: city.selected?.timezone ?? "",
-        })}
+        value={city.selectedValue}
         onChange={city.selectByName}
         onSearchChange={city.setSearch}
-        getSelectedLabel={(value) => {
-          try {
-            const parsed = JSON.parse(value);
-            return parsed.name;
-          } catch {
-            return value;
-          }
-        }}
+        getSelectedLabel={city.getSelectedLabel}
         placeholder="Select city"
         searchable
         isFetching={isFetching}
