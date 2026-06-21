@@ -4,7 +4,6 @@ import { clsx } from "clsx";
 import { DateTime } from "luxon";
 import { memo, useEffect, useMemo, useState } from "react";
 
-import "./HeroSection.scss";
 import { Button } from "@/components/base/Button";
 import { Icon } from "@/components/base/Icon";
 import { Time } from "@/components/base/Time";
@@ -18,6 +17,8 @@ import {
   normalizeTimezone,
 } from "@/utils/date";
 import { getSunTimesByTimezone } from "@/utils/sun";
+
+import "./HeroSection.scss";
 
 export interface HeroMainTimeProps {
   city: CityFull;
