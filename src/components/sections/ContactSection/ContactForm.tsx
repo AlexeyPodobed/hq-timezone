@@ -1,92 +1,199 @@
 "use client";
 
-import { clsx } from "clsx";
-import React, { useState } from "react";
+import clsx from "clsx";
+import { useState } from "react";
+import { useForm, type SubmitHandler } from "react-hook-form";
 
 import { Loader } from "@/components/base/Loader";
+import type { ContactFormValues } from "@/types/contactForm";
 
-import { sendForm } from "./formSender";
+import { submitContactForm } from "./contactFormAction";
+
+interface SubmitResult {
+  isSuccess: boolean;
+  message: string;
+}
+
+const defaultValues: ContactFormValues = {
+  name: "",
+  email: "",
+  message: "",
+  keepUpdated: false,
+};
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const ContactForm = () => {
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [resultMessage, setResultMessage] = useState("");
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [submitResult, setSubmitResult] = useState<SubmitResult | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setIsLoading(true);
+  const {
+    register,
 
-    e.preventDefault();
-    const form = e.currentTarget;
+    handleSubmit,
 
-    const response = await sendForm(form);
+    setError,
 
-    if (response.isSuccess) {
-      setErrors({});
-      setIsSuccess(true);
-      form.reset();
-    } else {
-      setErrors(response.validationError);
-      setIsSuccess(false);
+    reset,
+
+    formState: { errors, isSubmitting },
+  } = useForm<ContactFormValues>({
+    defaultValues,
+
+    mode: "onBlur",
+  });
+
+  const onSubmit: SubmitHandler<ContactFormValues> = async (values) => {
+    setSubmitResult(null);
+
+    const result = await submitContactForm(values);
+
+    if (!result.isSuccess) {
+      for (const [fieldName, message] of Object.entries(result.validationErrors)) {
+        setError(fieldName as keyof ContactFormValues, {
+          type: "server",
+          message,
+        });
+      }
+
+      setSubmitResult({
+        isSuccess: false,
+        message: result.message,
+      });
+
+      return;
     }
 
-    setResultMessage(response.message);
-    setIsLoading(false);
+    reset();
+
+    setSubmitResult({
+      isSuccess: true,
+      message: result.message,
+    });
   };
+
   return (
     <div className="contact-form">
-      {isLoading && (
+      {isSubmitting && (
         <div className="contact-form__loader">
           <Loader />
         </div>
       )}
+
       <form
-        method="post"
-        action="https://hqt.mopski.pp.ua/wp-json/contact-form-7/v1/contact-forms/56/feedback"
-        onSubmit={handleSubmit}
-        className={isLoading ? "disabled" : ""}
+        onSubmit={handleSubmit(onSubmit)}
+        className={isSubmitting ? "disabled" : ""}
+        noValidate
+        aria-busy={isSubmitting}
       >
         <div className="contact-form-inner">
           <div className="contact-form-row">
             <div className="contact-form-col">
+              <label
+                htmlFor="contact-name"
+                className="sr-only"
+              >
+                Full Name
+              </label>
               <input
-                name="your-name"
+                id="contact-name"
                 type="text"
-                className={errors["your-name"] ? "invalid" : ""}
                 placeholder="Full Name*"
+                className={errors.name ? "invalid" : ""}
+                aria-invalid={Boolean(errors.name)}
+                aria-describedby={errors.name ? "contact-name-error" : undefined}
+                {...register("name", {
+                  required: "Full name is required.",
+                  minLength: {
+                    value: 2,
+                    message: "Full name must contain at least 2 characters.",
+                  },
+                })}
               />
-              {errors["your-name"] && <span className="error-message">{errors["your-name"]}</span>}
+
+              {errors.name?.message && (
+                <span
+                  id="contact-name-error"
+                  className="error-message"
+                  role="alert"
+                >
+                  {errors.name.message}
+                </span>
+              )}
             </div>
+
             <div className="contact-form-col">
+              <label
+                htmlFor="contact-email"
+                className="sr-only"
+              >
+                Email Address
+              </label>
               <input
-                name="your-email"
+                id="contact-email"
                 type="email"
-                className={errors["your-email"] ? "invalid" : ""}
                 placeholder="Email Address*"
+                className={errors.email ? "invalid" : ""}
+                aria-invalid={Boolean(errors.email)}
+                aria-describedby={errors.email ? "contact-email-error" : undefined}
+                {...register("email", {
+                  required: "Email address is required.",
+                  pattern: {
+                    value: EMAIL_PATTERN,
+                    message: "Enter a valid email address.",
+                  },
+                })}
               />
-              {errors["your-email"] && <span className="error-message">{errors["your-email"]}</span>}
+
+              {errors.email?.message && (
+                <span
+                  id="contact-email-error"
+                  className="error-message"
+                  role="alert"
+                >
+                  {errors.email.message}
+                </span>
+              )}
             </div>
           </div>
+
+          <label
+            htmlFor="contact-message"
+            className="sr-only"
+          >
+            Your ideas
+          </label>
           <textarea
-            name="your-message"
+            id="contact-message"
             placeholder="Share your ideas here"
-          ></textarea>
+            {...register("message")}
+          />
+
           <label className="checkbox-with-text">
             <input
-              name="keep-updated"
               type="checkbox"
+              {...register("keepUpdated")}
             />
-            <span className="custom-checkbox"></span>
+            <span className="custom-checkbox" />
             <span className="checkbox-with-text__text">Keep me updated when calendar integrations (Google or Outlook) become available.</span>
           </label>
+
           <input
             type="submit"
             value="SUBMIT"
-            disabled={isLoading}
+            disabled={isSubmitting}
           />
         </div>
       </form>
-      {resultMessage && <div className={clsx(isSuccess ? "success" : "error", "contact-form-result")}>{resultMessage}</div>}
+
+      {submitResult && (
+        <div
+          className={clsx(submitResult.isSuccess ? "success" : "error", "contact-form-result")}
+          role={submitResult.isSuccess ? "status" : "alert"}
+          aria-live="polite"
+        >
+          {submitResult.message}
+        </div>
+      )}
     </div>
   );
 };
