@@ -9,14 +9,13 @@ import { useCitySearch } from "../useCitySearch";
 import { DEFAULT_CITY_SELECT_DEFAULT_CITY_INDEX, DEFAULT_CITY_SELECT_MIN_SEARCH_LENGTH, DEFAULT_CITY_SELECT_STORAGE_KEY } from "./constants";
 import { readStoredCity, writeStoredCity } from "./storage";
 import { UseCitySelectOptions } from "./types";
-import { areCitiesEqual, getCitySelectedLabel, isCityInList, parseCityValue, toCityOption, toCitySelectValue } from "./utils";
+import { areCitiesEqual, getCitySelectedLabel, parseCityValue, toCityOption, toCitySelectValue } from "./utils";
 
 export type { UseCitySelectOptions } from "./types";
 
 interface CitySelectState {
   selected: CityFull;
   search: string;
-  extraCities: CityFull[];
 }
 
 const FALLBACK_CITY: CityFull = {
@@ -36,32 +35,44 @@ const isValidCity = (value: unknown): value is CityFull => {
   return typeof city.name === "string" && typeof city.timezone === "string";
 };
 
-type CitySelectAction =
-  | { type: "set-search"; value: string }
-  | { type: "select-city"; city: CityFull; extraCities: CityFull[] }
-  | { type: "set-extra-cities"; cities: CityFull[] };
+type CitySelectAction = { type: "set-search"; value: string } | { type: "select-city"; city: CityFull };
 
 const citySelectReducer = (state: CitySelectState, action: CitySelectAction): CitySelectState => {
   switch (action.type) {
     case "set-search":
       return { ...state, search: action.value };
+
     case "select-city":
-      return { ...state, selected: action.city, search: "", extraCities: action.extraCities };
-    case "set-extra-cities":
-      return { ...state, extraCities: action.cities };
+      return {
+        ...state,
+        selected: action.city,
+        search: "",
+      };
+
     default:
       return state;
   }
 };
 
-// const uniqueByName = (list: CityFull[]) => {
-//   const map = new Map<string, CityFull>();
-//   for (const c of list) {
-//     const key = `${c.name.trim().toLowerCase()}|${c.country_name?.trim().toLowerCase()}`;
-//     if (!map.has(key)) map.set(key, c);
-//   }
-//   return Array.from(map.values());
-// };
+const normalizeCityPart = (value: string | null | undefined) => value?.trim().toLowerCase() ?? "";
+
+const getCityKey = (city: CityFull) => {
+  if (city.id) return `id:${city.id}`;
+
+  return [normalizeCityPart(city.name), normalizeCityPart(city.country_name), normalizeCityPart(city.timezone)].join("|");
+};
+
+const deduplicateCities = (cities: CityFull[]) => {
+  const uniqueCities = new Map<string, CityFull>();
+
+  for (const city of cities) {
+    const key = getCityKey(city);
+
+    if (!uniqueCities.has(key)) uniqueCities.set(key, city);
+  }
+
+  return Array.from(uniqueCities.values());
+};
 
 export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOptions = {}) {
   const storageKey = opts.storageKey ?? DEFAULT_CITY_SELECT_STORAGE_KEY;
@@ -74,37 +85,39 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
   const [state, dispatch] = useReducer(citySelectReducer, {
     selected: initialSelectedCity,
     search: "",
-    extraCities: [],
   });
-  const { selected, search, extraCities } = state;
+
+  const { selected, search } = state;
 
   const setSearch = useCallback((value: string) => {
     dispatch({ type: "set-search", value });
   }, []);
 
-  const setExtraCities = useCallback((cities: CityFull[]) => {
-    dispatch({ type: "set-extra-cities", cities: Array.isArray(cities) ? cities.filter(isValidCity) : [] });
-  }, []);
-
   const debounced = useDebounce(search, debounceMs);
-  const { isFetching } = useCitySearch({ term: debounced, minSearchLength, onResults: setExtraCities });
+  const {
+    data: searchResults = [],
+    isFetching,
+    isError,
+  } = useCitySearch({
+    term: debounced,
+    minSearchLength,
+  });
 
-  const allCities = useMemo(() => {
-    const safeExtraCities = Array.isArray(extraCities) ? extraCities.filter(isValidCity) : [];
-    return [...safeInitialCities, ...safeExtraCities];
-  }, [extraCities, safeInitialCities]);
+  const allCities = useMemo(
+    () => deduplicateCities([...safeInitialCities, ...searchResults, selected].filter(isValidCity)),
+    [safeInitialCities, searchResults, selected]
+  );
   const options = useMemo(() => allCities.map(toCityOption), [allCities]);
   const selectedValue = useMemo(() => toCitySelectValue(selected), [selected]);
 
   const selectCity = useCallback(
-    (c: CityFull) => {
-      if (!isValidCity(c)) return;
-      writeStoredCity(storageKey, c);
+    (city: CityFull) => {
+      if (!isValidCity(city)) return;
 
-      const inInitial = isCityInList(safeInitialCities, c);
-      dispatch({ type: "select-city", city: c, extraCities: inInitial ? [] : [c] });
+      writeStoredCity(storageKey, city);
+      dispatch({ type: "select-city", city });
     },
-    [safeInitialCities, storageKey]
+    [storageKey]
   );
 
   const selectByName = useCallback(
@@ -132,18 +145,11 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     }
   }, [selectCity, storageKey]);
 
-  useEffect(() => {
-    const term = debounced.trim();
-    if (term.length >= minSearchLength) return;
-
-    const inInitial = isCityInList(safeInitialCities, selected);
-    setExtraCities(inInitial ? [] : [selected]);
-  }, [debounced, minSearchLength, safeInitialCities, selected, setExtraCities]);
-
   return {
     selected,
     selectedValue,
     isFetching,
+    isError,
     options,
     allCities,
     getSelectedLabel: getCitySelectedLabel,

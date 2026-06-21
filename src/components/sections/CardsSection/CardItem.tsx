@@ -1,7 +1,7 @@
 import { memo } from "react";
 
 import { ImageWrapper } from "@/common/ImageWrapper";
-import { AnimLottie } from "@/components/lottie.tsx";
+import { AnimLottie } from "@/common/lottie";
 
 export interface CardItemProps {
   bgSrc: string;

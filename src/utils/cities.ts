@@ -9,10 +9,20 @@ const isValidCity = (value: unknown): value is CityFull => {
 };
 
 export const fetchCitiesFull = async (cityNames: string[]): Promise<CityFull[]> => {
-  const safeCityNames = Array.isArray(cityNames) ? cityNames.filter((name) => typeof name === "string" && name.trim().length > 0) : [];
-  if (!safeCityNames.length) return [];
+  const uniqueCityNames = Array.from(
+    new Map(
+      cityNames
+        .filter((name): name is string => typeof name === "string" && name.trim().length > 0)
+        .map((name) => {
+          const trimmedName = name.trim();
 
-  const results = await Promise.all(safeCityNames.map((city) => getCityWp(city)));
+          return [trimmedName.toLowerCase(), trimmedName] as const;
+        })
+    ).values()
+  );
+  if (!uniqueCityNames.length) return [];
+
+  const results = await Promise.all(uniqueCityNames.map((city) => getCityWp(city)));
 
   const cities = results.flatMap((r) => (Array.isArray(r?.data) ? r.data : [])).filter(isValidCity);
 

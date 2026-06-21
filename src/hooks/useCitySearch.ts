@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 import { getCityWp } from "@/api/cities";
-import { CityFull } from "@/types/cities";
+import { CITY_SEARCH_CACHE_TIME } from "@/consts/time";
+import type { CityFull } from "@/types/cities";
 
-interface UseCitySearchParams {
-  term: string;
-  minSearchLength: number;
-  onResults: (cities: CityFull[]) => void;
-}
+export const cityKeys = {
+  all: ["cities"] as const,
+  search: (term: string) => [...cityKeys.all, "search", term] as const,
+};
 
 const isValidCity = (value: unknown): value is CityFull => {
   if (!value || typeof value !== "object") return false;
@@ -18,44 +18,25 @@ const isValidCity = (value: unknown): value is CityFull => {
   return typeof city.name === "string" && typeof city.timezone === "string";
 };
 
-export function useCitySearch({ term, minSearchLength, onResults }: UseCitySearchParams) {
-  const [isFetching, setIsFetching] = useState(false);
-  const prevTermRef = useRef("");
+interface UseCitySearchParams {
+  term: string;
+  minSearchLength: number;
+}
 
-  useEffect(() => {
-    const normalizedTerm = term.trim();
+export function useCitySearch({ term, minSearchLength }: UseCitySearchParams) {
+  const normalizedTerm = term.trim().toLowerCase();
+  const enabled = normalizedTerm.length >= minSearchLength;
 
-    if (normalizedTerm.length < minSearchLength || normalizedTerm === prevTermRef.current) {
-      setIsFetching(false);
-      return;
-    }
+  return useQuery({
+    queryKey: cityKeys.search(normalizedTerm),
+    queryFn: async ({ signal }) => {
+      const { data } = await getCityWp(normalizedTerm, signal);
 
-    prevTermRef.current = normalizedTerm;
-
-    const abortController = new AbortController();
-    setIsFetching(true);
-
-    (async () => {
-      try {
-        if (abortController.signal.aborted) return;
-
-        const { data } = await getCityWp(normalizedTerm, abortController.signal);
-        const normalizedResults = Array.isArray(data) ? data.filter(isValidCity) : [];
-        onResults(normalizedResults);
-      } catch (error: any) {
-        if (error?.name !== "AbortError") {
-          console.log("City search failed:", error);
-        }
-        onResults([]);
-      } finally {
-        setIsFetching(false);
-      }
-    })();
-
-    return () => {
-      abortController.abort();
-    };
-  }, [minSearchLength, onResults, term]);
-
-  return { isFetching };
+      return Array.isArray(data) ? data.filter(isValidCity) : [];
+    },
+    enabled,
+    staleTime: CITY_SEARCH_CACHE_TIME,
+    gcTime: CITY_SEARCH_CACHE_TIME,
+    retry: 1,
+  });
 }

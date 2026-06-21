@@ -17,7 +17,7 @@ interface DiffrenceExtraSelectProps {
 
 export const DiffrenceExtraSelect = memo<DiffrenceExtraSelectProps>(({ cities, id, onChange, isLastItem, addNewSelect }) => {
   const city = useCitySelect(cities, { storageKey: `diffrenceExtraCity:${id}` });
-  const { isFetching } = city;
+  const { isFetching, isError } = city;
 
   const previous = useRef<CityFull | null>(null);
 
@@ -54,6 +54,7 @@ export const DiffrenceExtraSelect = memo<DiffrenceExtraSelectProps>(({ cities, i
           placeholder="Select city"
           searchable
           isFetching={isFetching}
+          isError={isError}
           variant="yellow"
         />
       </div>

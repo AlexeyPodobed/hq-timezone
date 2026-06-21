@@ -24,8 +24,6 @@ const STORAGE_KEY = "diffrenceExtraIds";
 export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ cities }) => {
   const aCity = useCitySelect(cities, { storageKey: "diffrenceCityA" });
   const bCity = useCitySelect(cities, { storageKey: "diffrenceCityB", defaultCity: 1 });
-  const isFetchingA = aCity.isFetching;
-  const isFetchingB = bCity.isFetching;
 
   const tzACity = aCity.selected?.timezone;
   const tzBCity = bCity.selected?.timezone;
@@ -108,7 +106,8 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
                 getSelectedLabel={aCity.getSelectedLabel}
                 placeholder="Select city"
                 searchable
-                isFetching={isFetchingA}
+                isFetching={aCity.isFetching}
+                isError={aCity.isError}
                 variant="yellow"
               />
             </div>
@@ -126,7 +125,8 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
                 getSelectedLabel={bCity.getSelectedLabel}
                 placeholder="Select city"
                 searchable
-                isFetching={isFetchingB}
+                isFetching={bCity.isFetching}
+                isError={bCity.isError}
                 variant="yellow"
               />
             </div>

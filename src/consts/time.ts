@@ -1,3 +1,6 @@
+export const DEFAULT_QUERY_STALE_TIME = 5 * 60 * 1000;
+export const CITY_SEARCH_CACHE_TIME = 24 * 60 * 60 * 1000;
+
 export const EXPIRE_10_MINUTES = 10 * 60;
 export const EXPIRE_3_HOURS = 3 * 60 * 60;
 export const EXPIRE_1_DAY = 24 * 60 * 60;

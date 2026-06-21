@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import React from "react";
 
-import LenisProvider from "@/components/LenisProvider.tsx";
 import Footer from "@/components/main/Footer/Footer";
 import Header from "@/components/main/Header/Header";
-
 import "@/assets/styles/globals.css";
+import LenisProvider from "@/providers/LenisProvider";
+import { QueryProvider } from "@/providers/QueryProvider";
 
 export const metadata: Metadata = {
   title: "Next App",
@@ -21,11 +21,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="text-primary-1">
-        <LenisProvider>
-          <Header />
-          <main className="relative flex flex-col">{children}</main>
-          <Footer />
-        </LenisProvider>
+        <QueryProvider>
+          <LenisProvider>
+            <Header />
+            <main className="relative flex flex-col">{children}</main>
+            <Footer />
+          </LenisProvider>
+        </QueryProvider>
       </body>
     </html>
   );

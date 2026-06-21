@@ -12,7 +12,13 @@ class APIWrapper {
   }
 
   private async fetchWrapper(url: string, options: RequestInit = {}): Promise<Response> {
-    return await fetch(url, options);
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText || "Request failed"}`);
+    }
+
+    return response;
   }
 
   public async get(url: string, params?: Record<string, any>, options?: RequestInit): Promise<any> {

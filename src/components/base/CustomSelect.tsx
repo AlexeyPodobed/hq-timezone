@@ -30,10 +30,24 @@ export interface CustomSelectProps extends VariantProps<typeof customSelectVaria
   placeholder?: string;
   searchable?: boolean;
   isFetching?: boolean;
+  isError?: boolean;
+  errorMessage?: string;
 }
 
 export const CustomSelect = memo<CustomSelectProps>(
-  ({ options, value, onChange, onSearchChange, getSelectedLabel, placeholder = "Select...", variant, searchable = true, isFetching }) => {
+  ({
+    options,
+    value,
+    onChange,
+    onSearchChange,
+    getSelectedLabel,
+    placeholder = "Select...",
+    variant,
+    searchable = true,
+    isFetching,
+    isError,
+    errorMessage = "Failed to load cities",
+  }) => {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
     const ref = useRef<HTMLDivElement>(null);
@@ -122,6 +136,14 @@ export const CustomSelect = memo<CustomSelectProps>(
                 </div>
               )}
             </div>
+            {isError && (
+              <p
+                role="alert"
+                className={clsx("mb-3 text-sm", variant === "yellow" ? "text-yellow" : "text-red-600")}
+              >
+                {errorMessage}
+              </p>
+            )}
             {filtered.map((opt, index) => (
               <div
                 key={`${opt.label}__${index}`}
