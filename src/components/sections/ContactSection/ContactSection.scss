@@ -127,6 +127,10 @@
             .custom-checkbox {
                 @apply border border-text-secondary text-text-secondary block w-5 h-5 rounded-[0.125rem] relative overflow-hidden;
 
+                &::before {
+                    @apply content-[''] absolute z-10 top-[0.1875rem] left-[0.40625rem] w-1.5 h-2.5 border-r-2 border-b-2 border-black rotate-45 opacity-0 transition-opacity;
+                }
+
                 &::after {
                     @apply content-[''] absolute top-0 left-0 w-full h-full bg-transparent transition-colors;
                 }
@@ -141,6 +145,10 @@
 
                 &:checked ~ .custom-checkbox::after {
                     @apply bg-yellow;
+                }
+
+                &:checked ~ .custom-checkbox::before {
+                    @apply opacity-100;
                 }
             }
         }
