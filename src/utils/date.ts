@@ -1,6 +1,8 @@
 import { format, parseISO, differenceInMinutes } from "date-fns";
 import { DateTime } from "luxon";
 
+import type { CityFull } from "@/types/cities";
+
 import { getDateInCalculationTimezone, normalizeTimezone } from "./timezone";
 
 export const getLocalTimeInTZ = (tz: string): string => {
@@ -74,6 +76,14 @@ export function formatTimeZoneVerbose(timezoneId: string, date = new Date()): st
   return `(${displayShort}) ${long}`;
 }
 
+export function formatCityTimeZoneVerbose(city: Pick<CityFull, "name" | "country_name" | "region" | "timezone">): string {
+  if (city.region === "Timezone" && city.name && city.country_name) {
+    return `(${city.country_name}) ${city.name}`;
+  }
+
+  return formatTimeZoneVerbose(city.timezone);
+}
+
 function getAbbreviationFromLongName(longName: string): string {
   if (!longName) return "";
   return longName
@@ -87,10 +97,10 @@ export const formatDayMonthInTZ = (tz: string) => {
   return format(zoned, "dd MMM");
 };
 
-export const buildTzDayLabel = (tzId?: string): string => {
+export const buildTzDayLabel = (tzId?: string, city?: Pick<CityFull, "name" | "country_name" | "region" | "timezone">): string => {
   if (!tzId) return "";
 
-  const verbose = formatTimeZoneVerbose(tzId); // → (CDT) Central Daylight Time
+  const verbose = city ? formatCityTimeZoneVerbose(city) : formatTimeZoneVerbose(tzId); // → (CDT) Central Daylight Time
   const match = verbose.match(/\((.*?)\)/);
   const abbr = match?.[1] ?? "GMT";
   const day = formatDayMonthInTZ(tzId); // → 11 Sep

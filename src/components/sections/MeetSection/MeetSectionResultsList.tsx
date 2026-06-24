@@ -31,11 +31,10 @@ const buildUtcPairsFullDay = (baseUtc: Date, step = 30, count = 48, timezones: s
 };
 
 export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ aCity, bCity, extraSelected = {}, onDelete }) => {
-  const labelA = useMemo(() => buildTzDayLabel(aCity.timezone), [aCity]);
-  const labelB = useMemo(() => buildTzDayLabel(bCity.timezone), [bCity]);
-
   const tzACity = useMemo(() => (aCity ? getCalculationTimezone(aCity) : ""), [aCity]);
   const tzBCity = useMemo(() => (bCity ? getCalculationTimezone(bCity) : ""), [bCity]);
+  const labelA = useMemo(() => buildTzDayLabel(tzACity, aCity), [aCity, tzACity]);
+  const labelB = useMemo(() => buildTzDayLabel(tzBCity, bCity), [bCity, tzBCity]);
 
   const bCityDiffShort = useMemo(() => {
     if (!tzACity || !tzBCity) return "";
@@ -104,7 +103,7 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ aCity
             <MeetSectionResultsCity
               key={id}
               name={city?.name}
-              label={buildTzDayLabel(city!.timezone)}
+              label={buildTzDayLabel(getCalculationTimezone(city!), city!)}
               diffShort={extraDiffs[id]}
               removeCallback={() => onDelete?.(id)}
               showRemoveBtn={true}

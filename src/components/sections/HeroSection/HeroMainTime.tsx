@@ -8,7 +8,7 @@ import { Button } from "@/components/base/Button";
 import { Icon } from "@/components/base/Icon";
 import { Time } from "@/components/base/Time";
 import { CityFull } from "@/types/cities";
-import { calcDayLength, formatDateFromDateTime, formatTimeZoneVerbose, getLocalTimeInTZ, getTimeDifferenceByTZ } from "@/utils/date";
+import { calcDayLength, formatCityTimeZoneVerbose, formatDateFromDateTime, getLocalTimeInTZ, getTimeDifferenceByTZ } from "@/utils/date";
 import { getSunTimesByTimezone } from "@/utils/sun";
 import { getCalculationTimezone, normalizeTimezone } from "@/utils/timezone";
 
@@ -20,7 +20,6 @@ export interface HeroMainTimeProps {
 }
 
 export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
-  const [formattedTimezone, setFormattedTimezone] = useState("");
   const [timeDiff, setTimeDiff] = useState("");
 
   const { timezone, latitude, longitude } = city;
@@ -40,11 +39,11 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
   }, [sunrise, sunset]);
 
   const date = useMemo(() => formatDateFromDateTime(calculationTimezoneId), [calculationTimezoneId]);
+  const formattedTimezone = useMemo(() => formatCityTimeZoneVerbose(city), [city]);
 
   useEffect(() => {
     setTimeDiff(getTimeDifferenceByTZ(calculationTimezoneId));
-    setFormattedTimezone(formatTimeZoneVerbose(timezoneId));
-  }, [calculationTimezoneId, timezoneId]);
+  }, [calculationTimezoneId]);
 
   return (
     <div className={clsx("hero-section__main-time", className)}>
