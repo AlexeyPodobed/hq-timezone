@@ -1,16 +1,48 @@
+import { debounceDelayTime } from "@/hooks/useDebounce";
 import { CityFull } from "@/types/cities";
 
-import { CitySelectOption, ParsedCityValue } from "./types";
+import { DEFAULT_CITY_SELECT_DEFAULT_CITY_INDEX, DEFAULT_CITY_SELECT_MIN_SEARCH_LENGTH, DEFAULT_CITY_SELECT_STORAGE_KEY } from "./constants";
+import { CitySelectOption, ParsedCityValue, ResolvedCitySelectOptions, UseCitySelectOptions } from "./types";
 
 export const normalizeCityName = (value: string) => value.trim().toLowerCase();
+
+export const isValidCity = (value: unknown): value is CityFull => {
+  if (!value || typeof value !== "object") return false;
+
+  const city = value as Partial<CityFull>;
+  return typeof city.name === "string" && typeof city.timezone === "string";
+};
 
 export const areCitiesEqual = (left: Pick<CityFull, "name" | "timezone">, right: Pick<CityFull, "name" | "timezone">) => {
   return normalizeCityName(left.name) === normalizeCityName(right.name) && left.timezone === right.timezone;
 };
 
-export const isCityInList = (cities: CityFull[], target: Pick<CityFull, "name" | "timezone">) => {
-  return cities.some((city) => areCitiesEqual(city, target));
+const normalizeCityPart = (value: string | null | undefined) => value?.trim().toLowerCase() ?? "";
+
+const getCityKey = (city: CityFull) => {
+  if (city.id) return `id:${city.id}`;
+
+  return [normalizeCityPart(city.name), normalizeCityPart(city.country_name), normalizeCityPart(city.timezone)].join("|");
 };
+
+export const deduplicateCities = (cities: CityFull[]) => {
+  const uniqueCities = new Map<string, CityFull>();
+
+  for (const city of cities) {
+    const key = getCityKey(city);
+
+    if (!uniqueCities.has(key)) uniqueCities.set(key, city);
+  }
+
+  return Array.from(uniqueCities.values());
+};
+
+export const resolveCitySelectOptions = (opts: UseCitySelectOptions): ResolvedCitySelectOptions => ({
+  storageKey: opts.storageKey ?? DEFAULT_CITY_SELECT_STORAGE_KEY,
+  debounceMs: opts.debounceMs ?? debounceDelayTime,
+  defaultCity: opts.defaultCity ?? DEFAULT_CITY_SELECT_DEFAULT_CITY_INDEX,
+  minSearchLength: opts.minSearchLength ?? DEFAULT_CITY_SELECT_MIN_SEARCH_LENGTH,
+});
 
 const sanitizeTimezoneWord = (value?: string | null) => {
   if (!value) return "";

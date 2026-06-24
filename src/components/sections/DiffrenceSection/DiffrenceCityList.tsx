@@ -5,7 +5,8 @@ import "./DiffrenceSection.scss";
 import { Icon } from "@/components/base/Icon";
 import { Time } from "@/components/base/Time";
 import { CityFull } from "@/types/cities";
-import { formatDayFullInTZ, normalizeTimezone } from "@/utils/date";
+import { formatDayFullInTZ } from "@/utils/date";
+import { getCalculationTimezone } from "@/utils/timezone";
 
 export interface DiffrenceCityListProps {
   aCity: CityFull;
@@ -19,7 +20,7 @@ export const DiffrenceCityList = memo<DiffrenceCityListProps>(({ aCity, bCity, e
   return (
     <div className={clsx("diffrence-section__city-list", className)}>
       {[aCity, bCity].map((city, i) => {
-        const timezoneId = normalizeTimezone(city.timezone);
+        const calculationTimezoneId = getCalculationTimezone(city);
 
         return (
           <div
@@ -35,10 +36,10 @@ export const DiffrenceCityList = memo<DiffrenceCityListProps>(({ aCity, bCity, e
 
             <h4 className="diffrence-section__city-time">
               <Time
-                timezoneId={timezoneId}
+                timezoneId={calculationTimezoneId}
                 showSeconds={false}
               />
-              <span className="date">{formatDayFullInTZ(timezoneId)}</span>
+              <span className="date">{formatDayFullInTZ(calculationTimezoneId)}</span>
             </h4>
           </div>
         );
@@ -47,7 +48,7 @@ export const DiffrenceCityList = memo<DiffrenceCityListProps>(({ aCity, bCity, e
       {Object.entries(extraSelected)
         .filter((entry): entry is [string, CityFull] => entry[1] !== null)
         .map(([id, city]) => {
-          const timezoneId = normalizeTimezone(city?.timezone);
+          const calculationTimezoneId = getCalculationTimezone(city);
 
           return (
             <div
@@ -74,10 +75,10 @@ export const DiffrenceCityList = memo<DiffrenceCityListProps>(({ aCity, bCity, e
 
               <h4 className="diffrence-section__city-time">
                 <Time
-                  timezoneId={timezoneId}
+                  timezoneId={calculationTimezoneId}
                   showSeconds={false}
                 />
-                <span className="date">{formatDayFullInTZ(timezoneId)}</span>
+                <span className="date">{formatDayFullInTZ(calculationTimezoneId)}</span>
               </h4>
             </div>
           );

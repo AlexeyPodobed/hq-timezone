@@ -1,15 +1,22 @@
 "use client";
 
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { memo, useMemo } from "react";
 
 import "./DiffrenceSection.scss";
 
 import { CustomSelect } from "@/components/base/CustomSelect";
 import { Icon } from "@/components/base/Icon";
+import {
+  DIFFRENCE_CITY_A_STORAGE_KEY,
+  DIFFRENCE_CITY_B_STORAGE_KEY,
+  DIFFRENCE_EXTRA_CITY_STORAGE_PREFIX,
+  DIFFRENCE_EXTRA_IDS_STORAGE_KEY,
+} from "@/consts/storageKeys";
 import { useCitySelect } from "@/hooks/useCitySelect/useCitySelect";
+import { useExtraCitySelects } from "@/hooks/useExtraCitySelects";
 import { CityFull } from "@/types/cities";
 import { getTimeDiff, formatDiffShort, formatDiffSentence } from "@/utils/timeDiff";
+import { getCalculationTimezone } from "@/utils/timezone";
 
 import { DiffrenceCityList } from "./DiffrenceCityList";
 import { DiffrenceExtraSelect } from "./DiffrenceExtraSelect";
@@ -19,14 +26,12 @@ export interface DiffrenceSectionSelectorProps {
   cities: CityFull[];
 }
 
-const STORAGE_KEY = "diffrenceExtraIds";
-
 export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ cities }) => {
-  const aCity = useCitySelect(cities, { storageKey: "diffrenceCityA" });
-  const bCity = useCitySelect(cities, { storageKey: "diffrenceCityB", defaultCity: 1 });
+  const aCity = useCitySelect(cities, { storageKey: DIFFRENCE_CITY_A_STORAGE_KEY });
+  const bCity = useCitySelect(cities, { storageKey: DIFFRENCE_CITY_B_STORAGE_KEY, defaultCity: 1 });
 
-  const tzACity = aCity.selected?.timezone;
-  const tzBCity = bCity.selected?.timezone;
+  const tzACity = aCity.selected ? getCalculationTimezone(aCity.selected) : "";
+  const tzBCity = bCity.selected ? getCalculationTimezone(bCity.selected) : "";
 
   const diff = useMemo(() => {
     if (!tzACity || !tzBCity) return null;
@@ -43,52 +48,10 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
     return formatDiffSentence(aCity.selected.name, bCity.selected.name, diff);
   }, [diff, aCity.selected, bCity.selected]);
 
-  const [extraIds, setExtraIds] = useState<string[]>([]);
-  const [extraSelected, setExtraSelected] = useState<Record<string, CityFull | null>>({});
-
-  const isMaxReached = extraIds.length >= 10;
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    try {
-      const parsed = JSON.parse(raw || "[]");
-      if (Array.isArray(parsed)) {
-        setExtraIds(parsed);
-      }
-    } catch (e) {
-      console.warn("Failed to parse diffrenceExtraIds");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(extraIds));
-  }, [extraIds]);
-
-  const handleAdd = useCallback(() => {
-    if (isMaxReached) return;
-    const newId = uuidv4();
-    setExtraIds((prev) => [...prev, newId]);
-  }, [isMaxReached]);
-
-  const handleExtraChange = useCallback((id: string, value: CityFull | null) => {
-    setExtraSelected((prev) => ({ ...prev, [id]: value }));
-  }, []);
-
-  const handleDeleteExtra = useCallback((id: string) => {
-    setExtraIds((prev) => prev.filter((i) => i !== id));
-
-    setExtraSelected((prev) => {
-      const copy = { ...prev };
-      delete copy[id];
-      return copy;
-    });
-
-    if (typeof window !== "undefined") {
-      sessionStorage.removeItem(`diffrenceExtraCity:${id}`);
-    }
-  }, []);
+  const { extraIds, extraSelected, addExtra, changeExtra, deleteExtra } = useExtraCitySelects({
+    idsStorageKey: DIFFRENCE_EXTRA_IDS_STORAGE_KEY,
+    cityStoragePrefix: DIFFRENCE_EXTRA_CITY_STORAGE_PREFIX,
+  });
 
   return (
     <div className="diffrence-section__selector-wrap">
@@ -138,7 +101,7 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
             {!extraIds.length && (
               <div
                 className="cursor-pointer pr-4 add-diff xl:pr-0 transition-opacity hover:opacity-50"
-                onClick={handleAdd}
+                onClick={addExtra}
               >
                 <Icon
                   name="plus"
@@ -156,9 +119,9 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
               <DiffrenceExtraSelect
                 id={id}
                 cities={cities}
-                onChange={handleExtraChange}
+                onChange={changeExtra}
                 isLastItem={index === extraIds.length - 1}
-                addNewSelect={handleAdd}
+                addNewSelect={addExtra}
               />
             </div>
           ))}
@@ -176,7 +139,7 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
         aCity={aCity.selected}
         bCity={bCity.selected}
         extraSelected={extraSelected}
-        onDelete={handleDeleteExtra}
+        onDelete={deleteExtra}
       />
     </div>
   );

@@ -3,6 +3,7 @@
 import { memo } from "react";
 
 import { CustomSelect } from "@/components/base/CustomSelect";
+import { SELECTED_HERO_CITY_STORAGE_KEY } from "@/consts/storageKeys";
 import { useCitySelect } from "@/hooks/useCitySelect/useCitySelect";
 import { CityFull } from "@/types/cities";
 
@@ -16,7 +17,7 @@ export interface HeroCitySelectProps {
 
 export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) => {
   const { selected, selectedValue, options, isFetching, getSelectedLabel, setSearch, selectCity, selectByName } = useCitySelect(cities, {
-    storageKey: "selectedHeroCity",
+    storageKey: SELECTED_HERO_CITY_STORAGE_KEY,
   });
 
   return (

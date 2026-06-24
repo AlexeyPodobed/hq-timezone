@@ -7,6 +7,13 @@ export interface UseCitySelectOptions {
   minSearchLength?: number;
 }
 
+export interface ResolvedCitySelectOptions {
+  storageKey: string;
+  debounceMs: number;
+  defaultCity: number;
+  minSearchLength: number;
+}
+
 export interface CitySelectOption {
   label: string;
   value: string;

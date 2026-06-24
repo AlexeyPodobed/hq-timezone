@@ -3,10 +3,9 @@ import { CardsSection } from "@/components/sections/CardsSection/CardsSection";
 import { DiffrenceSection } from "@/components/sections/DiffrenceSection/DiffrenceSection";
 import { HeroSection } from "@/components/sections/HeroSection/HeroSection";
 import { MeetSection } from "@/components/sections/MeetSection/MeetSection";
-import { CityFull } from "@/types/cities";
 import { HeroSectionBlock, MeetSectionBlock, PostsSectionBlock } from "@/types/home";
-import { fetchCitiesFull } from "@/utils/cities";
 import { fetchFrontPageMeta } from "@/utils/homepage";
+import { fetchHomepageCities, getHomeSections } from "@/utils/homepageCities";
 
 export async function generateMetadata() {
   try {
@@ -29,24 +28,8 @@ export async function generateMetadata() {
 
 export default async function Home() {
   const { data: homepage } = await getHomePage();
-
-  const sections = Array.isArray(homepage?.homepage_flexible_content) ? homepage.homepage_flexible_content : [];
-  const heroSection = sections.find((section): section is HeroSectionBlock => section?.acf_fc_layout === "hero");
-  const cityList = Array.isArray(heroSection?.cities_list) ? heroSection.cities_list : [];
-
-  const citySet = new Set(
-    cityList
-      .filter((city): city is { city_name: string; city_timezone: string } => {
-        return typeof city?.city_name === "string" && typeof city?.city_timezone === "string";
-      })
-      .map(({ city_name, city_timezone }) => `${city_name.toLowerCase()}|${city_timezone.replace(/['"]/g, "").toLowerCase()}`)
-  );
-
-  const citiesFull: CityFull[] = await fetchCitiesFull(cityList.map((c) => c.city_name));
-  const filteredCities = citiesFull.filter((c) => {
-    const key = `${c.name.toLowerCase()}|${c.timezone.toLowerCase()}`;
-    return citySet.has(key);
-  });
+  const sections = getHomeSections(homepage);
+  const filteredCities = await fetchHomepageCities(sections);
 
   return (
     <div className="page-wrapper">

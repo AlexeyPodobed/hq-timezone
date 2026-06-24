@@ -1,12 +1,13 @@
 "use client";
 
 import clsx from "clsx";
-import { memo, useCallback, useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { memo } from "react";
 
 import { CustomSelect } from "@/components/base/CustomSelect";
 import { Icon } from "@/components/base/Icon";
+import { MEET_CITY_A_STORAGE_KEY, MEET_CITY_B_STORAGE_KEY, MEET_EXTRA_CITY_STORAGE_PREFIX, MEET_EXTRA_IDS_STORAGE_KEY } from "@/consts/storageKeys";
 import { useCitySelect } from "@/hooks/useCitySelect/useCitySelect";
+import { useExtraCitySelects } from "@/hooks/useExtraCitySelects";
 import { CityFull } from "@/types/cities";
 
 import { MeetSectionExtraSelect } from "./MeetSectionExtraSelect";
@@ -17,58 +18,13 @@ export interface MeetSectionSelectorProps {
   className?: string;
 }
 
-const STORAGE_KEY = "meetExtraIds";
-
 export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, className }) => {
-  const aCity = useCitySelect(cities, { storageKey: "meetCityA" });
-  const bCity = useCitySelect(cities, { storageKey: "meetCityB", defaultCity: 1 });
-
-  const [extraIds, setExtraIds] = useState<string[]>([]);
-  const [extraSelected, setExtraSelected] = useState<Record<string, CityFull | null>>({});
-
-  const isMaxReached = extraIds.length >= 10;
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    try {
-      const parsed = JSON.parse(raw || "[]");
-      if (Array.isArray(parsed)) {
-        setExtraIds(parsed);
-      }
-    } catch (e) {
-      console.warn("Failed to parse meetExtraIds");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(extraIds));
-  }, [extraIds]);
-
-  const handleAdd = useCallback(() => {
-    if (isMaxReached) return;
-    const newId = uuidv4();
-    setExtraIds((prev) => [...prev, newId]);
-  }, [isMaxReached]);
-
-  const handleExtraChange = useCallback((id: string, value: CityFull | null) => {
-    setExtraSelected((prev) => ({ ...prev, [id]: value }));
-  }, []);
-
-  const handleDeleteExtra = useCallback((id: string) => {
-    setExtraIds((prev) => prev.filter((i) => i !== id));
-
-    setExtraSelected((prev) => {
-      const copy = { ...prev };
-      delete copy[id];
-      return copy;
-    });
-
-    if (typeof window !== "undefined") {
-      sessionStorage.removeItem(`meetExtraCity:${id}`);
-    }
-  }, []);
+  const aCity = useCitySelect(cities, { storageKey: MEET_CITY_A_STORAGE_KEY });
+  const bCity = useCitySelect(cities, { storageKey: MEET_CITY_B_STORAGE_KEY, defaultCity: 1 });
+  const { extraIds, extraSelected, isMaxReached, addExtra, changeExtra, deleteExtra } = useExtraCitySelects({
+    idsStorageKey: MEET_EXTRA_IDS_STORAGE_KEY,
+    cityStoragePrefix: MEET_EXTRA_CITY_STORAGE_PREFIX,
+  });
 
   return (
     <div className={clsx("meet-section__selector", className)}>
@@ -111,14 +67,14 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
             id={id}
             index={index}
             cities={cities}
-            onChange={handleExtraChange}
+            onChange={changeExtra}
           />
         ))}
 
         {!isMaxReached && (
           <div
             className="cursor-pointer transition-opacity hover:opacity-50"
-            onClick={handleAdd}
+            onClick={addExtra}
           >
             <Icon
               name="plus"
@@ -132,7 +88,7 @@ export const MeetSectionSelector = memo<MeetSectionSelectorProps>(({ cities, cla
         aCity={aCity.selected}
         bCity={bCity.selected}
         extraSelected={extraSelected}
-        onDelete={handleDeleteExtra}
+        onDelete={deleteExtra}
       />
     </div>
   );

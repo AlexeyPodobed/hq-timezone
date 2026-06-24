@@ -1,5 +1,7 @@
 import { CityFull } from "@/types/cities";
 
+import { isValidCity } from "./utils";
+
 export const readStoredCity = (storageKey: string): CityFull | null => {
   if (typeof window === "undefined") return null;
 
@@ -7,13 +9,8 @@ export const readStoredCity = (storageKey: string): CityFull | null => {
     const raw = sessionStorage.getItem(storageKey);
     if (!raw) return null;
 
-    const parsed = JSON.parse(raw) as CityFull;
-
-    if (!parsed?.name || !parsed?.timezone) {
-      return null;
-    }
-
-    return parsed;
+    const parsed = JSON.parse(raw);
+    return isValidCity(parsed) ? parsed : null;
   } catch {
     console.log("sessionStorage parse failed");
     return null;

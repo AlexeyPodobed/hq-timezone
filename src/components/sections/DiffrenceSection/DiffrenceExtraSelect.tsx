@@ -1,10 +1,11 @@
 "use client";
 
-import { memo, useEffect, useRef } from "react";
+import { memo } from "react";
 
 import { CustomSelect } from "@/components/base/CustomSelect";
 import { Icon } from "@/components/base/Icon.tsx";
-import { useCitySelect } from "@/hooks/useCitySelect/useCitySelect";
+import { DIFFRENCE_EXTRA_CITY_STORAGE_PREFIX } from "@/consts/storageKeys";
+import { useExtraCitySelection } from "@/hooks/useExtraCitySelection";
 import type { CityFull } from "@/types/cities";
 
 interface DiffrenceExtraSelectProps {
@@ -16,17 +17,8 @@ interface DiffrenceExtraSelectProps {
 }
 
 export const DiffrenceExtraSelect = memo<DiffrenceExtraSelectProps>(({ cities, id, onChange, isLastItem, addNewSelect }) => {
-  const city = useCitySelect(cities, { storageKey: `diffrenceExtraCity:${id}` });
+  const city = useExtraCitySelection({ cities, id, storagePrefix: DIFFRENCE_EXTRA_CITY_STORAGE_PREFIX, onChange });
   const { isFetching, isError } = city;
-
-  const previous = useRef<CityFull | null>(null);
-
-  useEffect(() => {
-    if (city.selected?.name === previous.current?.name) return;
-
-    previous.current = city.selected;
-    onChange?.(id, city.selected ?? null);
-  }, [city.selected, id, onChange]);
 
   return (
     <>

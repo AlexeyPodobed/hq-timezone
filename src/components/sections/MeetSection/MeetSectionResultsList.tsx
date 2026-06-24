@@ -2,7 +2,7 @@
 
 import { clsx } from "clsx";
 import { addMinutes } from "date-fns";
-import { format, toZonedTime } from "date-fns-tz";
+import { format } from "date-fns-tz";
 import { memo, useMemo } from "react";
 
 import { Time } from "@/components/base/Time";
@@ -11,13 +11,14 @@ import SwiperComponent from "@/components/swiper/SwiperComponent";
 import SwiperNavigation from "@/components/swiper/SwiperNavigation";
 import { useTimeStore } from "@/store/timeStore.ts";
 import { CityFull } from "@/types/cities";
-import { buildTzDayLabel, normalizeTimezone } from "@/utils/date";
+import { buildTzDayLabel } from "@/utils/date";
 import { formatDiffHours, getSignedHourDiff } from "@/utils/timeDiff";
+import { getCalculationTimezone, getDateInCalculationTimezone } from "@/utils/timezone";
 
 export interface MeetSectionResultsListProps {
   aCity: CityFull;
   bCity: CityFull;
-  extraSelected?: Record<number, CityFull | null>;
+  extraSelected?: Record<string, CityFull | null>;
   onDelete?: (id: string) => void;
   className?: string;
 }
@@ -25,7 +26,7 @@ export interface MeetSectionResultsListProps {
 const buildUtcPairsFullDay = (baseUtc: Date, step = 30, count = 48, timezones: string[]) => {
   return Array.from({ length: count }, (_, i) => {
     const utc = addMinutes(baseUtc, i * step);
-    return timezones.map((tz) => toZonedTime(utc, normalizeTimezone(tz)));
+    return timezones.map((tz) => getDateInCalculationTimezone(tz, utc));
   });
 };
 
@@ -33,8 +34,8 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ aCity
   const labelA = useMemo(() => buildTzDayLabel(aCity.timezone), [aCity]);
   const labelB = useMemo(() => buildTzDayLabel(bCity.timezone), [bCity]);
 
-  const tzACity = normalizeTimezone(aCity?.timezone);
-  const tzBCity = normalizeTimezone(bCity?.timezone);
+  const tzACity = useMemo(() => (aCity ? getCalculationTimezone(aCity) : ""), [aCity]);
+  const tzBCity = useMemo(() => (bCity ? getCalculationTimezone(bCity) : ""), [bCity]);
 
   const bCityDiffShort = useMemo(() => {
     if (!tzACity || !tzBCity) return "";
@@ -47,7 +48,7 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ aCity
     if (!tzACity) return result;
 
     for (const [id, city] of Object.entries(extraSelected)) {
-      const tz = normalizeTimezone(city?.timezone);
+      const tz = city ? getCalculationTimezone(city) : "";
       if (!tz) continue;
 
       const diff = getSignedHourDiff(tzACity, tz);
@@ -60,8 +61,8 @@ export const MeetSectionResultsList = memo<MeetSectionResultsListProps>(({ aCity
   const allTimezones = useMemo(() => {
     const extras = Object.values(extraSelected)
       .filter(Boolean)
-      .map((c) => normalizeTimezone(c!.timezone));
-    return [normalizeTimezone(aCity.timezone), normalizeTimezone(bCity.timezone), ...extras.filter(Boolean)] as string[];
+      .map((c) => getCalculationTimezone(c!));
+    return [getCalculationTimezone(aCity), getCalculationTimezone(bCity), ...extras.filter(Boolean)] as string[];
   }, [aCity, bCity, extraSelected]);
 
   const baseUtc = useMemo(() => {

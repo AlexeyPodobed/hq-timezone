@@ -1,9 +1,10 @@
 "use client";
 
-import { memo, useEffect, useRef } from "react";
+import { memo } from "react";
 
 import { CustomSelect } from "@/components/base/CustomSelect";
-import { useCitySelect } from "@/hooks/useCitySelect/useCitySelect";
+import { MEET_EXTRA_CITY_STORAGE_PREFIX } from "@/consts/storageKeys";
+import { useExtraCitySelection } from "@/hooks/useExtraCitySelection";
 import type { CityFull } from "@/types/cities";
 
 interface MeetSectionExtraSelectProps {
@@ -14,19 +15,10 @@ interface MeetSectionExtraSelectProps {
 }
 
 export const MeetSectionExtraSelect = memo<MeetSectionExtraSelectProps>(({ cities, index, id, onChange }) => {
-  const city = useCitySelect(cities, { storageKey: `meetExtraCity:${id}` });
+  const city = useExtraCitySelection({ cities, id, storagePrefix: MEET_EXTRA_CITY_STORAGE_PREFIX, onChange });
   const { isFetching, isError } = city;
 
   const label = `City ${String.fromCharCode(67 + index)}`;
-
-  const previous = useRef<CityFull | null>(null);
-
-  useEffect(() => {
-    if (city.selected?.name === previous.current?.name) return;
-
-    previous.current = city.selected;
-    onChange?.(id, city.selected ?? null);
-  }, [city.selected, id, onChange]);
 
   return (
     <div className="meet-section__select">

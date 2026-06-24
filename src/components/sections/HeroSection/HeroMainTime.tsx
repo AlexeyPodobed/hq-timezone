@@ -8,15 +8,9 @@ import { Button } from "@/components/base/Button";
 import { Icon } from "@/components/base/Icon";
 import { Time } from "@/components/base/Time";
 import { CityFull } from "@/types/cities";
-import {
-  calcDayLength,
-  formatDateFromDateTime,
-  formatTimeZoneVerbose,
-  getLocalTimeInTZ,
-  getTimeDifferenceByTZ,
-  normalizeTimezone,
-} from "@/utils/date";
+import { calcDayLength, formatDateFromDateTime, formatTimeZoneVerbose, getLocalTimeInTZ, getTimeDifferenceByTZ } from "@/utils/date";
 import { getSunTimesByTimezone } from "@/utils/sun";
+import { getCalculationTimezone, normalizeTimezone } from "@/utils/timezone";
 
 import "./HeroSection.scss";
 
@@ -31,8 +25,9 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
 
   const { timezone, latitude, longitude } = city;
   const timezoneId = normalizeTimezone(timezone);
+  const calculationTimezoneId = getCalculationTimezone(city);
 
-  const time = getLocalTimeInTZ(timezoneId);
+  const time = getLocalTimeInTZ(calculationTimezoneId);
 
   const { sunrise, sunset } = useMemo(() => getSunTimesByTimezone(timezoneId, { latitude, longitude }), [timezoneId, latitude, longitude]);
 
@@ -44,12 +39,12 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
     return calcDayLength(sunrise.toISOString(), sunset.toISOString());
   }, [sunrise, sunset]);
 
-  const date = useMemo(() => formatDateFromDateTime(timezoneId), [timezoneId]);
+  const date = useMemo(() => formatDateFromDateTime(calculationTimezoneId), [calculationTimezoneId]);
 
   useEffect(() => {
-    setTimeDiff(getTimeDifferenceByTZ(timezoneId));
+    setTimeDiff(getTimeDifferenceByTZ(calculationTimezoneId));
     setFormattedTimezone(formatTimeZoneVerbose(timezoneId));
-  }, [timezoneId]);
+  }, [calculationTimezoneId, timezoneId]);
 
   return (
     <div className={clsx("hero-section__main-time", className)}>
@@ -61,7 +56,7 @@ export const HeroMainTime = memo<HeroMainTimeProps>(({ city, className }) => {
         <h1 className="hero-section__main-time-value">
           <Time
             time={time}
-            timezoneId={timezoneId}
+            timezoneId={calculationTimezoneId}
           />
         </h1>
         <div className="hero-section__main-date">{date}</div>
