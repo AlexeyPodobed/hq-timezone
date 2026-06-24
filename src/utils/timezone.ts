@@ -46,6 +46,11 @@ const minutesToUtcOffsetTimezone = (offsetMinutes: number) => {
   return `UTC${sign}${pad2(hours)}:${pad2(minutes)}`;
 };
 
+const getCalendarSeasonOffsetKey = (date = new Date()): TimezoneOffsetKey => {
+  const month = date.getUTCMonth();
+  return month >= 3 && month <= 8 ? JUL_OFFSET_KEY : JAN_OFFSET_KEY;
+};
+
 const getCurrentSeasonOffsetKey = (timezone: string, date = new Date()): TimezoneOffsetKey => {
   const normalizedTimezone = normalizeTimezone(timezone);
   const now = DateTime.fromJSDate(date).setZone(normalizedTimezone);
@@ -55,13 +60,15 @@ const getCurrentSeasonOffsetKey = (timezone: string, date = new Date()): Timezon
     const jan = DateTime.fromObject({ year, month: 1, day: 1, hour: 12 }, { zone: normalizedTimezone });
     const jul = DateTime.fromObject({ year, month: 7, day: 1, hour: 12 }, { zone: normalizedTimezone });
 
-    if (jul.isValid && now.offset === jul.offset) return JUL_OFFSET_KEY;
-    if (jan.isValid && now.offset === jan.offset) return JAN_OFFSET_KEY;
+    if (jan.isValid && jul.isValid) {
+      if (jan.offset === jul.offset) return getCalendarSeasonOffsetKey(date);
+      if (now.offset === jul.offset) return JUL_OFFSET_KEY;
+      if (now.offset === jan.offset) return JAN_OFFSET_KEY;
+    }
   }
 
-  // If the IANA timezone cannot be evaluated, keep the same seasonal priority roughly by calendar month.
-  const month = date.getUTCMonth();
-  return month >= 3 && month <= 8 ? JUL_OFFSET_KEY : JAN_OFFSET_KEY;
+  // If the IANA timezone cannot be evaluated or matched to Jan/Jul, use a rough calendar fallback.
+  return getCalendarSeasonOffsetKey(date);
 };
 
 const getExpectedSeasonalOffsets = (timezone: string, date = new Date()): Record<TimezoneOffsetKey, number | null> => {
