@@ -10,11 +10,12 @@ import { HeroCitySelector } from "./HeroCitySelector";
 
 export interface HeroSectionProps {
   cities: CityFull[];
+  initialSelectedCity?: CityFull;
   bgImage?: string;
   className?: string;
 }
 
-export const HeroSection = memo<HeroSectionProps>(({ cities, bgImage, className }) => {
+export const HeroSection = memo<HeroSectionProps>(({ cities, initialSelectedCity, bgImage, className }) => {
   return (
     <section className={clsx("hero-section", className)}>
       {bgImage && (
@@ -33,6 +34,7 @@ export const HeroSection = memo<HeroSectionProps>(({ cities, bgImage, className 
           {cities?.length > 0 && (
             <HeroCitySelector
               cities={cities}
+              initialSelectedCity={initialSelectedCity}
               title="What's the Time in"
             />
           )}

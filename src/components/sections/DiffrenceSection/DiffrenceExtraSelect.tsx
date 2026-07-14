@@ -11,13 +11,14 @@ import type { CityFull } from "@/types/cities";
 interface DiffrenceExtraSelectProps {
   cities: CityFull[];
   id: string;
+  initialSelectedCity?: CityFull;
   onChange?: (id: string, value: CityFull | null) => void;
   isLastItem?: boolean;
   addNewSelect: () => void;
 }
 
-export const DiffrenceExtraSelect = memo<DiffrenceExtraSelectProps>(({ cities, id, onChange, isLastItem, addNewSelect }) => {
-  const city = useExtraCitySelection({ cities, id, storagePrefix: DIFFRENCE_EXTRA_CITY_STORAGE_PREFIX, onChange });
+export const DiffrenceExtraSelect = memo<DiffrenceExtraSelectProps>(({ cities, id, initialSelectedCity, onChange, isLastItem, addNewSelect }) => {
+  const city = useExtraCitySelection({ cities, id, storagePrefix: DIFFRENCE_EXTRA_CITY_STORAGE_PREFIX, initialSelectedCity, onChange });
   const { isFetching, isError } = city;
 
   return (

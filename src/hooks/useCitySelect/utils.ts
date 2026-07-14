@@ -42,6 +42,7 @@ export const resolveCitySelectOptions = (opts: UseCitySelectOptions): ResolvedCi
   debounceMs: opts.debounceMs ?? debounceDelayTime,
   defaultCity: opts.defaultCity ?? DEFAULT_CITY_SELECT_DEFAULT_CITY_INDEX,
   minSearchLength: opts.minSearchLength ?? DEFAULT_CITY_SELECT_MIN_SEARCH_LENGTH,
+  initialSelectedCity: opts.initialSelectedCity,
 });
 
 const sanitizeTimezoneWord = (value?: string | null) => {

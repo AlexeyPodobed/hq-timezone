@@ -5,6 +5,7 @@ export interface UseCitySelectOptions {
   debounceMs?: number;
   defaultCity?: number;
   minSearchLength?: number;
+  initialSelectedCity?: CityFull;
 }
 
 export interface ResolvedCitySelectOptions {
@@ -12,6 +13,7 @@ export interface ResolvedCitySelectOptions {
   debounceMs: number;
   defaultCity: number;
   minSearchLength: number;
+  initialSelectedCity?: CityFull;
 }
 
 export interface CitySelectOption {

@@ -9,11 +9,12 @@ interface UseExtraCitySelectionOptions {
   cities: CityFull[];
   id: string;
   storagePrefix: string;
+  initialSelectedCity?: CityFull;
   onChange?: (id: string, value: CityFull | null) => void;
 }
 
-export const useExtraCitySelection = ({ cities, id, storagePrefix, onChange }: UseExtraCitySelectionOptions) => {
-  const city = useCitySelect(cities, { storageKey: `${storagePrefix}:${id}` });
+export const useExtraCitySelection = ({ cities, id, storagePrefix, initialSelectedCity, onChange }: UseExtraCitySelectionOptions) => {
+  const city = useCitySelect(cities, { storageKey: `${storagePrefix}:${id}`, initialSelectedCity });
   const previous = useRef<CityFull | null>(null);
 
   useEffect(() => {

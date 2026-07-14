@@ -10,6 +10,8 @@ type ExtraSelectedCities = Record<string, CityFull | null>;
 interface UseExtraCitySelectsOptions {
   idsStorageKey: string;
   cityStoragePrefix: string;
+  initialCities?: CityFull[];
+  restoreFromStorage?: boolean;
   max?: number;
 }
 
@@ -32,16 +34,25 @@ const writeStoredStringArray = (storageKey: string, value: string[]) => {
   sessionStorage.setItem(storageKey, JSON.stringify(value));
 };
 
-export const useExtraCitySelects = ({ idsStorageKey, cityStoragePrefix, max = DEFAULT_MAX_EXTRA_CITIES }: UseExtraCitySelectsOptions) => {
-  const [extraIds, setExtraIds] = useState<string[]>([]);
+export const useExtraCitySelects = ({
+  idsStorageKey,
+  cityStoragePrefix,
+  initialCities = [],
+  restoreFromStorage = true,
+  max = DEFAULT_MAX_EXTRA_CITIES,
+}: UseExtraCitySelectsOptions) => {
+  const initialIds = initialCities.map((_, index) => `url-extra-${index}`);
+  const [extraIds, setExtraIds] = useState<string[]>(initialIds);
   const [extraSelected, setExtraSelected] = useState<ExtraSelectedCities>({});
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(initialCities.length > 0 || !restoreFromStorage);
   const isMaxReached = extraIds.length >= max;
 
   useEffect(() => {
+    if (initialCities.length || !restoreFromStorage) return;
+
     setExtraIds(readStoredStringArray(idsStorageKey));
     setIsHydrated(true);
-  }, [idsStorageKey]);
+  }, [idsStorageKey, initialCities.length, restoreFromStorage]);
 
   useEffect(() => {
     if (!isHydrated) return;
@@ -49,13 +60,22 @@ export const useExtraCitySelects = ({ idsStorageKey, cityStoragePrefix, max = DE
     writeStoredStringArray(idsStorageKey, extraIds);
   }, [extraIds, idsStorageKey, isHydrated]);
 
-  const addExtra = useCallback(() => {
-    setExtraIds((prev) => {
-      if (prev.length >= max) return prev;
+  const addExtra = useCallback(
+    (defaultCity?: CityFull) => {
+      const id = uuidv4();
+      if (extraIds.length >= max) return null;
 
-      return [...prev, uuidv4()];
-    });
-  }, [max]);
+      setExtraIds((prev) => {
+        return [...prev, id];
+      });
+      if (defaultCity) {
+        setExtraSelected((prev) => ({ ...prev, [id]: defaultCity }));
+      }
+
+      return id;
+    },
+    [extraIds.length, max]
+  );
 
   const changeExtra = useCallback((id: string, value: CityFull | null) => {
     setExtraSelected((prev) => ({ ...prev, [id]: value }));

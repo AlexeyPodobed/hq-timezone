@@ -11,11 +11,12 @@ interface MeetSectionExtraSelectProps {
   cities: CityFull[];
   index: number;
   id: string;
+  initialSelectedCity?: CityFull;
   onChange?: (id: string, value: CityFull | null) => void;
 }
 
-export const MeetSectionExtraSelect = memo<MeetSectionExtraSelectProps>(({ cities, index, id, onChange }) => {
-  const city = useExtraCitySelection({ cities, id, storagePrefix: MEET_EXTRA_CITY_STORAGE_PREFIX, onChange });
+export const MeetSectionExtraSelect = memo<MeetSectionExtraSelectProps>(({ cities, index, id, initialSelectedCity, onChange }) => {
+  const city = useExtraCitySelection({ cities, id, storagePrefix: MEET_EXTRA_CITY_STORAGE_PREFIX, initialSelectedCity, onChange });
   const { isFetching, isError } = city;
 
   const label = `City ${String.fromCharCode(67 + index)}`;

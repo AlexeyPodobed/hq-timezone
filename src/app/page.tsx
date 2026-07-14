@@ -4,6 +4,8 @@ import { DiffrenceSection } from "@/components/sections/DiffrenceSection/Diffren
 import { HeroSection } from "@/components/sections/HeroSection/HeroSection";
 import { MeetSection } from "@/components/sections/MeetSection/MeetSection";
 import { HeroSectionBlock, MeetSectionBlock, PostsSectionBlock } from "@/types/home";
+import type { PageSearchParams } from "@/utils/cityUrlParams";
+import { resolveInitialCitySelections } from "@/utils/cityUrlParams";
 import { fetchFrontPageMeta } from "@/utils/homepage";
 import { fetchHomepageCities, getHomeSections } from "@/utils/homepageCities";
 
@@ -26,10 +28,16 @@ export async function generateMetadata() {
   }
 }
 
-export default async function Home() {
+interface HomeProps {
+  searchParams?: Promise<PageSearchParams>;
+}
+
+export default async function Home({ searchParams }: HomeProps) {
   const { data: homepage } = await getHomePage();
   const sections = getHomeSections(homepage);
   const filteredCities = await fetchHomepageCities(sections);
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const initialCitySelections = await resolveInitialCitySelections(resolvedSearchParams, filteredCities);
 
   return (
     <div className="page-wrapper">
@@ -41,6 +49,7 @@ export default async function Home() {
               <HeroSection
                 key={`hero-${idx}`}
                 cities={filteredCities}
+                initialSelectedCity={initialCitySelections.hero}
                 bgImage={heroBlock.background_image?.url}
               />
             );
@@ -52,6 +61,7 @@ export default async function Home() {
                 key={`meet-${idx}`}
                 title={meetBlock.title ?? ""}
                 cities={filteredCities}
+                initialSelectedCities={initialCitySelections.meet}
               />
             );
           }
@@ -60,6 +70,7 @@ export default async function Home() {
               <DiffrenceSection
                 key={`difference-${idx}`}
                 cities={filteredCities}
+                initialSelectedCities={initialCitySelections.difference}
               />
             );
           }

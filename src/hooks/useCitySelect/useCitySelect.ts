@@ -23,11 +23,11 @@ import {
 export type { UseCitySelectOptions } from "./types";
 
 export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOptions = {}) {
-  const { storageKey, debounceMs, defaultCity, minSearchLength } = useMemo(() => resolveCitySelectOptions(opts), [opts]);
+  const { storageKey, debounceMs, defaultCity, minSearchLength, initialSelectedCity } = useMemo(() => resolveCitySelectOptions(opts), [opts]);
   const safeInitialCities = useMemo(() => (Array.isArray(initialCities) ? initialCities.filter(isValidCity) : []), [initialCities]);
-  const initialSelectedCity = safeInitialCities[defaultCity] ?? safeInitialCities[0] ?? FALLBACK_CITY;
+  const defaultSelectedCity = initialSelectedCity ?? safeInitialCities[defaultCity] ?? safeInitialCities[0] ?? FALLBACK_CITY;
 
-  const [selected, setSelectedCity] = useState(initialSelectedCity);
+  const [selected, setSelectedCity] = useState(defaultSelectedCity);
   const [search, setSearch] = useState("");
 
   const debounced = useDebounce(search, debounceMs);
@@ -63,11 +63,16 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
       const parsed = parseCityValue(value);
       if (!parsed) {
         console.error("Invalid value for selectByName:", value);
-        return;
+        return null;
       }
 
       const found = allCities.find((city) => areCitiesEqual(city, parsed));
-      if (found) selectCity(found);
+      if (found) {
+        selectCity(found);
+        return found;
+      }
+
+      return null;
     },
     [allCities, selectCity]
   );
@@ -77,11 +82,16 @@ export function useCitySelect(initialCities: CityFull[], opts: UseCitySelectOpti
     if (restoredRef.current) return;
     restoredRef.current = true;
 
+    if (initialSelectedCity) {
+      selectCity(initialSelectedCity);
+      return;
+    }
+
     const restored = readStoredCity(storageKey);
     if (restored) {
       selectCity(restored);
     }
-  }, [selectCity, storageKey]);
+  }, [initialSelectedCity, selectCity, storageKey]);
 
   return {
     selected,

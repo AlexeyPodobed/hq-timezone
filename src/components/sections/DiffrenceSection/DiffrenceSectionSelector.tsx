@@ -12,9 +12,11 @@ import {
   DIFFRENCE_EXTRA_CITY_STORAGE_PREFIX,
   DIFFRENCE_EXTRA_IDS_STORAGE_KEY,
 } from "@/consts/storageKeys";
-import { useCitySelect } from "@/hooks/useCitySelect/useCitySelect";
-import { useExtraCitySelects } from "@/hooks/useExtraCitySelects";
+import { useCitySectionSelection } from "@/hooks/useCitySectionSelection";
+import { useCityUrlSync } from "@/hooks/useCityUrlSync";
+import { useSectionExtraCities } from "@/hooks/useSectionExtraCities";
 import { CityFull } from "@/types/cities";
+import { CITY_URL_PARAM_KEYS } from "@/utils/cityUrlParams";
 import { getTimeDiff, formatDiffShort, formatDiffSentence } from "@/utils/timeDiff";
 import { getCalculationTimezone } from "@/utils/timezone";
 
@@ -24,11 +26,40 @@ import { DiffrenceMainTime } from "./DiffrenceMainTime";
 
 export interface DiffrenceSectionSelectorProps {
   cities: CityFull[];
+  initialSelectedCities?: CityFull[];
 }
 
-export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ cities }) => {
-  const aCity = useCitySelect(cities, { storageKey: DIFFRENCE_CITY_A_STORAGE_KEY });
-  const bCity = useCitySelect(cities, { storageKey: DIFFRENCE_CITY_B_STORAGE_KEY, defaultCity: 1 });
+export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ cities, initialSelectedCities = [] }) => {
+  const syncCityUrl = useCityUrlSync();
+  const { aCity, bCity, initialExtraCities } = useCitySectionSelection({
+    cities,
+    initialSelectedCities,
+    aStorageKey: DIFFRENCE_CITY_A_STORAGE_KEY,
+    bStorageKey: DIFFRENCE_CITY_B_STORAGE_KEY,
+  });
+  const { extraIds, extraSelected, handleAddExtra, handleChangeExtra, handleDeleteExtra } = useSectionExtraCities({
+    sectionKey: CITY_URL_PARAM_KEYS.difference,
+    cities,
+    baseCities: [aCity.selected, bCity.selected],
+    initialCities: initialExtraCities,
+    extraIdsStorageKey: DIFFRENCE_EXTRA_IDS_STORAGE_KEY,
+    extraCityStoragePrefix: DIFFRENCE_EXTRA_CITY_STORAGE_PREFIX,
+    restoreFromStorage: initialSelectedCities.length === 0,
+  });
+
+  const syncDifferenceCities = (nextACity = aCity.selected, nextBCity = bCity.selected) => {
+    syncCityUrl(CITY_URL_PARAM_KEYS.difference, [nextACity, nextBCity, ...Object.values(extraSelected).filter(Boolean)]);
+  };
+
+  const handleSelectACity = (value: string) => {
+    const city = aCity.selectByName(value);
+    if (city) syncDifferenceCities(city, bCity.selected);
+  };
+
+  const handleSelectBCity = (value: string) => {
+    const city = bCity.selectByName(value);
+    if (city) syncDifferenceCities(aCity.selected, city);
+  };
 
   const tzACity = aCity.selected ? getCalculationTimezone(aCity.selected) : "";
   const tzBCity = bCity.selected ? getCalculationTimezone(bCity.selected) : "";
@@ -48,11 +79,6 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
     return formatDiffSentence(aCity.selected.name, bCity.selected.name, diff);
   }, [diff, aCity.selected, bCity.selected]);
 
-  const { extraIds, extraSelected, addExtra, changeExtra, deleteExtra } = useExtraCitySelects({
-    idsStorageKey: DIFFRENCE_EXTRA_IDS_STORAGE_KEY,
-    cityStoragePrefix: DIFFRENCE_EXTRA_CITY_STORAGE_PREFIX,
-  });
-
   return (
     <div className="diffrence-section__selector-wrap">
       <div className="diffrence-section__selector">
@@ -64,7 +90,7 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
               <CustomSelect
                 options={aCity.options}
                 value={aCity.selectedValue}
-                onChange={aCity.selectByName}
+                onChange={handleSelectACity}
                 onSearchChange={aCity.setSearch}
                 getSelectedLabel={aCity.getSelectedLabel}
                 placeholder="Select city"
@@ -83,7 +109,7 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
               <CustomSelect
                 options={bCity.options}
                 value={bCity.selectedValue}
-                onChange={bCity.selectByName}
+                onChange={handleSelectBCity}
                 onSearchChange={bCity.setSearch}
                 getSelectedLabel={bCity.getSelectedLabel}
                 placeholder="Select city"
@@ -101,7 +127,9 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
             {!extraIds.length && (
               <div
                 className="cursor-pointer pr-4 add-diff xl:pr-0 transition-opacity hover:opacity-50"
-                onClick={addExtra}
+                onClick={() => {
+                  handleAddExtra();
+                }}
               >
                 <Icon
                   name="plus"
@@ -119,9 +147,10 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
               <DiffrenceExtraSelect
                 id={id}
                 cities={cities}
-                onChange={changeExtra}
+                initialSelectedCity={initialExtraCities[index]}
+                onChange={handleChangeExtra}
                 isLastItem={index === extraIds.length - 1}
-                addNewSelect={addExtra}
+                addNewSelect={handleAddExtra}
               />
             </div>
           ))}
@@ -139,7 +168,7 @@ export const DiffrenceSectionSelector = memo<DiffrenceSectionSelectorProps>(({ c
         aCity={aCity.selected}
         bCity={bCity.selected}
         extraSelected={extraSelected}
-        onDelete={deleteExtra}
+        onDelete={handleDeleteExtra}
       />
     </div>
   );

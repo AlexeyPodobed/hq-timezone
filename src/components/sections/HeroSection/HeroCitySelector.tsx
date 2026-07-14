@@ -5,7 +5,9 @@ import { memo } from "react";
 import { CustomSelect } from "@/components/base/CustomSelect";
 import { SELECTED_HERO_CITY_STORAGE_KEY } from "@/consts/storageKeys";
 import { useCitySelect } from "@/hooks/useCitySelect/useCitySelect";
+import { useCityUrlSync } from "@/hooks/useCityUrlSync";
 import { CityFull } from "@/types/cities";
+import { CITY_URL_PARAM_KEYS } from "@/utils/cityUrlParams";
 
 import { HeroCityList } from "./HeroCityList";
 import { HeroMainTime } from "./HeroMainTime";
@@ -13,12 +15,25 @@ import { HeroMainTime } from "./HeroMainTime";
 export interface HeroCitySelectProps {
   title: string;
   cities: CityFull[];
+  initialSelectedCity?: CityFull;
 }
 
-export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) => {
+export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities, initialSelectedCity }) => {
+  const syncCityUrl = useCityUrlSync();
   const { selected, selectedValue, options, isFetching, getSelectedLabel, setSearch, selectCity, selectByName } = useCitySelect(cities, {
     storageKey: SELECTED_HERO_CITY_STORAGE_KEY,
+    initialSelectedCity,
   });
+
+  const handleSelectByName = (value: string) => {
+    const city = selectByName(value);
+    if (city) syncCityUrl(CITY_URL_PARAM_KEYS.hero, [city]);
+  };
+
+  const handleSelectCity = (city: CityFull) => {
+    selectCity(city);
+    syncCityUrl(CITY_URL_PARAM_KEYS.hero, [city]);
+  };
 
   return (
     <>
@@ -27,7 +42,7 @@ export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) =>
         <CustomSelect
           options={options}
           value={selectedValue}
-          onChange={selectByName}
+          onChange={handleSelectByName}
           onSearchChange={setSearch}
           getSelectedLabel={getSelectedLabel}
           placeholder={"Select city"}
@@ -42,7 +57,7 @@ export const HeroCitySelector = memo<HeroCitySelectProps>(({ title, cities }) =>
 
       <HeroCityList
         cities={cities}
-        onSelect={selectCity}
+        onSelect={handleSelectCity}
       />
     </>
   );

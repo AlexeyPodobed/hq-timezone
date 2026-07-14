@@ -12,14 +12,22 @@ import { DiffrenceSectionSelector } from "./DiffrenceSectionSelector";
 
 export interface DiffrenceSectionProps {
   cities: CityFull[];
+  initialSelectedCities?: CityFull[];
   className?: string;
 }
 
-export const DiffrenceSection = memo<DiffrenceSectionProps>(({ cities, className }) => {
+export const DiffrenceSection = memo<DiffrenceSectionProps>(({ cities, initialSelectedCities, className }) => {
   return (
     <section className={clsx("diffrence-section", className)}>
       <Container>
-        <div className="diffrence-section__inner">{cities?.length > 0 && <DiffrenceSectionSelector cities={cities} />}</div>
+        <div className="diffrence-section__inner">
+          {cities?.length > 0 && (
+            <DiffrenceSectionSelector
+              cities={cities}
+              initialSelectedCities={initialSelectedCities}
+            />
+          )}
+        </div>
       </Container>
 
       <ImageWrapper

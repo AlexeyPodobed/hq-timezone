@@ -11,11 +11,12 @@ import { MeetSectionSelector } from "./MeetSectionSelector";
 export interface MeetSectionProps {
   title: string;
   cities: CityFull[];
+  initialSelectedCities?: CityFull[];
   bgImage?: string;
   className?: string;
 }
 
-export const MeetSection = memo<MeetSectionProps>(({ title, cities, className }) => {
+export const MeetSection = memo<MeetSectionProps>(({ title, cities, initialSelectedCities, className }) => {
   return (
     <section className={clsx("meet-section", className)}>
       <ImageWrapper
@@ -28,7 +29,12 @@ export const MeetSection = memo<MeetSectionProps>(({ title, cities, className })
           <h2 className="meet-section__title">{title}</h2>
           <div className="meet-section__title"></div>
 
-          {cities?.length > 0 && <MeetSectionSelector cities={cities} />}
+          {cities?.length > 0 && (
+            <MeetSectionSelector
+              cities={cities}
+              initialSelectedCities={initialSelectedCities}
+            />
+          )}
         </div>
       </Container>
     </section>
