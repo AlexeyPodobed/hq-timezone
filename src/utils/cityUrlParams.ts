@@ -2,9 +2,9 @@ import type { CityFull } from "@/types/cities";
 import { fetchCitiesFull } from "@/utils/cities";
 
 export const CITY_URL_PARAM_KEYS = {
-  hero: "hero",
-  meet: "meet",
-  difference: "difference",
+  hero: "h",
+  meet: "m",
+  difference: "d",
 } as const;
 
 export type CityUrlParamKey = (typeof CITY_URL_PARAM_KEYS)[keyof typeof CITY_URL_PARAM_KEYS];
@@ -23,10 +23,12 @@ export interface InitialCitySelections {
 type SearchParamsValue = string | string[] | undefined;
 export type PageSearchParams = Record<string, SearchParamsValue>;
 
-const CITY_SLUG_SEPARATOR = "--";
+const CITY_SLUG_SEPARATOR = "-";
+const CITY_LIST_SEPARATOR = "/";
 const SECTION_PARAM_ORDER: CityUrlParamKey[] = [CITY_URL_PARAM_KEYS.hero, CITY_URL_PARAM_KEYS.meet, CITY_URL_PARAM_KEYS.difference];
 
 const normalizeCityPart = (value: string | null | undefined) => value?.trim().replaceAll(" ", "_").toLowerCase() ?? "";
+const encodeCityPart = (value: string) => value.trim().replaceAll(" ", "_").replaceAll("/", "_");
 
 const getSingleParamValue = (value: SearchParamsValue) => {
   if (Array.isArray(value)) return value[0] ?? "";
@@ -42,7 +44,7 @@ const findMatchingCity = (cities: CityFull[], parsed: ParsedUrlCity) => {
 };
 
 export const encodeCityUrlSlug = (city: Pick<CityFull, "name" | "timezone">) => {
-  return `${city.name}${CITY_SLUG_SEPARATOR}${city.timezone}`;
+  return `${encodeCityPart(city.name)}${CITY_SLUG_SEPARATOR}${encodeCityPart(city.timezone)}`;
 };
 
 export const decodeCityUrlSlug = (slug: string): ParsedUrlCity | null => {
@@ -59,7 +61,7 @@ export const decodeCityUrlSlug = (slug: string): ParsedUrlCity | null => {
 
 export const parseCityUrlList = (value: SearchParamsValue): ParsedUrlCity[] => {
   return getSingleParamValue(value)
-    .split(",")
+    .split(CITY_LIST_SEPARATOR)
     .map((slug) => decodeCityUrlSlug(slug.trim()))
     .filter((city): city is ParsedUrlCity => Boolean(city));
 };
@@ -68,7 +70,7 @@ export const serializeCityUrlList = (cities: Array<CityFull | null | undefined>)
   return cities
     .filter((city): city is CityFull => Boolean(city))
     .map(encodeCityUrlSlug)
-    .join(",");
+    .join(CITY_LIST_SEPARATOR);
 };
 
 export const applyCityUrlParam = (params: URLSearchParams, key: CityUrlParamKey, cities: Array<CityFull | null | undefined>) => {
@@ -96,6 +98,10 @@ export const sortCityUrlParams = (params: URLSearchParams) => {
   });
 
   return sortedParams;
+};
+
+export const stringifyCityUrlParams = (params: URLSearchParams) => {
+  return params.toString().replaceAll("%2F", "/");
 };
 
 export const resolveInitialCitySelections = async (searchParams: PageSearchParams, baseCities: CityFull[]): Promise<InitialCitySelections> => {

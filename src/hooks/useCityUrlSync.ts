@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useCallback } from "react";
 
 import type { CityFull } from "@/types/cities";
-import { applyCityUrlParam, CityUrlParamKey, sortCityUrlParams } from "@/utils/cityUrlParams";
+import { applyCityUrlParam, CityUrlParamKey, sortCityUrlParams, stringifyCityUrlParams } from "@/utils/cityUrlParams";
 
 export const useCityUrlSync = () => {
   const pathname = usePathname();
@@ -16,7 +16,7 @@ export const useCityUrlSync = () => {
       applyCityUrlParam(params, key, cities);
 
       const sortedParams = sortCityUrlParams(params);
-      const query = sortedParams.toString();
+      const query = stringifyCityUrlParams(sortedParams);
 
       window.history.replaceState(null, "", query ? `${pathname}?${query}` : pathname);
     },
