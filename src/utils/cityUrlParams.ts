@@ -27,8 +27,9 @@ const CITY_SLUG_SEPARATOR = "-";
 const CITY_LIST_SEPARATOR = "/";
 const SECTION_PARAM_ORDER: CityUrlParamKey[] = [CITY_URL_PARAM_KEYS.hero, CITY_URL_PARAM_KEYS.meet, CITY_URL_PARAM_KEYS.difference];
 
-const normalizeCityPart = (value: string | null | undefined) => value?.trim().replaceAll(" ", "_").toLowerCase() ?? "";
+const normalizeCityPart = (value: string | null | undefined) => value?.trim().replaceAll(" ", "_").replaceAll("/", "_").toLowerCase() ?? "";
 const encodeCityPart = (value: string) => value.trim().replaceAll(" ", "_").replaceAll("/", "_");
+const decodeCityNamePart = (value: string) => value.replaceAll("_", " ");
 
 const getSingleParamValue = (value: SearchParamsValue) => {
   if (Array.isArray(value)) return value[0] ?? "";
@@ -54,7 +55,7 @@ export const decodeCityUrlSlug = (slug: string): ParsedUrlCity | null => {
   if (!name || !timezone) return null;
 
   return {
-    name,
+    name: decodeCityNamePart(name),
     timezone,
   };
 };
