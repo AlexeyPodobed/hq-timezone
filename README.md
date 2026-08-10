@@ -1,38 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HQ Timezone
 
-## Getting Started
+HQ Timezone is a Next.js web application for checking the current time in different cities and comparing time zones.
 
-First, run the development server:
+The project receives content, pages, city data, and contact form data from the WordPress API. On the client side, it uses interactive city selectors, time difference calculations, locally saved selected cities, and responsive homepage sections.
+
+## Tech Stack
+
+- Next.js 15
+- React 19
+- TypeScript
+- SCSS / Tailwind CSS
+- Zustand
+- TanStack Query
+- date-fns, date-fns-tz, Luxon
+- GSAP, Lenis, Swiper
+- WordPress REST API / Contact Form 7
+
+## Project Structure
+
+- `src/app` - application pages, layout, sitemap, and error/not-found pages.
+- `src/components` - UI components, homepage sections, header, and footer.
+- `src/api` - functions for WordPress API requests.
+- `src/hooks` - hooks for time, cities, URL parameters, and responsive behavior.
+- `src/store` - Zustand store for time and seconds.
+- `src/utils` - helper functions for dates, time zones, cities, and coordinates.
+- `src/assets` - global styles, fonts, icons, and animations.
+- `public` - public images, favicon, and `robots.txt`.
+
+## Environment Variables
+
+For local development, create a `.env.local` file in the project root:
+
+```env
+NEXT_PUBLIC_WORDPRESS_API=https://example.com
+NEXT_PUBLIC_WORDPRESS_HOST=example.com
+CONTACT_FORM_ID=123
+CONTACT_FORM_UNIT_TAG=your-unit-tag
+```
+
+Variable descriptions:
+
+- `NEXT_PUBLIC_WORDPRESS_API` - base URL of the WordPress site without a trailing `/`.
+- `NEXT_PUBLIC_WORDPRESS_HOST` - WordPress site hostname used for loading remote images via `next/image`.
+- `CONTACT_FORM_ID` - Contact Form 7 form ID.
+- `CONTACT_FORM_UNIT_TAG` - Contact Form 7 form unit tag.
+
+## Installation and Running
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the project in development mode:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+After startup, the application will be available at:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Build
 
-## Learn More
+Create a production build:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Run the production build locally:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run start
+```
 
-## Deploy on Vercel
+## Code Check
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run lint
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+
+The project can be deployed as a standard Next.js application, for example on Vercel. Before deployment, configure the environment variables from the section above.
+
+Current published example:
 
 https://next-gsap-test-task.vercel.app/
